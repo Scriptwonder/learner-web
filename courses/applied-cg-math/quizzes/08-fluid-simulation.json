@@ -1,0 +1,199 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does the incompressibility constraint $\\nabla \\cdot \\mathbf{u} = 0$ mean physically?",
+    "hint": "Think about what happens to a small volume of fluid.",
+    "options": ["A) The fluid cannot move", "B) The fluid has zero viscosity", "C) The velocity field is divergence-free — fluid volume is conserved", "D) The pressure is constant everywhere"],
+    "answer_key": "C",
+    "explanation": "A divergence-free velocity field ($\\nabla \\cdot \\mathbf{u} = 0$) means that fluid neither compresses nor expands — any volume of fluid maintains its volume as it flows. This is the defining property of incompressible flow."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which viewpoint tracks individual fluid particles as they move through space?",
+    "hint": "Named after a famous mathematician who studied mechanics.",
+    "options": ["A) Eulerian", "B) Lagrangian", "C) Hamiltonian", "D) Newtonian"],
+    "answer_key": "B",
+    "explanation": "The Lagrangian viewpoint follows individual fluid particles (like tracking a floating leaf). The Eulerian viewpoint observes fluid properties at fixed points in space (like measuring flow past a sensor)."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In SPH, what is the purpose of kernel (smoothing) functions?",
+    "hint": "They determine how each particle contributes to field estimates at a point.",
+    "options": ["A) To compute collisions between particles", "B) To weight the contribution of nearby particles when estimating continuous field quantities", "C) To apply gravity to particles", "D) To enforce incompressibility"],
+    "answer_key": "B",
+    "explanation": "SPH kernel functions $W(\\mathbf{r}, h)$ provide a smooth, distance-dependent weight for each neighbor particle's contribution. They allow discrete particles to approximate continuous field quantities like density, pressure, and velocity."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why is the spiky kernel used for pressure forces instead of the poly6 kernel?",
+    "hint": "Consider what happens to the kernel gradient when two particles overlap ($r \\to 0$).",
+    "options": ["A) The spiky kernel is computationally cheaper", "B) The spiky kernel has a non-zero gradient at $r = 0$, providing repulsion when particles overlap", "C) The poly6 kernel is always negative", "D) The spiky kernel conserves energy better"],
+    "answer_key": "B",
+    "explanation": "The poly6 kernel has a zero gradient at $r = 0$, meaning overlapping particles feel no pressure force — leading to particle clumping. The spiky kernel has a strong, non-zero gradient at $r = 0$, ensuring particles that get too close experience strong repulsion."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What makes the semi-Lagrangian advection method unconditionally stable?",
+    "hint": "Think about what values are used to set the new field value.",
+    "options": ["A) It uses implicit time integration", "B) It always interpolates between existing values, never extrapolating", "C) It uses a very small timestep internally", "D) It applies a low-pass filter"],
+    "answer_key": "B",
+    "explanation": "Semi-Lagrangian advection traces backward from each grid point and bilinearly interpolates the old field. Since interpolation produces values bounded by the input data (no extrapolation), the method cannot amplify — it is unconditionally stable regardless of timestep or velocity magnitude."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In the Stable Fluids algorithm (Stam, 1999), what are the four stages in order?",
+    "hint": "Think about forces, smoothing, transport, and making velocity divergence-free.",
+    "options": ["A) Advect, Project, Diffuse, Add Forces", "B) Add Forces, Advect, Diffuse, Project", "C) Add Forces, Diffuse, Advect, Project", "D) Project, Add Forces, Advect, Diffuse"],
+    "answer_key": "C",
+    "explanation": "Stable Fluids uses operator splitting in this order: (1) Add external forces, (2) Diffuse (viscosity via implicit solve), (3) Advect (semi-Lagrangian), (4) Project (pressure solve for divergence-free velocity)."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What does the MAC (Marker-and-Cell) staggered grid store at cell centers vs. cell faces?",
+    "hint": "Pressure lives at one location, velocity components at another.",
+    "options": ["A) Velocity at centers, pressure at faces", "B) Pressure at centers, velocity components at corresponding faces", "C) Everything at cell centers", "D) Pressure at corners, velocity at edges"],
+    "answer_key": "B",
+    "explanation": "The MAC grid stores pressure at cell centers and velocity components at the corresponding cell faces ($u$ at left/right faces, $v$ at top/bottom faces). This staggering avoids the 'checkerboard' pressure instability and makes divergence/gradient operators naturally second-order accurate."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "In the pressure projection step, what equation is solved to find the pressure field?",
+    "hint": "It is an elliptic PDE relating pressure to velocity divergence.",
+    "options": ["A) The wave equation", "B) The heat equation", "C) The Poisson equation: $\\nabla^2 p = \\frac{\\rho}{\\Delta t} \\nabla \\cdot \\mathbf{u}$", "D) The advection equation"],
+    "answer_key": "C",
+    "explanation": "The pressure projection solves the Poisson equation $\\nabla^2 p = (\\rho/\\Delta t)\\nabla \\cdot \\mathbf{u}$. This is derived by requiring the corrected velocity $\\mathbf{u}^{new} = \\mathbf{u} - (\\Delta t/\\rho)\\nabla p$ to be divergence-free."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "In the Navier-Stokes equations, what does the term $\\nu \\nabla^2 \\mathbf{u}$ represent?",
+    "hint": "It involves the Laplacian of velocity and a fluid property coefficient.",
+    "answer_key": "Viscosity (diffusion of momentum)",
+    "explanation": "The term $\\nu \\nabla^2 \\mathbf{u}$ represents viscous diffusion — it smooths velocity differences between nearby fluid elements. $\\nu$ is the kinematic viscosity. Higher viscosity (like honey) means more smoothing."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "In SPH, what equation of state is commonly used to compute pressure from density? (Write the formula.)",
+    "hint": "It is a simple linear relationship involving a stiffness constant and rest density.",
+    "answer_key": "p = k(rho - rho_0)",
+    "explanation": "The equation of state $p_i = k(\\rho_i - \\rho_0)$ relates pressure to density deviation from the rest density $\\rho_0$. The stiffness constant $k$ controls how strongly the fluid resists compression."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "The poly6 kernel for 3D is $W(r, h) = \\frac{315}{64\\pi h^9}(h^2 - r^2)^3$ for $r \\leq h$. What is $W(0, h)$ in terms of $h$?",
+    "hint": "Set $r = 0$ and simplify.",
+    "answer_key": "315/(64*pi*h^3)",
+    "explanation": "$W(0, h) = \\frac{315}{64\\pi h^9}(h^2 - 0)^3 = \\frac{315}{64\\pi h^9} \\cdot h^6 = \\frac{315}{64\\pi h^3}$."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In the semi-Lagrangian advection method, you trace a particle backward from grid point $\\mathbf{x}$ by $\\Delta t \\cdot \\mathbf{u}(\\mathbf{x})$. If $\\mathbf{x} = (5, 3)$, $\\mathbf{u} = (10, -4)$, and $\\Delta t = 0.1$, what is the backtrace position?",
+    "hint": "$\\mathbf{x}_{prev} = \\mathbf{x} - \\Delta t \\cdot \\mathbf{u}$.",
+    "answer_key": "(4, 3.4)",
+    "explanation": "$\\mathbf{x}_{prev} = (5, 3) - 0.1 \\times (10, -4) = (5 - 1, 3 + 0.4) = (4, 3.4)$."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "On a 2D grid, the discrete Poisson equation stencil is $p_{i-1,j} + p_{i+1,j} + p_{i,j-1} + p_{i,j+1} - 4p_{i,j} = b_{i,j}$. How many non-zero entries does this stencil have?",
+    "hint": "Count the center cell plus its neighbors.",
+    "answer_key": "5",
+    "explanation": "The 2D Poisson stencil involves 5 grid points: the center cell ($p_{i,j}$, coefficient $-4$) and its 4 direct neighbors (each with coefficient $+1$). This is known as the 5-point stencil."
+  },
+  {
+    "id": 14,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Position-Based Fluids (Macklin & Muller, 2013) enforces what constraint on each particle?",
+    "hint": "It ensures each particle's local density matches a target.",
+    "answer_key": "A density constraint: rho_i / rho_0 - 1 = 0",
+    "explanation": "PBF enforces the constraint $C_i = \\rho_i/\\rho_0 - 1 = 0$ at each particle, requiring the local density $\\rho_i$ to equal the rest density $\\rho_0$. This is projected iteratively using the PBD framework."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Three SPH particles (mass $m = 1$, support radius $h = 2$) are at $\\mathbf{r}_1 = (0, 0)$, $\\mathbf{r}_2 = (1, 0)$, $\\mathbf{r}_3 = (0, 1)$. Using a simplified kernel $W(r, h) = (h - r)$ for $r < h$, compute the density at particle 1.",
+    "hint": "Sum $m_j W(|\\mathbf{r}_1 - \\mathbf{r}_j|, h)$ over all particles including the self-term.",
+    "steps": [
+      {
+        "prompt": "What are the distances $|\\mathbf{r}_1 - \\mathbf{r}_1|$, $|\\mathbf{r}_1 - \\mathbf{r}_2|$, and $|\\mathbf{r}_1 - \\mathbf{r}_3|$?",
+        "answer_key": "0, 1, 1",
+        "explanation": "$|\\mathbf{r}_1 - \\mathbf{r}_1| = 0$, $|\\mathbf{r}_1 - \\mathbf{r}_2| = |(−1, 0)| = 1$, $|\\mathbf{r}_1 - \\mathbf{r}_3| = |(0, −1)| = 1$."
+      },
+      {
+        "prompt": "Evaluate the kernel $W(r, 2) = 2 - r$ at each distance.",
+        "answer_key": "W(0) = 2, W(1) = 1, W(1) = 1",
+        "explanation": "$W(0, 2) = 2 - 0 = 2$, $W(1, 2) = 2 - 1 = 1$, $W(1, 2) = 2 - 1 = 1$."
+      },
+      {
+        "prompt": "Compute the density $\\rho_1 = \\sum_j m_j W(|\\mathbf{r}_1 - \\mathbf{r}_j|, h)$.",
+        "answer_key": "4",
+        "explanation": "$\\rho_1 = 1 \\times 2 + 1 \\times 1 + 1 \\times 1 = 4$."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "On a 1D MAC grid with $\\Delta x = 1$ and cell pressures $p_0 = 0$, $p_1 = 10$, $p_2 = 4$, compute the velocity update at the face between cells 1 and 2. Use $\\rho = 1$, $\\Delta t = 0.1$.",
+    "hint": "The velocity correction is $u^{new} = u - (\\Delta t / \\rho)(p_R - p_L)/\\Delta x$.",
+    "steps": [
+      {
+        "prompt": "What is the pressure gradient at the face between cells 1 and 2? $(p_2 - p_1)/\\Delta x$",
+        "answer_key": "-6",
+        "explanation": "$(p_2 - p_1)/\\Delta x = (4 - 10)/1 = -6$."
+      },
+      {
+        "prompt": "If the current face velocity is $u = 3$, what is the corrected velocity $u^{new} = u - (\\Delta t/\\rho) \\cdot (p_2 - p_1)/\\Delta x$?",
+        "answer_key": "3.6",
+        "explanation": "$u^{new} = 3 - (0.1/1)(-6) = 3 + 0.6 = 3.6$. The negative pressure gradient (pressure drops from cell 1 to cell 2) accelerates the fluid in the positive direction."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the main trade-off of semi-Lagrangian advection's unconditional stability?",
+    "hint": "Bilinear interpolation is a smoothing operation.",
+    "options": ["A) It is very slow", "B) It introduces numerical diffusion that smooths out fine details", "C) It cannot handle 3D simulations", "D) It requires a very fine grid"],
+    "answer_key": "B",
+    "explanation": "Semi-Lagrangian advection uses bilinear (or trilinear) interpolation, which acts as a low-pass filter on the data. This causes numerical diffusion — sharp features and fine vortices get smoothed out over time. Higher-order interpolation (e.g., cubic) reduces but does not eliminate this."
+  },
+  {
+    "id": 18,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Which SPH variant solves both a density constraint AND a divergence-free constraint for near-perfect incompressibility?",
+    "hint": "Its name stands for Divergence-Free SPH.",
+    "options": ["A) WCSPH (Weakly Compressible SPH)", "B) PCISPH (Predictive-Corrective Incompressible SPH)", "C) DFSPH (Divergence-Free SPH)", "D) Position-Based Fluids"],
+    "answer_key": "C",
+    "explanation": "DFSPH (Bender & Koschier, 2015) enforces both a constant density constraint and a divergence-free velocity constraint. By solving both conditions, it achieves significantly better incompressibility than methods that only enforce one, with fast convergence."
+  }
+]

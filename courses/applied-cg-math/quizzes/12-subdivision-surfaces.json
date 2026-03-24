@@ -1,0 +1,197 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the primary purpose of subdivision surfaces in computer graphics?",
+    "hint": "Think about what happens to a coarse box mesh after multiple subdivision steps.",
+    "options": ["A) To compress mesh data for storage", "B) To generate smooth surfaces from coarse polygon control meshes through iterative refinement", "C) To convert triangle meshes into voxel representations", "D) To compute lighting on curved surfaces"],
+    "answer_key": "B",
+    "explanation": "Subdivision surfaces allow artists to define a coarse control cage (e.g., a few hundred polygons) and automatically generate a smooth limit surface through iterative refinement. Each step adds vertices, splits edges, and repositions points using weighted averaging rules, converging to a mathematically well-defined smooth surface."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "After one step of Catmull-Clark subdivision on a mesh with mixed polygons (triangles, quads, pentagons), what type of faces does the resulting mesh have?",
+    "hint": "Catmull-Clark introduces face points and edge points. Each original $n$-gon is replaced by $n$ new faces.",
+    "options": ["A) All triangles", "B) All quadrilaterals", "C) A mix of triangles and quads", "D) The same polygon types as the input"],
+    "answer_key": "B",
+    "explanation": "After one Catmull-Clark subdivision step, every face becomes a quadrilateral, regardless of the input polygon type. Each original $n$-gon is replaced by $n$ quads (one per original vertex), connecting the face point, two adjacent edge points, and the updated vertex point. All subsequent subdivision steps maintain the all-quad topology."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the regular vertex valence for Catmull-Clark subdivision versus Loop subdivision?",
+    "hint": "Catmull-Clark produces quad meshes; Loop produces triangle meshes. What is the 'natural' valence for each?",
+    "options": ["A) Catmull-Clark: 3, Loop: 4", "B) Catmull-Clark: 4, Loop: 6", "C) Catmull-Clark: 6, Loop: 4", "D) Both are 6"],
+    "answer_key": "B",
+    "explanation": "In a regular quad mesh (Catmull-Clark), each interior vertex is shared by 4 quads, giving valence 4. In a regular triangle mesh (Loop), the average valence is approximately 6 (from Euler's formula). Vertices with these 'regular' valences have $C^2$ continuity in the limit surface; all others are extraordinary."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In Catmull-Clark subdivision, the edge point for an interior edge is computed as the average of which four points?",
+    "hint": "It combines information from the edge endpoints and the faces on either side.",
+    "options": ["A) The four vertices of the two adjacent triangles", "B) The two edge endpoints and the two adjacent face points", "C) The edge midpoint and the three vertices of one adjacent face", "D) The two edge endpoints and their two opposite vertices"],
+    "answer_key": "B",
+    "explanation": "The Catmull-Clark edge point is $e_p = \\frac{v_1 + v_2 + f_1 + f_2}{4}$, the average of the two edge endpoints ($v_1, v_2$) and the two adjacent face points ($f_1, f_2$). This blends local edge geometry with face-level averaging for smooth results."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What continuity does the limit surface have at an extraordinary vertex in Catmull-Clark subdivision?",
+    "hint": "Regular vertices achieve $C^2$. Extraordinary vertices achieve something less smooth.",
+    "options": ["A) $C^0$ — continuous but not smooth", "B) $C^1$ — tangent plane continuous", "C) $C^2$ — curvature continuous", "D) $C^\\infty$ — infinitely smooth"],
+    "answer_key": "B",
+    "explanation": "At extraordinary vertices (valence $\\neq 4$ for Catmull-Clark), the limit surface is $C^1$ — there is a well-defined tangent plane, but curvature may be discontinuous. At regular vertices, the limit surface matches a bi-cubic B-spline and is $C^2$. This is why artists are advised to minimize extraordinary vertices, especially in visible areas."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In Loop subdivision, the edge point for an interior edge with endpoints $v_1, v_2$ and opposite vertices $v_3, v_4$ uses which weights?",
+    "hint": "The weights are not equal — the endpoints get more influence than the opposite vertices.",
+    "options": ["A) $\\frac{1}{4}(v_1 + v_2 + v_3 + v_4)$", "B) $\\frac{3}{8}(v_1 + v_2) + \\frac{1}{8}(v_3 + v_4)$", "C) $\\frac{1}{2}(v_1 + v_2)$", "D) $\\frac{1}{8}(v_1 + v_2) + \\frac{3}{8}(v_3 + v_4)$"],
+    "answer_key": "B",
+    "explanation": "The Loop subdivision edge point is $e_p = \\frac{3}{8}(v_1 + v_2) + \\frac{1}{8}(v_3 + v_4)$. The edge endpoints receive weight $3/8$ each (total $3/4$), while the opposite vertices receive $1/8$ each (total $1/4$). This produces smoother results than simple midpoint averaging."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Crease edges in subdivision surfaces use a sharpness value $s$. What happens to an edge with $s = 3$ after two subdivision steps?",
+    "hint": "Sharpness is decremented by 1 at each subdivision level.",
+    "options": ["A) It remains at sharpness 3", "B) It becomes sharpness 1, still using sharp (boundary) rules", "C) It becomes fully smooth ($s = 0$)", "D) It is removed from the mesh"],
+    "answer_key": "B",
+    "explanation": "Sharpness is decremented by 1 at each subdivision step. After 2 steps: $s = 3 \\to 2 \\to 1$. At $s = 1 > 0$, the edge still uses sharp (boundary) rules. It will become smooth ($s = 0$) after one more subdivision step. This gives artists control over how many levels of detail maintain the crease."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Why does the number of extraordinary vertices remain constant after the first subdivision step in Catmull-Clark?",
+    "hint": "Think about the valence of newly created vertices (face points and edge points). What is their valence?",
+    "options": ["A) Extraordinary vertices are removed during subdivision", "B) All newly created vertices (face points and edge points) have regular valence 4, so no new extraordinary vertices are introduced", "C) The subdivision matrix forces all vertices to converge to valence 4", "D) Extraordinary vertices are split into regular vertices"],
+    "answer_key": "B",
+    "explanation": "In Catmull-Clark, face points connect to all edge points of their face (valence = number of face edges = 4 for quads after step 1). Edge points connect to 2 adjacent face points and 2 subdivided edge endpoints (valence 4). Only the original vertices retain their original valence. So after step 1, all new vertices are regular, and the set of extraordinary vertices is fixed forever."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "A cube has 8 vertices, 12 edges, and 6 quad faces. After one Catmull-Clark subdivision, how many vertices does the resulting mesh have?",
+    "hint": "New vertices = original vertices + edge points + face points.",
+    "answer_key": "26 (8 original + 12 edge points + 6 face points)",
+    "explanation": "One Catmull-Clark step creates: 1 face point per face ($6$), 1 edge point per edge ($12$), and repositions each original vertex ($8$). Total: $8 + 12 + 6 = 26$ vertices."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the main advantage of subdivision surfaces over NURBS for character modeling?",
+    "hint": "Think about the topology of a character model — heads, hands, bodies with varying topology.",
+    "answer_key": "Subdivision surfaces support arbitrary mesh topology (any genus), while NURBS require a rectangular parameter domain and cannot naturally represent surfaces with holes or branching without trimming.",
+    "explanation": "Character models have complex topology — eye sockets, nostrils, fingers, etc. NURBS patches require a rectangular grid topology, so modeling these features needs patch trimming (which creates gaps) or complex multi-patch layouts. Subdivision surfaces accept any polygon mesh topology and naturally handle extraordinary vertices where patches of different connectivity meet."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In the Catmull-Clark vertex rule $v' = \\frac{F + 2R + (n-3)v}{n}$, what are the weights on $F$, $R$, and $v$ when the vertex has valence $n = 4$?",
+    "hint": "Substitute $n = 4$ into each weight: $1/n$ for $F$, $2/n$ for $R$, $(n-3)/n$ for $v$.",
+    "answer_key": "F: 1/4, R: 1/2 (i.e., 2/4), v: 1/4 (i.e., (4-3)/4)",
+    "explanation": "For $n = 4$: weight on $F = 1/4$, weight on $R = 2/4 = 1/2$, weight on $v = (4-3)/4 = 1/4$. Check: $1/4 + 1/2 + 1/4 = 1$. The original vertex retains only $1/4$ of its original position influence — the rest comes from neighboring face and edge averages."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A vertex in a Catmull-Clark mesh has valence $n = 3$ and is at position $v = (6, 6, 0)$. The average of adjacent face points is $F = (2, 2, 0)$ and the average of adjacent edge midpoints is $R = (4, 4, 0)$. Compute the new vertex position $v'$.",
+    "hint": "Use $v' = \\frac{F + 2R + (n-3)v}{n}$ with $n = 3$.",
+    "answer_key": "(10/3, 10/3, 0) or approximately (3.33, 3.33, 0)",
+    "explanation": "$v' = \\frac{F + 2R + (3-3)v}{3} = \\frac{(2,2,0) + 2(4,4,0) + 0 \\cdot (6,6,0)}{3} = \\frac{(2,2,0) + (8,8,0)}{3} = \\frac{(10,10,0)}{3} = (10/3, 10/3, 0)$. Note: for $n = 3$, the original vertex position has zero weight — it is entirely determined by its neighbors."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Explain Stam's method for exact evaluation of subdivision surfaces at extraordinary vertices. What mathematical tool does it use to avoid infinite subdivision?",
+    "hint": "The subdivision operation near an extraordinary vertex can be represented as a matrix multiplication. What decomposition reveals long-term behavior?",
+    "answer_key": "Stam's method performs eigendecomposition of the local subdivision matrix. The eigenvalues control convergence rates, allowing direct evaluation of the limit surface at any parameter value without actually performing infinite subdivision.",
+    "explanation": "Near an extraordinary vertex of valence $n$, one subdivision step is a linear operation represented by the $(2n+8) \\times (2n+8)$ subdivision matrix $\\mathbf{M}_n$. Stam decomposes $\\mathbf{M}_n = \\mathbf{V} \\mathbf{\\Lambda} \\mathbf{V}^{-1}$. After $k$ subdivisions, $\\mathbf{M}_n^k = \\mathbf{V} \\mathbf{\\Lambda}^k \\mathbf{V}^{-1}$, and the eigenvalues $\\lambda_i^k$ converge predictably. The parameter $(u,v)$ is mapped into a sub-patch via repeated parameter halving until it falls in a regular region, then evaluated using B-spline basis functions weighted by the eigenvectors."
+  },
+  {
+    "id": 14,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "At a crease vertex incident to exactly 2 crease edges, the Catmull-Clark vertex update rule changes. What rule is used, and what curve does the boundary converge to?",
+    "hint": "The vertex is treated like a boundary vertex. The rule involves the two crease neighbors with specific weights.",
+    "answer_key": "The boundary/crease vertex rule is $v' = \\frac{1}{8}v_{left} + \\frac{6}{8}v + \\frac{1}{8}v_{right}$, where $v_{left}$ and $v_{right}$ are the crease neighbors. This converges to a cubic B-spline curve along the crease.",
+    "explanation": "When a vertex has exactly 2 incident crease edges, it is treated as a boundary vertex with the cubic B-spline knot-insertion rule: $v' = \\frac{1}{8}v_{left} + \\frac{3}{4}v + \\frac{1}{8}v_{right}$. The weights $(1/8, 6/8, 1/8)$ are the uniform cubic B-spline refinement weights, ensuring the crease curve converges to a $C^2$ cubic B-spline. This is the same rule used for actual mesh boundaries."
+  },
+  {
+    "id": 15,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is the purpose of OpenSubdiv's 'feature-adaptive refinement' strategy? How does it differ from uniform subdivision?",
+    "hint": "Not all regions of a mesh need the same level of subdivision. Where is extra refinement needed?",
+    "answer_key": "Feature-adaptive refinement only subdivides near extraordinary vertices and creases (where the surface is irregular), converting regular regions to bi-cubic patches for direct GPU tessellation. Uniform subdivision refines everywhere equally, wasting computation on already-regular regions.",
+    "explanation": "In uniform subdivision, every face is refined the same number of times, even in regular regions that are already perfect bi-cubic patches. Feature-adaptive refinement recognizes that only extraordinary vertices and creases cause irregularity. It subdivides only near these features until all patches are regular, then passes regular patches directly to the GPU's hardware tessellator for efficient evaluation. This dramatically reduces vertex count and computation."
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Perform one Catmull-Clark subdivision step on a single quad face with vertices $v_0 = (0,0)$, $v_1 = (4,0)$, $v_2 = (4,4)$, $v_3 = (0,4)$. Assume all vertices have valence 4 and all adjacent face points (from neighboring faces) average to the same value as this face point for simplicity.",
+    "hint": "Compute the face point, then edge points, then updated vertex positions using the standard formulas.",
+    "steps": [
+      {
+        "prompt": "Compute the face point of this quad.",
+        "answer_key": "$f_p = (2, 2)$",
+        "explanation": "$f_p = \\frac{v_0 + v_1 + v_2 + v_3}{4} = \\frac{(0,0) + (4,0) + (4,4) + (0,4)}{4} = \\frac{(8, 8)}{4} = (2, 2)$."
+      },
+      {
+        "prompt": "Compute the edge point for edge $v_0 v_1$, assuming the adjacent face on the other side has face point $(2, -2)$.",
+        "answer_key": "$e_{01} = (2, 0)$",
+        "explanation": "$e_{01} = \\frac{v_0 + v_1 + f_{this} + f_{other}}{4} = \\frac{(0,0) + (4,0) + (2,2) + (2,-2)}{4} = \\frac{(8, 0)}{4} = (2, 0)$."
+      },
+      {
+        "prompt": "Compute the updated position of $v_0$ with valence $n = 4$. Assume $F = (2, 2)$ (average of 4 adjacent face points) and $R = (1, 1)$ (average of the midpoints of the 4 edges meeting at $v_0$).",
+        "answer_key": "With $F = (2,2)$, $R = (1,1)$, $n = 4$: $v_0' = \\frac{(2,2) + 2(1,1) + 1 \\cdot (0,0)}{4} = \\frac{(4,4)}{4} = (1,1)$.",
+        "explanation": "$v_0' = \\frac{F + 2R + (n-3)v_0}{n} = \\frac{(2,2) + 2(1,1) + (4-3)(0,0)}{4} = \\frac{(2,2) + (2,2) + (0,0)}{4} = \\frac{(4,4)}{4} = (1, 1)$. The vertex moves from $(0,0)$ to $(1,1)$ — pulled inward toward the mesh interior by the smoothing operation."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "A Loop subdivision mesh has an interior vertex $v = (0, 0, 0)$ with valence $n = 6$ and six neighbors equally spaced on a unit circle: $v_k = (\\cos(k\\pi/3), \\sin(k\\pi/3), 0)$ for $k = 0, 1, \\ldots, 5$.",
+    "hint": "For $n = 6$, the Loop vertex weight is $\\beta = 1/16$.",
+    "steps": [
+      {
+        "prompt": "Compute $\\sum_{k=0}^{5} v_k$. What is the sum of six equally spaced points on the unit circle?",
+        "answer_key": "$(0, 0, 0)$ — the sum of equally spaced points on a circle is zero.",
+        "explanation": "By symmetry, $\\sum_{k=0}^{5} (\\cos(k\\pi/3), \\sin(k\\pi/3), 0) = (0, 0, 0)$. This is because the six points are the vertices of a regular hexagon centered at the origin, and their vector sum cancels."
+      },
+      {
+        "prompt": "Using $\\beta = 1/16$ for $n = 6$, compute the updated vertex position $v' = (1 - n\\beta)v + \\beta \\sum v_k$.",
+        "answer_key": "$v' = (0, 0, 0)$ — the vertex does not move.",
+        "explanation": "$v' = (1 - 6 \\cdot \\frac{1}{16})(0,0,0) + \\frac{1}{16}(0,0,0) = (1 - \\frac{3}{8})(0,0,0) + \\frac{1}{16}(0,0,0) = (0,0,0)$. Since both the vertex and the sum of neighbors are at the origin, the vertex stays at the origin. This makes geometric sense — a vertex at the center of a symmetric ring of neighbors is already at its smoothed position."
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Explain why Catmull-Clark subdivision surfaces converge to a $C^2$ bi-cubic B-spline surface in regular regions. What is the connection between the subdivision rules and B-spline knot insertion?",
+    "hint": "The Catmull-Clark weights for regular (valence 4) vertices are derived from a specific spline basis.",
+    "answer_key": "The Catmull-Clark subdivision rules for regular quad patches are exactly the uniform bi-cubic B-spline refinement (knot insertion) rules. Each regular patch has 16 control points forming a $4 \\times 4$ grid, and the subdivision weights reproduce the B-spline basis function subdivision. Since uniform cubic B-splines are $C^2$, the limit surface is $C^2$ in regular regions.",
+    "explanation": "The Catmull-Clark scheme was derived by generalizing the uniform bi-cubic B-spline subdivision to arbitrary topology. In a regular quad region (all vertices valence 4), the 16 vertices surrounding a face form the control net of a tensor-product bi-cubic B-spline patch. The face point ($1/4$ average), edge point ($1/4$ average of endpoints and face points), and vertex point ($F/n + 2R/n + (n-3)v/n$ with $n=4$) rules exactly replicate the B-spline knot insertion algorithm. Since uniform cubic B-splines have $C^2$ continuity, the limit surface inherits this property in regular regions."
+  }
+]

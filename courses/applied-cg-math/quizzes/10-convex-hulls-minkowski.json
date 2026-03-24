@@ -1,0 +1,179 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the convex hull of a set of points?",
+    "hint": "Think of a rubber band stretched around nails — what shape does it form?",
+    "options": ["A) The largest circle that fits inside the point set", "B) The smallest convex set that contains all the points", "C) The minimum spanning tree connecting all points", "D) The Delaunay triangulation of the points"],
+    "answer_key": "B",
+    "explanation": "The convex hull is the smallest convex set containing all the points. In 2D, it is a convex polygon whose vertices are a subset of the input points. Geometrically, it is the shape a rubber band would snap to if stretched around all the points."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the time complexity of the Graham scan algorithm for computing the 2D convex hull?",
+    "hint": "The algorithm sorts by polar angle first, then does a single pass with a stack.",
+    "options": ["A) $O(n)$", "B) $O(n \\log n)$", "C) $O(n^2)$", "D) $O(nh)$ where $h$ is the hull size"],
+    "answer_key": "B",
+    "explanation": "Graham scan sorts the points by polar angle in $O(n \\log n)$, then processes them with a stack in a single $O(n)$ pass (each point is pushed and popped at most once). The total complexity is $O(n \\log n)$, dominated by the sort."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the Minkowski sum $A \\oplus B$ of two sets $A$ and $B$?",
+    "hint": "It involves adding every point in $A$ to every point in $B$.",
+    "options": ["A) $\\{a \\cdot b \\mid a \\in A, b \\in B\\}$", "B) $\\{a + b \\mid a \\in A, b \\in B\\}$", "C) $\\{a - b \\mid a \\in A, b \\in B\\}$", "D) The intersection $A \\cap B$"],
+    "answer_key": "B",
+    "explanation": "The Minkowski sum is defined as $A \\oplus B = \\{a + b \\mid a \\in A, b \\in B\\}$. Geometrically, it is the region swept by $B$ as its origin slides over every point of $A$. For two convex polygons with $m$ and $n$ vertices, the result is a convex polygon with at most $m + n$ vertices."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why does the GJK algorithm use the Minkowski difference $A \\ominus B = A \\oplus (-B)$ for collision detection?",
+    "hint": "What does it mean geometrically if the origin is inside $A \\ominus B$?",
+    "options": ["A) It converts the collision query into a convex hull computation", "B) It reduces the two-body overlap test to checking whether the origin lies inside a single convex shape", "C) It computes the exact contact surface between the two shapes", "D) It eliminates the need for support functions"],
+    "answer_key": "B",
+    "explanation": "Two convex shapes $A$ and $B$ overlap if and only if $\\mathbf{0} \\in A \\ominus B$. This transforms the collision query between two shapes into a single point-containment test. GJK searches for the origin within $A \\ominus B$ using support functions, without ever constructing the full Minkowski difference."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In the GJK algorithm, what is a support function $S_C(\\mathbf{d})$?",
+    "hint": "It returns a specific extreme point of the shape based on a direction.",
+    "options": ["A) The centroid of shape $C$", "B) The point on $C$ closest to the origin", "C) The point on $C$ farthest in direction $\\mathbf{d}$ (maximizing $\\mathbf{d} \\cdot c$)", "D) The normal vector of $C$ in direction $\\mathbf{d}$"],
+    "answer_key": "C",
+    "explanation": "The support function $S_C(\\mathbf{d}) = \\arg\\max_{c \\in C} (\\mathbf{d} \\cdot c)$ returns the point on shape $C$ that is farthest in direction $\\mathbf{d}$. For the Minkowski difference, $S_{A \\ominus B}(\\mathbf{d}) = S_A(\\mathbf{d}) - S_B(-\\mathbf{d})$, allowing GJK to work without constructing the full shape."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In GJK, the algorithm terminates early when a new support point $a$ satisfies $a \\cdot \\mathbf{d} < 0$. What does this condition guarantee?",
+    "hint": "If the farthest point in direction $\\mathbf{d}$ does not pass the origin, what can you conclude about the entire shape?",
+    "options": ["A) The shapes are overlapping", "B) The simplex already contains the origin", "C) The Minkowski difference does not contain the origin, so the shapes do not overlap", "D) The algorithm has found the closest points between the shapes"],
+    "answer_key": "C",
+    "explanation": "Point $a$ is the farthest point on the Minkowski difference in direction $\\mathbf{d}$. If $a \\cdot \\mathbf{d} < 0$, even this extreme point is on the opposite side of the origin. Since no point on $A \\ominus B$ is farther in direction $\\mathbf{d}$ than $a$, the entire shape lies on the negative side of the hyperplane through the origin with normal $\\mathbf{d}$. The origin cannot be inside the shape."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "What does the EPA (Expanding Polytope Algorithm) compute that GJK alone cannot?",
+    "hint": "GJK tells you IF shapes overlap. EPA tells you HOW MUCH and in WHAT DIRECTION.",
+    "options": ["A) Whether the shapes overlap", "B) The convex hull of the overlapping region", "C) The penetration depth and contact normal", "D) The Voronoi diagram of the shapes"],
+    "answer_key": "C",
+    "explanation": "GJK determines overlap (boolean) and closest distance when shapes are separated. When shapes overlap, EPA expands the GJK terminal simplex into a polytope converging on the Minkowski difference boundary closest to the origin. The distance from the origin to this closest boundary feature is the penetration depth, and its outward normal is the contact normal."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Gift wrapping (Jarvis march) has complexity $O(nh)$. In what situation does it outperform Graham scan's $O(n \\log n)$?",
+    "hint": "The $h$ in $O(nh)$ is the number of hull vertices. When is $nh < n \\log n$?",
+    "options": ["A) When all points lie on the hull", "B) When $h = O(\\log n)$ or smaller — i.e., very few points are on the hull", "C) When the points are uniformly distributed", "D) It never outperforms Graham scan"],
+    "answer_key": "B",
+    "explanation": "Gift wrapping is $O(nh)$ where $h$ is the number of hull vertices. When $h = O(\\log n)$, the complexity becomes $O(n \\log n)$, matching Graham scan. When $h = O(1)$ (constant hull size), it runs in just $O(n)$. For random points in a circle, $h = O(\\log n)$ in expectation, making Jarvis march competitive."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "For a 3D convex hull of $n$ points, what is the maximum number of triangular faces by Euler's formula?",
+    "hint": "Use Euler's formula $V - E + F = 2$ combined with $3F = 2E$ (each triangle has 3 edges, each edge shared by 2 faces).",
+    "answer_key": "2n - 4",
+    "explanation": "For a convex polyhedron with all triangular faces: $3F = 2E$ (each face has 3 edges, each edge is shared). Substituting into $V - E + F = 2$: $V - \\frac{3F}{2} + F = 2$, so $F = 2V - 4 = 2n - 4$. The number of edges is $E = 3n - 6$."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the support function of a sphere with center $c$ and radius $r$ in direction $\\mathbf{d}$?",
+    "hint": "The farthest point on a sphere in any direction lies along that direction from the center.",
+    "answer_key": "$c + r \\frac{\\mathbf{d}}{\\|\\mathbf{d}\\|}$",
+    "explanation": "The farthest point on a sphere in direction $\\mathbf{d}$ is the center plus the radius in the normalized direction: $S(\\mathbf{d}) = c + r \\hat{\\mathbf{d}} = c + r \\frac{\\mathbf{d}}{\\|\\mathbf{d}\\|}$. This is simply the point on the sphere's surface in the direction of $\\mathbf{d}$ from the center."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Compute the support point of triangle $A$ with vertices $\\{(0,0), (3,0), (1,4)\\}$ in direction $\\mathbf{d} = (0, 1)$.",
+    "hint": "Compute the dot product of each vertex with $\\mathbf{d}$ and pick the maximum.",
+    "answer_key": "(1, 4)",
+    "explanation": "Dot products with $\\mathbf{d} = (0, 1)$: $(0,0) \\cdot (0,1) = 0$, $(3,0) \\cdot (0,1) = 0$, $(1,4) \\cdot (0,1) = 4$. The maximum is 4, achieved at vertex $(1, 4)$. So $S_A(0, 1) = (1, 4)$."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Two convex shapes $A$ and $B$ are separated. GJK can also compute the minimum distance between them. Geometrically, what does the closest point on the Minkowski difference $A \\ominus B$ to the origin represent?",
+    "hint": "If the origin is outside $A \\ominus B$, the distance from the origin to the closest point of $A \\ominus B$ equals what distance between the original shapes?",
+    "answer_key": "It represents the minimum distance between shapes $A$ and $B$, and the direction from the origin to this closest point is the separating direction.",
+    "explanation": "When $A$ and $B$ do not overlap, the origin lies outside $A \\ominus B$. The closest point on $A \\ominus B$ to the origin is $a^* - b^*$ where $a^* \\in A$ and $b^* \\in B$ are the closest pair of points between the two shapes. The distance $\\|a^* - b^*\\|$ is the minimum distance between $A$ and $B$, and the normalized direction $\\frac{a^* - b^*}{\\|a^* - b^*\\|}$ is the separating axis."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Explain why GJK works for curved convex shapes (spheres, capsules, ellipsoids) even though the simplex is built from discrete points.",
+    "hint": "GJK only needs one operation from each shape. What is that operation?",
+    "answer_key": "GJK only requires a support function for each shape, which returns the extreme point in any given direction. Any convex shape with a computable support function works — the shape need not be a polyhedron.",
+    "explanation": "GJK is entirely driven by the support function $S(\\mathbf{d})$. It never enumerates vertices or faces; it only asks 'what is the farthest point in direction $\\mathbf{d}$?' Any convex shape with a closed-form support function works: spheres ($c + r\\hat{d}$), capsules (segment support + radius), ellipsoids ($M \\cdot \\frac{M^T d}{\\|M^T d\\|}$), etc. The simplex vertices are exact points on the Minkowski difference surface."
+  },
+  {
+    "id": 14,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "In the EPA algorithm, why must the initial polytope (from GJK) enclose the origin for the algorithm to work correctly?",
+    "hint": "EPA expands the polytope outward. If the origin is outside, the expansion direction would be wrong.",
+    "answer_key": "EPA finds the closest boundary feature to the origin by expanding outward. If the origin were outside, the closest feature would not converge to the true Minkowski difference boundary nearest to the origin, and the penetration depth/normal would be incorrect.",
+    "explanation": "EPA works by iteratively finding the polytope face closest to the origin and expanding the polytope in that direction. This converges on the actual Minkowski difference boundary closest to the origin. If the origin were outside the initial polytope, the algorithm would search in the wrong direction. GJK guarantees the terminal simplex encloses the origin (it only reports overlap when this is confirmed), providing a valid starting point for EPA."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "Compute the Minkowski difference support point for two triangles. Triangle $A$ has vertices $\\{(0,0), (4,0), (2,3)\\}$ and triangle $B$ has vertices $\\{(3,1), (5,1), (4,3)\\}$. Use direction $\\mathbf{d} = (1, 1)$.",
+    "hint": "Remember: $S_{A \\ominus B}(\\mathbf{d}) = S_A(\\mathbf{d}) - S_B(-\\mathbf{d})$.",
+    "steps": [
+      {
+        "prompt": "Compute $S_A(\\mathbf{d})$ where $\\mathbf{d} = (1, 1)$. Evaluate the dot product of each vertex of $A$ with $\\mathbf{d}$ and select the vertex with the maximum.",
+        "answer_key": "(2, 3) with dot product 5",
+        "explanation": "Dot products: $(0,0) \\cdot (1,1) = 0$, $(4,0) \\cdot (1,1) = 4$, $(2,3) \\cdot (1,1) = 5$. Maximum is 5 at vertex $(2, 3)$. So $S_A(1, 1) = (2, 3)$."
+      },
+      {
+        "prompt": "Compute $S_B(-\\mathbf{d})$ where $-\\mathbf{d} = (-1, -1)$. Find the vertex of $B$ farthest in direction $(-1, -1)$.",
+        "answer_key": "(3, 1) with dot product -4",
+        "explanation": "Dot products with $(-1, -1)$: $(3,1) \\cdot (-1,-1) = -4$, $(5,1) \\cdot (-1,-1) = -6$, $(4,3) \\cdot (-1,-1) = -7$. Maximum (least negative) is $-4$ at vertex $(3, 1)$. So $S_B(-1, -1) = (3, 1)$."
+      },
+      {
+        "prompt": "Compute the Minkowski difference support point $S_{A \\ominus B}(\\mathbf{d}) = S_A(\\mathbf{d}) - S_B(-\\mathbf{d})$.",
+        "answer_key": "(-1, 2)",
+        "explanation": "$S_{A \\ominus B}(1, 1) = S_A(1, 1) - S_B(-1, -1) = (2, 3) - (3, 1) = (-1, 2)$. This point lies on the boundary of the Minkowski difference $A \\ominus B$ and is used by GJK to build the simplex."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Apply one iteration of the GJK algorithm to determine if triangle $A = \\{(1,1), (3,1), (2,3)\\}$ and triangle $B = \\{(4,2), (6,2), (5,4)\\}$ overlap.",
+    "hint": "Start with an initial direction, compute a support point, then update the direction toward the origin.",
+    "steps": [
+      {
+        "prompt": "Using initial direction $\\mathbf{d} = (1, 0)$, compute the first Minkowski difference support point and initialize the simplex.",
+        "answer_key": "S_A(1,0) = (3,1), S_B(-1,0) = (4,2). Support = (3,1) - (4,2) = (-1, -1). Simplex = {(-1,-1)}.",
+        "explanation": "$S_A(1,0)$: dots are $1, 3, 2$; max at $(3,1)$. $S_B(-1,0)$: dots are $-4, -6, -5$; max at $(4,2)$. Minkowski support $= (3,1) - (4,2) = (-1, -1)$. Initialize simplex with this point."
+      },
+      {
+        "prompt": "Set the new search direction toward the origin from the support point: $\\mathbf{d} = -\\text{support} = (1, 1)$. Compute the next support point and check the early termination condition $a \\cdot \\mathbf{d} < 0$.",
+        "answer_key": "S_A(1,1) = (2,3), S_B(-1,-1) = (4,2). Support = (-2, 1). Check: (-2,1).(1,1) = -1 < 0. Terminate: no overlap.",
+        "explanation": "$S_A(1,1)$: dots $2, 4, 5$; max at $(2,3)$. $S_B(-1,-1)$: dots $-6, -8, -9$; max at $(4,2)$. New support $= (2,3) - (4,2) = (-2, 1)$. Early termination: $(-2, 1) \\cdot (1, 1) = -2 + 1 = -1 < 0$. The farthest point in direction $(1,1)$ did not pass the origin. The shapes do not overlap."
+      }
+    ]
+  }
+]

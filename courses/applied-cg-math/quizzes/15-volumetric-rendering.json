@@ -1,0 +1,203 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What are the three types of interactions light can have with a participating medium?",
+    "hint": "Think about what can happen to a photon as it travels through fog or smoke.",
+    "options": ["A) Reflection, refraction, diffraction", "B) Absorption, scattering (out-scattering), and emission", "C) Transmission, polarization, fluorescence", "D) Diffusion, convection, radiation"],
+    "answer_key": "B",
+    "explanation": "In a participating medium, photons can be (1) absorbed (converted to heat, characterized by $\\sigma_a$), (2) scattered out of their current direction (characterized by $\\sigma_s$), or (3) emitted by the medium itself (e.g., fire, hot gas). The extinction coefficient $\\sigma_t = \\sigma_a + \\sigma_s$ combines absorption and out-scattering."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "According to the Beer-Lambert law, what is the transmittance through a homogeneous medium with $\\sigma_t = 0.5\\,\\text{m}^{-1}$ over a distance of 4 meters?",
+    "hint": "Transmittance is an exponential decay: $T = e^{-\\sigma_t d}$.",
+    "options": ["A) $e^{-0.5} \\approx 0.607$", "B) $e^{-2.0} \\approx 0.135$", "C) $e^{-4.0} \\approx 0.018$", "D) $e^{-8.0} \\approx 0.00034$"],
+    "answer_key": "B",
+    "explanation": "$T = e^{-\\sigma_t d} = e^{-0.5 \\times 4} = e^{-2.0} \\approx 0.135$. About 13.5% of the light survives, meaning the medium has absorbed or scattered about 86.5% of the incident light over this distance. The optical depth is $\\tau = 2.0$."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does the single-scattering albedo $\\alpha = \\sigma_s / \\sigma_t$ represent?",
+    "hint": "It is the probability of a specific outcome when a photon interacts with the medium.",
+    "options": ["A) The fraction of light that passes through the medium without interaction", "B) The probability that an extinction event is a scattering event rather than an absorption event", "C) The average number of scattering events per photon", "D) The angular spread of scattered light"],
+    "answer_key": "B",
+    "explanation": "When a photon interacts with the medium (an extinction event), it is either absorbed (probability $\\sigma_a/\\sigma_t$) or scattered (probability $\\sigma_s/\\sigma_t = \\alpha$). Clouds have $\\alpha \\approx 0.999$ (almost all interactions are scattering, very little absorption), while dark smoke might have $\\alpha \\approx 0.3$ (most interactions are absorptions)."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In the Henyey-Greenstein phase function, what does the asymmetry parameter $g = 0.8$ indicate?",
+    "hint": "The $g$ parameter controls the preferred direction of scattering.",
+    "options": ["A) Light is scattered equally in all directions", "B) Light is preferentially scattered backward toward the source", "C) Light is strongly forward-scattered, continuing mostly in its original direction", "D) Light is absorbed with 80% probability"],
+    "answer_key": "C",
+    "explanation": "The asymmetry parameter $g$ is the mean cosine of the scattering angle: $g = \\langle \\cos\\theta \\rangle$. When $g = 0.8$, the average scattered direction is strongly biased forward (the peak of the phase function is at $\\theta = 0$). This is characteristic of cloud droplets, which scatter light predominantly forward due to Mie scattering."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why is ray marching with a fixed step size considered a biased estimator of the volume rendering integral?",
+    "hint": "Think about what happens if a thin, dense feature falls entirely between two sample points.",
+    "options": ["A) Because the step size introduces a systematic error that does not decrease with more samples along the same ray", "B) Because it uses floating-point arithmetic which has rounding errors", "C) Because it ignores absorption and only accounts for scattering", "D) Because it cannot handle emissive media"],
+    "answer_key": "A",
+    "explanation": "Fixed-step ray marching approximates the continuous integral with a Riemann sum. If a thin, dense feature (like a cloud edge) falls between sample points, it is missed entirely -- and adding more rays does not help, because each ray uses the same step size. The systematic error (bias) decreases only if the step size is reduced, not if more rays are added. Stochastic methods like delta tracking are unbiased."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In delta tracking, what is the role of 'null scattering' (fictitious matter)?",
+    "hint": "It makes the heterogeneous medium behave like a homogeneous one for free-flight sampling.",
+    "options": ["A) It adds physical matter to make the medium denser", "B) It is fictitious matter added to homogenize the medium, enabling simple exponential free-flight sampling; null collisions are then rejected to compensate", "C) It represents scattered light that has been absorbed", "D) It is a numerical error term that must be minimized"],
+    "answer_key": "B",
+    "explanation": "Delta tracking adds fictitious (null) matter so that $\\sigma_t(\\mathbf{x}) + \\sigma_n(\\mathbf{x}) = \\bar{\\sigma}_t$ everywhere, where $\\bar{\\sigma}_t$ is the majorant. This creates a uniform medium where free-flight distances follow a simple exponential distribution. At each sampled collision point, the algorithm tests whether the collision is real ($\\sigma_t/\\bar{\\sigma}_t$) or null ($\\sigma_n/\\bar{\\sigma}_t$), and rejects null collisions. The result is mathematically equivalent to sampling from the true heterogeneous distribution."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What advantage does ratio tracking have over standard delta tracking for estimating transmittance along shadow rays?",
+    "hint": "Think about whether the method needs to branch (accept/reject) or can accumulate a continuous estimate.",
+    "options": ["A) Ratio tracking is faster because it uses fewer random numbers", "B) Ratio tracking accumulates a continuous weight product without accept/reject branching, producing a smooth transmittance estimate in a fixed number of steps", "C) Ratio tracking does not require a majorant", "D) Ratio tracking handles emissive media while delta tracking does not"],
+    "answer_key": "B",
+    "explanation": "Standard delta tracking uses accept/reject: it either hits a real collision (transmittance = 0 for shadow rays) or escapes (transmittance = 1), producing a binary, high-variance estimate. Ratio tracking accumulates $T \\approx \\prod_i (1 - \\sigma_t(\\mathbf{r}(t_i))/\\bar{\\sigma}_t)$, producing a continuous value between 0 and 1 without branching. This dramatically reduces variance for transmittance estimation."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Progressive null-tracking (Misso et al. 2023) addresses a key limitation of standard delta tracking. What is it?",
+    "hint": "Standard delta tracking requires knowing an upper bound on the medium density before rendering.",
+    "options": ["A) It eliminates the need for a precomputed majorant by progressively updating the majorant estimate during rendering", "B) It supports anisotropic phase functions that standard delta tracking cannot handle", "C) It reduces the number of null collisions to zero", "D) It converts volumetric rendering into a surface rendering problem"],
+    "answer_key": "A",
+    "explanation": "Standard delta tracking requires a majorant $\\bar{\\sigma}_t \\geq \\max \\sigma_t(\\mathbf{x})$, which must be precomputed. If the majorant is too loose, many null collisions waste computation; if too tight, it may miss dense regions. Progressive null-tracking starts with an initial estimate and refines it as the renderer encounters the actual density distribution, ensuring convergence to the correct result without a conservative preprocessing pass."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the name of the integral $\\tau(a,b) = \\int_a^b \\sigma_t(\\mathbf{r}(t))\\,dt$ that appears in the exponent of the Beer-Lambert transmittance?",
+    "hint": "It measures the 'thickness' of the medium in terms of light absorption, and has two common names.",
+    "answer_key": "optical depth (or optical thickness)",
+    "explanation": "The optical depth (also called optical thickness) $\\tau$ is the integral of the extinction coefficient along the ray. When $\\tau \\gg 1$, the medium is optically thick (opaque -- transmittance $T = e^{-\\tau} \\approx 0$). When $\\tau \\ll 1$, the medium is optically thin (transparent -- $T \\approx 1$). It is dimensionless."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "The Henyey-Greenstein phase function has a single parameter $g$. What does $g = 0$ correspond to?",
+    "hint": "If there is no preferred direction, what kind of scattering is it?",
+    "answer_key": "Isotropic scattering (equal probability in all directions)",
+    "explanation": "When $g = 0$, the HG phase function reduces to $f_{\\text{HG}} = \\frac{1}{4\\pi}$, which is the isotropic phase function. Light is scattered with equal probability in all directions. As $g$ increases toward 1, scattering becomes increasingly forward-biased; as $g$ decreases toward $-1$, it becomes backward-biased."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In a ray marching shader, why is early termination (breaking the loop when accumulated transmittance drops below a threshold like 0.001) important?",
+    "hint": "Think about the diminishing contribution of samples deep inside an opaque medium.",
+    "answer_key": "Once transmittance is nearly zero, further samples contribute negligibly to the final color (they are multiplied by ~0), so skipping them saves significant computation without visible quality loss",
+    "explanation": "The in-scattering contribution at each step is multiplied by the accumulated transmittance $T$. When $T < 0.001$, any additional scattering contribution is less than 0.1% of the final pixel color -- imperceptible. For dense media like thick clouds, transmittance drops rapidly, and early termination can skip 80-90% of the steps, providing a huge performance gain with negligible visual impact."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In delta tracking, what happens if the majorant $\\bar{\\sigma}_t$ is set much higher than the actual maximum extinction? For example, if $\\bar{\\sigma}_t = 100 \\sigma_t^{\\max}$?",
+    "hint": "Consider the null-collision probability at each sample point.",
+    "answer_key": "Almost all collisions (99%+) will be null collisions, wasting enormous computation stepping through fictitious interactions before finding a real one",
+    "explanation": "The null-collision probability is $P_{\\text{null}} = 1 - \\sigma_t(\\mathbf{x})/\\bar{\\sigma}_t$. With a 100x overshoot, at least 99% of all sampled collisions are null -- the algorithm wastes vast amounts of work stepping through empty space. Free-flight distances are also very short ($\\sim 1/\\bar{\\sigma}_t$), further increasing the number of steps. Tight majorants (e.g., per-cell bounds in a spatial grid) are essential for efficiency."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Residual ratio tracking uses a control density $\\sigma_c$ to reduce variance. The analytic part handles $\\sigma_c$ exactly while ratio tracking handles the residual $\\sigma_t - \\sigma_c$. What is the optimal choice of $\\sigma_c$ for minimum variance?",
+    "hint": "Think about what minimizes the variance of the ratio tracking product.",
+    "answer_key": "The mean (or median) density along the ray, because it minimizes the magnitude of the residual that ratio tracking must estimate",
+    "explanation": "The variance of ratio tracking depends on how much $\\sigma_t(\\mathbf{x})$ deviates from the control density. If $\\sigma_c$ equals the average density, the residual $\\sigma_t - \\sigma_c$ fluctuates symmetrically around zero, minimizing the variance of the product estimator. In practice, the spatially averaged density within each brick/cell of a hierarchical structure serves as a good per-region $\\sigma_c$."
+  },
+  {
+    "id": 14,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "The volume rendering equation has a recursive in-scattering term $L_i(\\mathbf{x}, \\hat{\\omega}) = \\int_{S^2} f_p \\, L(\\mathbf{x}, \\hat{\\omega}') \\, d\\hat{\\omega}'$. Why does this recursion make the equation much harder to solve than the surface rendering equation?",
+    "hint": "In surface rendering, light bounces between discrete surfaces. In volume rendering, scattering can happen at any point in a continuous 3D region.",
+    "answer_key": "Scattering can occur at every point in a continuous volume, creating an infinite-dimensional integral (each scatter point gathers light from all directions, which itself may have been scattered at any other point in the volume), rather than the discrete surface-to-surface transport of the surface rendering equation",
+    "explanation": "The surface rendering equation involves integrals over 2D surfaces -- light bounces between discrete geometric surfaces. The VRE involves integrals over the full 3D volume: at every point, light can scatter from every direction, and the incoming light at that direction may itself have been scattered at any other volumetric point. This creates a deeply nested, continuous integral that is far more expensive to evaluate. Multiple scattering in thick media (clouds, milk, skin) requires many path bounces through the volume."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Calculate the transmittance and in-scattered radiance for a ray passing through a uniform fog slab.",
+    "hint": "Use Beer-Lambert for transmittance and the single-scattering approximation for in-scattering.",
+    "steps": [
+      {
+        "prompt": "Step 1: A fog slab has $\\sigma_t = 0.2\\,\\text{m}^{-1}$, $\\sigma_s = 0.18\\,\\text{m}^{-1}$ (albedo = 0.9). A ray passes through 15 meters of fog. What is the total transmittance?",
+        "answer_key": "T = exp(-0.2 * 15) = exp(-3.0) = 0.0498",
+        "explanation": "$T = e^{-\\sigma_t d} = e^{-0.2 \\times 15} = e^{-3.0} \\approx 0.0498$. Only about 5% of the background light survives, meaning the fog is optically thick ($\\tau = 3.0$). The fog will be dominant in the final pixel color."
+      },
+      {
+        "prompt": "Step 2: Compute the HG phase function value for $g = 0.7$ at $\\cos\\theta = 0.5$ (the angle between the ray and the light direction).",
+        "answer_key": "f_HG = (1 - 0.49) / (4*pi*(1 + 0.49 - 0.7)^(3/2)) = 0.51 / (4*pi*(0.79)^1.5) = 0.51 / (4*pi*0.7022) = 0.51 / 8.809 = 0.0579",
+        "explanation": "$f_{\\text{HG}}(0.5; 0.7) = \\frac{1 - 0.49}{4\\pi(1 + 0.49 - 2 \\times 0.7 \\times 0.5)^{3/2}} = \\frac{0.51}{4\\pi(1 + 0.49 - 0.70)^{3/2}} = \\frac{0.51}{4\\pi(0.79)^{3/2}} = \\frac{0.51}{4\\pi \\times 0.7022} = \\frac{0.51}{8.809} \\approx 0.0579$."
+      },
+      {
+        "prompt": "Step 3: For a directional light with intensity $I_L = 1.0$ and no self-shadowing (assume full visibility everywhere), compute the total in-scattered radiance using the analytic single-scattering integral for a uniform medium: $L_{\\text{in}} = \\frac{\\sigma_s \\cdot f_{\\text{HG}} \\cdot I_L}{\\sigma_t}(1 - T)$.",
+        "answer_key": "L_in = (0.18 * 0.0579 * 1.0 / 0.2) * (1 - 0.0498) = 0.05211 * 0.9502 = 0.04952",
+        "explanation": "The analytic solution for single scattering in a uniform medium with no shadowing is: $L_{\\text{in}} = \\frac{\\sigma_s f_{\\text{HG}} I_L}{\\sigma_t}(1 - e^{-\\sigma_t d})$. Plugging in: $L_{\\text{in}} = \\frac{0.18 \\times 0.0579 \\times 1.0}{0.2} \\times (1 - 0.0498) = 0.05211 \\times 0.9502 = 0.04952$. The final pixel color is the sum of attenuated background ($T \\times L_{\\text{bg}}$) and this in-scattered term."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Trace through one iteration of delta tracking in a heterogeneous medium.",
+    "hint": "Sample a free-flight distance, then do an accept/reject test.",
+    "steps": [
+      {
+        "prompt": "Step 1: A medium has spatially varying extinction $\\sigma_t(\\mathbf{x})$ with a majorant $\\bar{\\sigma}_t = 2.0\\,\\text{m}^{-1}$. A random number $\\xi_1 = 0.3$ is drawn. What is the free-flight distance?",
+        "answer_key": "t = -ln(0.3) / 2.0 = 1.2040 / 2.0 = 0.602 m",
+        "explanation": "The free-flight distance in a homogeneous medium with extinction $\\bar{\\sigma}_t$ is sampled as $t = -\\ln(\\xi)/\\bar{\\sigma}_t = -\\ln(0.3)/2.0 = 1.2040/2.0 = 0.602$ m. This gives the distance to the next potential interaction point."
+      },
+      {
+        "prompt": "Step 2: At position $\\mathbf{r}(0.602)$, the actual extinction is $\\sigma_t = 0.8\\,\\text{m}^{-1}$. A second random number $\\xi_2 = 0.5$ is drawn. Is this a real collision or a null collision?",
+        "answer_key": "Real collision probability = 0.8/2.0 = 0.4. Since xi_2 = 0.5 > 0.4, this is a NULL collision. Continue tracking.",
+        "explanation": "The probability of a real collision is $\\sigma_t(\\mathbf{x})/\\bar{\\sigma}_t = 0.8/2.0 = 0.4$. We compare $\\xi_2 = 0.5$ against this threshold. Since $0.5 > 0.4$, the collision is null (fictitious) -- the photon continues without interaction. If $\\xi_2$ had been less than 0.4, a real scattering or absorption event would occur."
+      },
+      {
+        "prompt": "Step 3: After the null collision, another free-flight distance is sampled with $\\xi_3 = 0.7$, arriving at a new position where $\\sigma_t = 1.5\\,\\text{m}^{-1}$, and $\\xi_4 = 0.6$. Is this a real collision?",
+        "answer_key": "New free-flight: t = -ln(0.7)/2.0 = 0.357/2.0 = 0.178 m. Real collision probability = 1.5/2.0 = 0.75. Since xi_4 = 0.6 < 0.75, this is a REAL collision.",
+        "explanation": "New distance: $-\\ln(0.7)/2.0 = 0.3567/2.0 = 0.178$ m from the previous point. At the new position, $P_{\\text{real}} = 1.5/2.0 = 0.75$. Since $\\xi_4 = 0.6 < 0.75$, this is a real collision. The algorithm now handles this as a true scattering or absorption event (based on the albedo) at distance $0.602 + 0.178 = 0.780$ m from the ray origin."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which phase function is used to model scattering by air molecules (particles much smaller than the wavelength of light)?",
+    "hint": "It produces the blue color of the sky.",
+    "options": ["A) Henyey-Greenstein", "B) Rayleigh", "C) Mie", "D) Isotropic"],
+    "answer_key": "B",
+    "explanation": "Rayleigh scattering occurs when particles are much smaller than the wavelength of light (like air molecules at ~0.3 nm diameter vs. ~500 nm light). The phase function is $f_p(\\cos\\theta) = \\frac{3}{16\\pi}(1 + \\cos^2\\theta)$, and the cross-section is proportional to $\\lambda^{-4}$, causing blue light to scatter much more than red -- producing blue skies."
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In the GLSL volumetric fog shader, the exact integration factor for a single step is computed as $(1 - e^{-\\sigma_t \\Delta t}) / \\sigma_t$ rather than simply $\\Delta t$. Why is this more accurate?",
+    "hint": "Think about what happens when $\\sigma_t \\Delta t$ is large (dense medium, big step).",
+    "answer_key": "It accounts for the exponential attenuation within the step itself, rather than assuming constant transmittance. When sigma_t * dt is large, the simple dt approximation significantly overestimates the contribution.",
+    "explanation": "The factor $(1 - e^{-\\sigma_t \\Delta t})/\\sigma_t$ is the exact integral of $e^{-\\sigma_t s}$ from 0 to $\\Delta t$. It represents the total 'absorption opportunity' within the step. Using just $\\Delta t$ assumes no attenuation within the step, which overestimates contributions in dense regions. For small $\\sigma_t \\Delta t$, the two are similar (Taylor expansion gives $\\Delta t - \\sigma_t \\Delta t^2/2 + \\ldots$), but for large steps in dense media, the exact form is essential."
+  }
+]

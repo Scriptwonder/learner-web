@@ -1,0 +1,203 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Why is RGB rendering insufficient for simulating a prism splitting white light into a rainbow?",
+    "hint": "Think about what physical property causes different colors to refract differently.",
+    "options": ["A) RGB monitors cannot display all visible colors", "B) RGB has only three channels and cannot represent the wavelength-dependent index of refraction that causes each color to bend differently", "C) Prisms only work with laser light, not rendered light", "D) The rainbow effect is caused by diffraction, which RGB can simulate"],
+    "answer_key": "B",
+    "explanation": "Dispersion occurs because the index of refraction $n(\\lambda)$ varies with wavelength -- blue light bends more than red. An RGB renderer uses a single average $n$ for all three channels, so it cannot model the continuous spread of angles that produces a rainbow. A spectral renderer evaluates $n(\\lambda)$ at many wavelengths, correctly producing the dispersed spectrum."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is a Spectral Power Distribution (SPD)?",
+    "hint": "It describes how much energy a light source emits at each wavelength.",
+    "options": ["A) A 3D vector representing the RGB color of a light", "B) A function $\\Phi(\\lambda)$ that describes the power emitted per unit wavelength across the spectrum", "C) The spatial distribution of light intensity across a surface", "D) A probability distribution for photon scattering angles"],
+    "answer_key": "B",
+    "explanation": "An SPD $\\Phi(\\lambda)$ gives the radiant power per unit wavelength (W/nm) at each wavelength $\\lambda$ in the visible range (380--780 nm). Daylight has a broad SPD, a laser has a narrow spike, and a sodium lamp has a sharp line at 589 nm. RGB reduces this function to just three numbers."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the approximate wavelength range of human-visible light?",
+    "hint": "Violet is the shortest visible wavelength, deep red is the longest.",
+    "options": ["A) 100 nm to 400 nm", "B) 380 nm to 780 nm", "C) 400 nm to 1200 nm", "D) 200 nm to 600 nm"],
+    "answer_key": "B",
+    "explanation": "The human visual system responds to electromagnetic radiation between approximately 380 nm (violet) and 780 nm (deep red). Wavelengths shorter than 380 nm are ultraviolet; longer than 780 nm are infrared. Spectral renderers discretize this 400 nm range into bins."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Two spectra that appear identical under one illuminant but different under another are called:",
+    "hint": "This phenomenon explains why clothes can look different color in a store vs. in daylight.",
+    "options": ["A) Isomers", "B) Metamers", "C) Harmonics", "D) Chromatic aberrations"],
+    "answer_key": "B",
+    "explanation": "Metamers are spectrally different light signals that produce the same tristimulus (XYZ) response -- and thus the same perceived color -- under specific viewing conditions. Changing the illuminant alters the spectral product, and formerly matching colors may diverge. RGB rendering collapses all metameric spectra to the same triple, losing this information."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In the Cauchy equation $n(\\lambda) = A + B/\\lambda^2$, which wavelength experiences the largest refractive index?",
+    "hint": "Look at the $B/\\lambda^2$ term -- what happens as $\\lambda$ gets smaller?",
+    "options": ["A) Red (650 nm) because it has more energy", "B) Green (550 nm) because it is in the middle of the spectrum", "C) Blue (450 nm) because shorter wavelengths make $B/\\lambda^2$ larger", "D) All wavelengths have the same refractive index"],
+    "answer_key": "C",
+    "explanation": "Since $B > 0$ and the term $B/\\lambda^2$ increases as $\\lambda$ decreases, shorter wavelengths (blue/violet) have a higher refractive index than longer wavelengths (red). This is called normal dispersion and is the reason blue light bends more when passing through glass, producing the chromatic spread in a prism."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In hero wavelength spectral sampling (Wilkie et al. 2014), how are the companion wavelengths chosen relative to the hero wavelength?",
+    "hint": "The goal is to ensure uniform coverage of the visible spectrum in expectation.",
+    "options": ["A) They are chosen randomly and independently", "B) They are placed at equal intervals across the visible range, wrapping around if necessary", "C) They are always the RGB primary wavelengths (450, 550, 650 nm)", "D) They are sampled from a Gaussian distribution centered on the hero wavelength"],
+    "answer_key": "B",
+    "explanation": "The companion wavelengths are placed at equal spacings of $400/N$ nm from the hero wavelength (where $N$ is the number of wavelengths, typically 4), wrapping around the visible range [380, 780]. This stratified placement ensures that every set of $N$ wavelengths uniformly covers the visible spectrum, minimizing variance in the spectral estimate."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What constraint does the Stokes shift impose on the fluorescence reradiation matrix $\\mathbf{F}(\\lambda_{\\text{out}}, \\lambda_{\\text{in}})$?",
+    "hint": "Fluorescent emission is always at a longer wavelength than absorption.",
+    "options": ["A) The matrix must be symmetric", "B) The matrix must be lower-triangular (emission wavelength $\\geq$ absorption wavelength)", "C) The matrix must be diagonal", "D) The matrix must have all positive entries"],
+    "answer_key": "B",
+    "explanation": "The Stokes shift states that fluorescent emission occurs at longer wavelengths (lower energy) than the absorbed photons. In the reradiation matrix indexed by emission wavelength (rows) and absorption wavelength (columns), this means $\\lambda_{\\text{out}} \\geq \\lambda_{\\text{in}}$, making the matrix lower-triangular. Energy cannot be emitted at a shorter wavelength than was absorbed (in normal fluorescence)."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Jakob & Hanika (2019) represent upsampled spectral reflectance as a sigmoid of a quadratic polynomial $c_0\\lambda^2 + c_1\\lambda + c_2$. Why is the sigmoid function a good choice for spectral reflectance?",
+    "hint": "Think about the physical constraints on reflectance values.",
+    "options": ["A) The sigmoid is computationally cheap to evaluate", "B) The sigmoid naturally produces values in $[0, 1]$, matching the physical constraint that reflectance cannot be negative or exceed 1", "C) The sigmoid is the inverse of the CIE color matching function", "D) The sigmoid ensures the reflectance is constant across all wavelengths"],
+    "answer_key": "B",
+    "explanation": "Physical reflectance must satisfy $0 \\leq R(\\lambda) \\leq 1$ at every wavelength. The sigmoid function $\\sigma(x) = 1/(1+e^{-x})$ maps any real number to $(0, 1)$, automatically enforcing this constraint regardless of the polynomial coefficients. The quadratic polynomial inside the sigmoid provides enough flexibility to represent a wide gamut of spectral shapes with just 3 parameters."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What three tristimulus values are produced when a spectral power distribution is integrated against the CIE 1931 color matching functions?",
+    "hint": "They are the standard colorimetric coordinates, named with single capital letters.",
+    "answer_key": "X, Y, Z",
+    "explanation": "The CIE 1931 standard observer defines three color matching functions $\\bar{x}(\\lambda)$, $\\bar{y}(\\lambda)$, $\\bar{z}(\\lambda)$. Integrating a spectral distribution against these functions produces the tristimulus values $(X, Y, Z)$, which form the basis of the CIE XYZ color space. The $Y$ value corresponds to luminance (brightness as perceived by the human eye)."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Name the production renderer used by Weta FX that employs spectral rendering with hero wavelength sampling, used on *Avatar: The Way of Water*.",
+    "hint": "It is named after a New Zealand word.",
+    "answer_key": "Manuka",
+    "explanation": "Manuka is Weta FX's proprietary spectral path tracer. It was the first major production renderer to incorporate hero wavelength spectral sampling (Wilkie et al. 2014), supporting wavelength-dependent phenomena like dispersion, iridescence, and Rayleigh scattering in participating media. It has been in production since the third Hobbit film."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "The Sellmeier equation is $n^2(\\lambda) = 1 + \\sum_{i=1}^{k} \\frac{B_i \\lambda^2}{\\lambda^2 - C_i}$. What happens physically when $\\lambda^2$ approaches one of the $C_i$ values?",
+    "hint": "The denominator approaches zero, causing $n$ to diverge. This corresponds to a physical phenomenon.",
+    "answer_key": "The material has a resonance absorption at that wavelength -- the refractive index diverges because the material strongly absorbs light near its electronic/vibrational resonance frequencies",
+    "explanation": "The $C_i$ values correspond to the squares of resonance wavelengths where the material has strong absorption bands. Near these wavelengths, the refractive index changes rapidly (anomalous dispersion) and absorption increases dramatically. The Sellmeier equation is only accurate away from these resonances; near them, a complex refractive index model is needed."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In thin-film interference, the optical path difference is $\\Delta = 2 n_f d \\cos\\theta_t$. Why does the formula include a factor of 2?",
+    "hint": "Trace the path of light through the thin film and back.",
+    "answer_key": "Because light travels through the film twice -- once going down and once reflecting back up -- doubling the path length",
+    "explanation": "Light enters the thin film at the top surface, travels down through thickness $d$ to the bottom surface, reflects, and travels back up through thickness $d$ again. The total path through the film is $2d$, and accounting for the refraction angle gives $2d \\cos\\theta_t$. Multiplying by $n_f$ converts geometric path to optical path."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "In hero wavelength sampling, all directional decisions (BSDF sampling, Russian roulette) are based solely on the hero wavelength. Why not use all 4 wavelengths for these decisions?",
+    "hint": "Think about what happens to Monte Carlo path probabilities if different wavelengths want different directions.",
+    "answer_key": "Using a single wavelength for all decisions keeps all wavelengths on the same geometric path, which is essential for path reuse. If each wavelength influenced direction sampling, they would follow different paths and could not share the expensive path-tracing computation.",
+    "explanation": "The efficiency of hero wavelength sampling comes from tracing ONE geometric path and evaluating multiple wavelengths along it. If directional sampling depended on all wavelengths, each wavelength would prefer a different direction (e.g., after refraction through glass), and path sharing would break down. Instead, the hero wavelength determines the path geometry, and the other wavelengths are evaluated along this path using MIS weights to remain unbiased."
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Compute the dispersed refraction angles when a ray enters a diamond at $45°$ incidence for three wavelengths.",
+    "hint": "Diamond has very high dispersion. Use Cauchy coefficients A = 2.417 and B = 0.0122 (in $\\mu\\text{m}^2$).",
+    "steps": [
+      {
+        "prompt": "Step 1: Compute the refractive index $n(\\lambda)$ for $\\lambda = 450\\,\\text{nm}$, $550\\,\\text{nm}$, and $650\\,\\text{nm}$ using the Cauchy equation $n = A + B/\\lambda^2$ with $A = 2.417$, $B = 0.0122\\,\\mu\\text{m}^2$.",
+        "answer_key": "n(450) = 2.417 + 0.0122/0.2025 = 2.4773; n(550) = 2.417 + 0.0122/0.3025 = 2.4573; n(650) = 2.417 + 0.0122/0.4225 = 2.4459",
+        "explanation": "Convert nm to $\\mu$m: 450 nm = 0.45 $\\mu$m, etc. Then $n(450) = 2.417 + 0.0122/0.45^2 = 2.417 + 0.0122/0.2025 = 2.417 + 0.0603 = 2.4773$. Similarly $n(550) = 2.417 + 0.0403 = 2.4573$ and $n(650) = 2.417 + 0.0289 = 2.4459$."
+      },
+      {
+        "prompt": "Step 2: Apply Snell's law ($\\sin\\theta_1 = n \\sin\\theta_2$, entering from air with $n_1 = 1.0$) at $\\theta_1 = 45°$ to find $\\theta_2$ for each wavelength.",
+        "answer_key": "theta_2(450) = arcsin(0.7071/2.4773) = 16.60°; theta_2(550) = arcsin(0.7071/2.4573) = 16.74°; theta_2(650) = arcsin(0.7071/2.4459) = 16.82°",
+        "explanation": "$\\sin\\theta_2 = \\sin 45° / n(\\lambda) = 0.7071 / n(\\lambda)$. For 450 nm: $\\sin\\theta_2 = 0.2855$, $\\theta_2 = 16.60°$. For 550 nm: $\\sin\\theta_2 = 0.2878$, $\\theta_2 = 16.74°$. For 650 nm: $\\sin\\theta_2 = 0.2891$, $\\theta_2 = 16.82°$."
+      },
+      {
+        "prompt": "Step 3: What is the angular spread between blue and red inside the diamond? Compare this to typical glass (BK7) where the spread would be about $0.22°$.",
+        "answer_key": "Angular spread = 16.82° - 16.60° = 0.22°; similar to BK7 glass at the entry face, but diamond's higher dispersion amplifies at the exit face",
+        "explanation": "The angular spread at entry is $\\Delta\\theta = 16.82° - 16.60° = 0.22°$, coincidentally similar to BK7. However, diamond's much higher refractive index means the exit face refraction amplifies this spread significantly more (Snell's law magnifies angle differences when going from high-$n$ to low-$n$ media). This is why diamonds produce much more visible fire (spectral dispersion) than ordinary glass."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Perform spectral-to-RGB conversion for a monochromatic green laser at 532 nm.",
+    "hint": "Use CIE color matching function values and the XYZ-to-sRGB matrix.",
+    "steps": [
+      {
+        "prompt": "Step 1: Using approximate CIE 1931 values at 532 nm: $\\bar{x}(532) = 0.290$, $\\bar{y}(532) = 0.954$, $\\bar{z}(532) = 0.020$, what are the XYZ tristimulus values for a monochromatic source at this wavelength (with unit power)?",
+        "answer_key": "X = 0.290, Y = 0.954, Z = 0.020",
+        "explanation": "For a monochromatic source $\\Phi(\\lambda) = \\delta(\\lambda - 532)$, the integral reduces to evaluating the color matching functions at that wavelength: $X = \\bar{x}(532) = 0.290$, $Y = \\bar{y}(532) = 0.954$, $Z = \\bar{z}(532) = 0.020$."
+      },
+      {
+        "prompt": "Step 2: Apply the XYZ-to-linear-sRGB matrix: $R = 3.2406 X - 1.5372 Y - 0.4986 Z$, $G = -0.9689 X + 1.8758 Y + 0.0415 Z$, $B = 0.0557 X - 0.2040 Y + 1.0570 Z$.",
+        "answer_key": "R_linear = 3.2406(0.290) - 1.5372(0.954) - 0.4986(0.020) = 0.9398 - 1.4665 - 0.0100 = -0.5367; G_linear = -0.9689(0.290) + 1.8758(0.954) + 0.0415(0.020) = -0.2810 + 1.7895 + 0.0008 = 1.5093; B_linear = 0.0557(0.290) - 0.2040(0.954) + 1.0570(0.020) = 0.0162 - 0.1946 + 0.0211 = -0.1574",
+        "explanation": "Matrix multiplication gives $R_{\\text{lin}} \\approx -0.537$, $G_{\\text{lin}} \\approx 1.509$, $B_{\\text{lin}} \\approx -0.157$. The negative R and B values indicate this green is outside the sRGB gamut -- a common issue with monochromatic light, which is more saturated than any sRGB color can represent."
+      },
+      {
+        "prompt": "Step 3: The linear RGB values contain negative components. What does this mean physically, and how is it typically handled for display?",
+        "answer_key": "Negative values mean the color is outside the sRGB gamut (too saturated). They are typically clamped to 0 and the result is scaled/tone-mapped, giving approximately (0, 1, 0) -- pure green",
+        "explanation": "The negative R and B values indicate that 532 nm green is more saturated than any color the sRGB display can produce. The standard approach is to clamp negative values to 0, giving $(0, 1.509, 0)$, then apply tone mapping or clamp to $[0,1]$: $(0, 1, 0)$. More sophisticated gamut mapping can desaturate the color to preserve hue. This is a fundamental limitation of any three-primary display system."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Why does Rayleigh scattering make the sky blue and sunsets red?",
+    "hint": "The scattering cross-section depends on $\\lambda^{-4}$.",
+    "answer_key": "Rayleigh scattering is proportional to $\\lambda^{-4}$, so blue light (short wavelength) scatters much more than red. Looking at the sky, you see scattered blue light; at sunset, light travels through more atmosphere, and the blue is scattered away, leaving red.",
+    "explanation": "The Rayleigh scattering coefficient $\\sigma_s \\propto \\lambda^{-4}$ means 450 nm (blue) scatters $(650/450)^4 \\approx 4.4\\times$ more than 650 nm (red). During the day, scattered blue light reaches your eyes from all directions (blue sky). At sunset, the direct sunlight travels through a much longer atmospheric path, so nearly all the blue is scattered out, leaving the warm red/orange tones."
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What operation converts CIE XYZ tristimulus values to linear sRGB values?",
+    "hint": "It involves a fixed set of numerical coefficients arranged in a grid.",
+    "answer_key": "Multiplication by a 3x3 matrix (the XYZ-to-sRGB conversion matrix)",
+    "explanation": "The conversion from CIE XYZ to linear sRGB is a linear transformation represented by a $3 \\times 3$ matrix $\\mathbf{M}_{\\text{XYZ}\\to\\text{sRGB}}$. The matrix coefficients are defined by the sRGB standard (IEC 61966-2-1) based on the sRGB primaries and D65 white point. After this linear transform, gamma correction ($\\gamma \\approx 2.2$) is applied to get the final sRGB values."
+  },
+  {
+    "id": 18,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Controlled Spectral Uplifting (Lian et al. 2024, SIGGRAPH Asia) extends Jakob & Hanika's method to address what specific problem?",
+    "hint": "It involves what happens to colors after they bounce between surfaces.",
+    "options": ["A) It supports HDR spectral reflectances above 1.0", "B) It ensures that upsampled spectra produce correct colors not only under direct illumination but also after interreflection (indirect-light metamerism)", "C) It converts spectral textures back to RGB for faster rendering", "D) It adds support for infrared wavelengths beyond 780 nm"],
+    "answer_key": "B",
+    "explanation": "Standard spectral upsampling (Jakob & Hanika 2019) ensures the upsampled spectrum matches the original RGB under a single illuminant. However, after light bounces between surfaces (interreflection), the effective illuminant changes, and metameric spectra can produce visibly different colors. Controlled Spectral Uplifting constrains the upsampled spectra to behave correctly even after multiple bounces, preventing color shifts in complex global illumination scenes."
+  }
+]

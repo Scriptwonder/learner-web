@@ -1,0 +1,193 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In a face-vertex mesh representation, what information is NOT directly stored?",
+    "hint": "Think about what an OBJ file contains — vertex positions and face index lists. What is missing?",
+    "options": ["A) Vertex positions", "B) Which vertices belong to each face", "C) Edge adjacency (which faces share an edge)", "D) The number of faces"],
+    "answer_key": "C",
+    "explanation": "Face-vertex stores vertex positions and face-to-vertex index lists. Edge information and face adjacency are not explicitly stored. Finding which faces share an edge requires scanning all faces — an $O(F)$ operation. This is the main limitation of the face-vertex representation."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In a half-edge data structure, what does `h.twin` refer to?",
+    "hint": "Each undirected edge is split into two directed half-edges. What is their relationship?",
+    "options": ["A) The next half-edge in the same face", "B) The half-edge pointing in the opposite direction along the same geometric edge", "C) The half-edge on the boundary of the mesh", "D) A copy of the same half-edge stored for redundancy"],
+    "answer_key": "B",
+    "explanation": "Every geometric edge is split into two directed half-edges pointing in opposite directions. `h.twin` is the half-edge that shares the same geometric edge but points the other way. The invariant `h.twin.twin == h` always holds."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is Euler's formula for a closed, connected surface of genus $g$?",
+    "hint": "For a sphere (genus 0), a tetrahedron gives $V - E + F = 4 - 6 + 4 = ?$.",
+    "options": ["A) $V - E + F = 0$", "B) $V - E + F = 2 - 2g$", "C) $V + E - F = 2g$", "D) $V - E + F = g$"],
+    "answer_key": "B",
+    "explanation": "Euler's formula states $V - E + F = 2 - 2g$ where $g$ is the genus (number of handles). For a sphere/genus-0 surface: $\\chi = 2$. For a torus (genus 1): $\\chi = 0$. For a tetrahedron: $4 - 6 + 4 = 2$, confirming genus 0."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "How do you traverse the one-ring of a vertex $v$ using the half-edge data structure?",
+    "hint": "Starting from one outgoing half-edge, you need to move to the next outgoing half-edge. What combination of twin and next achieves this?",
+    "options": ["A) Repeatedly follow `h = h.next`", "B) Repeatedly follow `h = h.twin`", "C) Repeatedly follow `h = h.twin.next`", "D) Repeatedly follow `h = h.next.twin`"],
+    "answer_key": "C",
+    "explanation": "Starting at an outgoing half-edge $h$ from vertex $v$: $h.twin$ takes you to the opposite half-edge (pointing toward $v$), and $h.twin.next$ gives the next outgoing half-edge from $v$ in the adjacent face. Repeating this cycles through all edges emanating from $v$, visiting all one-ring neighbors."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the average vertex valence in a large closed triangle mesh of genus 0?",
+    "hint": "Use the relations $3F = 2E$ and $V - E + F = 2$ to derive $\\bar{k} = 2E/V$.",
+    "options": ["A) 3", "B) 4", "C) Approximately 6", "D) 8"],
+    "answer_key": "C",
+    "explanation": "For a closed triangle mesh: $3F = 2E$ and $V - E + F = 2$. Substituting: $E = 3V - 6$. Average valence $= 2E/V = 2(3V-6)/V = 6 - 12/V \\approx 6$ for large $V$. This fundamental fact means most vertices in a well-formed triangle mesh have exactly 6 neighbors."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the 'link condition' for edge collapse, and what does it prevent?",
+    "hint": "It involves the intersection of the one-rings of the two edge endpoints.",
+    "options": ["A) The edge must be the shortest edge in the mesh — prevents removing long edges", "B) The intersection of the one-rings of the two vertices must equal exactly the opposite vertices of the edge — prevents creating non-manifold topology", "C) Both vertices must have valence greater than 3 — prevents creating degenerate faces", "D) The edge must not be on the boundary — prevents creating holes"],
+    "answer_key": "B",
+    "explanation": "The link condition states that for an interior edge $(v_a, v_b)$, the intersection of the one-rings (neighborhoods) of $v_a$ and $v_b$ (excluding $v_a$ and $v_b$ themselves) must contain exactly the two vertices opposite the edge. If more shared neighbors exist, the collapse would create non-manifold topology (e.g., edges shared by 3+ faces or disconnected vertex fans)."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "When performing an edge flip in a triangle mesh, the two triangles sharing the edge form a quadrilateral. What condition must this quadrilateral satisfy for the flip to be geometrically valid?",
+    "hint": "Consider what happens if the opposite vertices are on the same side of the edge — the new triangles would overlap.",
+    "options": ["A) The quadrilateral must have all equal edge lengths", "B) The quadrilateral must be convex — otherwise the new diagonal would lie outside the quad, creating inverted triangles", "C) Both triangles must have the same area", "D) The quadrilateral must be a rectangle"],
+    "answer_key": "B",
+    "explanation": "An edge flip replaces one diagonal of the quadrilateral with the other. If the quad is non-convex, the new diagonal lies partially outside the quad, creating overlapping or inverted triangles with negative area. Convexity ensures both diagonals lie entirely inside the quad, making either a valid triangulation."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "A mesh has a vertex where the surrounding faces form two separate fans connected only at the vertex (a 'bowtie' configuration). What topological term describes this vertex?",
+    "hint": "A disk neighborhood around this vertex is disconnected. What does the half-edge structure require?",
+    "options": ["A) Extraordinary vertex", "B) Boundary vertex", "C) Non-manifold vertex", "D) Singular vertex with genus 1"],
+    "answer_key": "C",
+    "explanation": "A bowtie vertex has a disconnected link — the faces around it form two or more separate fans connected only at the vertex itself. This violates the 2-manifold condition (every vertex neighborhood must be homeomorphic to a disk or half-disk). It is a non-manifold vertex. Standard half-edge structures cannot represent this; extensions like the radial-edge structure are needed."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "A tetrahedron has $V = 4$ vertices, $E = 6$ edges, and $F = 4$ faces. Verify Euler's formula and state the genus.",
+    "hint": "Compute $V - E + F$ and compare with $2 - 2g$.",
+    "answer_key": "$V - E + F = 4 - 6 + 4 = 2$, so $2 = 2 - 2g$ gives $g = 0$ (genus 0, topologically a sphere).",
+    "explanation": "$\\chi = 4 - 6 + 4 = 2$. Since $\\chi = 2 - 2g$, we get $g = 0$. The tetrahedron is topologically equivalent to a sphere — a genus-0 surface with no handles or holes."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "How many half-edges does a closed triangle mesh with $F$ faces have?",
+    "hint": "Each face has 3 half-edges. Each geometric edge has 2 half-edges. How does that relate to $F$?",
+    "answer_key": "$3F$ (each face contributes 3 half-edges, and this equals $2E$ since each edge has 2 half-edges).",
+    "explanation": "Each triangular face has exactly 3 half-edges on its boundary. For a closed mesh, every half-edge has a twin, so the total is $3F = 2E$. For example, a tetrahedron: $3 \\times 4 = 12$ half-edges $= 2 \\times 6$ edges."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A closed triangle mesh has 200 vertices and is topologically a sphere (genus 0). How many edges and faces does it have?",
+    "hint": "Use $3F = 2E$ and $V - E + F = 2$ to solve for $E$ and $F$.",
+    "answer_key": "E = 594, F = 396",
+    "explanation": "From $V - E + F = 2$: $200 - E + F = 2$. From $3F = 2E$: $F = 2E/3$. Substituting: $200 - E + 2E/3 = 2 \\Rightarrow 200 - E/3 = 2 \\Rightarrow E/3 = 198 \\Rightarrow E = 594$. Then $F = 2(594)/3 = 396$. Check: $200 - 594 + 396 = 2$."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Explain why the face-vertex representation is sufficient for GPU rendering but insufficient for geometry processing operations like mesh simplification.",
+    "hint": "GPUs draw triangles independently. Simplification requires knowing which triangles share edges.",
+    "answer_key": "GPU rendering draws each triangle independently using vertex/index buffers and does not need adjacency. Mesh simplification requires edge collapse, which needs efficient adjacency queries (one-ring, adjacent faces) that are $O(F)$ in face-vertex but $O(1)$ in half-edge.",
+    "explanation": "The GPU rasterizer processes triangles independently — it only needs vertex positions and face indices, which face-vertex provides directly. Geometry processing operations like edge collapse require knowing neighboring faces and vertices (to check the link condition, redirect half-edges, remove triangles). In face-vertex, finding neighbors requires scanning all faces ($O(F)$). The half-edge structure provides these queries in $O(1)$ per adjacency lookup."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "An edge split on an interior edge of a triangle mesh replaces 2 triangles with 4 triangles. How many new vertices, edges, half-edges, and faces are created?",
+    "hint": "Count carefully: one new vertex at the midpoint, the original edge splits into two, and each original triangle splits into two.",
+    "answer_key": "1 new vertex, 3 new edges (the split creates 2 from the original edge plus 2 new connecting edges, net +3), 2 new faces (from 2 to 4, net +2), and 6 new half-edges.",
+    "explanation": "Starting with 2 triangles and 1 shared edge: Insert vertex $v_m$. The original edge becomes 2 edges. Two new edges connect $v_m$ to the opposite vertices. Total new: 1 vertex, net +3 edges (original 1 edge becomes 2, plus 2 new = 4, minus 1 original = +3), net +2 faces (4 - 2). New half-edges: 6 (each of the 3 new edges has 2 half-edges). Check Euler: $\\Delta V - \\Delta E + \\Delta F = 1 - 3 + 2 = 0$. Correct (no change to genus)."
+  },
+  {
+    "id": 14,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "The Quadric Error Metric (QEM) assigns a $4 \\times 4$ matrix $Q$ to each vertex for mesh simplification. What does this matrix represent geometrically, and how is it used to decide where to place the merged vertex after an edge collapse?",
+    "hint": "Each triangle defines a plane. The error metric measures squared distances to those planes.",
+    "answer_key": "Q encodes the sum of squared distances to the planes of adjacent triangles. After collapsing edge $(v_a, v_b)$, the optimal position $\\bar{v}$ minimizes $\\bar{v}^T (Q_a + Q_b) \\bar{v}$, found by solving a $4 \\times 4$ linear system.",
+    "explanation": "Each face defines a plane $\\mathbf{n} \\cdot \\mathbf{v} + d = 0$. The quadric $Q_v = \\sum_{\\text{adj faces}} \\mathbf{p}\\mathbf{p}^T$ (where $\\mathbf{p} = (a, b, c, d)^T$ is the plane equation) encodes the summed squared distance from $v$ to all adjacent planes. When collapsing edge $(v_a, v_b)$, the combined quadric is $Q = Q_a + Q_b$, and the optimal position minimizes $\\mathbf{v}^T Q \\mathbf{v}$. This is solved via a $4 \\times 4$ linear system, or the midpoint is used as a fallback if the system is singular."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "Trace the one-ring traversal algorithm on vertex $v_0$ of a tetrahedron with faces $f_0 = (v_0, v_1, v_2)$, $f_1 = (v_0, v_3, v_1)$, $f_2 = (v_1, v_3, v_2)$, $f_3 = (v_0, v_2, v_3)$.",
+    "hint": "Start at $v_0.halfedge = h_{01}$. Follow the `h.twin.next` pattern.",
+    "steps": [
+      {
+        "prompt": "Starting at $h_{01}$ (half-edge from $v_0$ to $v_1$ on face $f_0$), identify the first neighbor by following $h_{01}.twin$.",
+        "answer_key": "$h_{01}.twin = h_{10}$ (on face $f_1$), and $h_{10}.vertex = v_1$. First neighbor is $v_1$.",
+        "explanation": "Half-edge $h_{01}$ goes from $v_0$ to $v_1$ on face $f_0$. Its twin $h_{10}$ goes from $v_1$ to $v_0$ on face $f_1$. The neighbor reached via $h_{01}$ is $v_1$ (the destination of $h_{01}$, or equivalently the origin of its twin)."
+      },
+      {
+        "prompt": "Advance to the next outgoing half-edge: $h_{01}.twin.next = h_{10}.next$. What half-edge is this, and what neighbor does it reach?",
+        "answer_key": "$h_{10}.next = h_{03}$ (on face $f_1$). Following $h_{03}$ reaches neighbor $v_3$.",
+        "explanation": "On face $f_1 = (v_0, v_3, v_1)$, the half-edges in order are $h_{03}, h_{31}, h_{10}$. So $h_{10}.next = h_{03}$. This is an outgoing half-edge from $v_0$ to $v_3$. The next neighbor is $v_3$."
+      },
+      {
+        "prompt": "Continue: $h_{03}.twin.next = ?$ What is the third neighbor, and does the traversal return to the start?",
+        "answer_key": "$h_{03}.twin = h_{30}$ (on face $f_3$). $h_{30}.next = h_{02}$. Third neighbor is $v_2$. Then $h_{02}.twin.next = h_{20}.next = h_{01}$, returning to start. One-ring = {$v_1$, $v_3$, $v_2$}.",
+        "explanation": "Twin of $h_{03}$ is $h_{30}$ on face $f_3 = (v_0, v_2, v_3)$. On $f_3$, half-edges are $h_{02}, h_{23}, h_{30}$. So $h_{30}.next = h_{02}$, an outgoing half-edge from $v_0$ to $v_2$. Neighbor is $v_2$. Then $h_{02}.twin = h_{20}$ on face $f_0$, and $h_{20}.next = h_{01}$ — back to start. Complete one-ring: $\\{v_1, v_3, v_2\\}$, valence 3."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A mesh simplification algorithm performs an edge collapse on edge $(v_a, v_b)$ in a closed triangle mesh. Before the collapse, $V = 1000$, $E = 2994$, $F = 1996$.",
+    "hint": "An interior edge collapse removes 1 vertex, 3 edges, and 2 faces.",
+    "steps": [
+      {
+        "prompt": "Verify that the mesh satisfies Euler's formula for genus 0 before the collapse.",
+        "answer_key": "$V - E + F = 1000 - 2994 + 1996 = 2$. Yes, $\\chi = 2$ confirms genus 0.",
+        "explanation": "$1000 - 2994 + 1996 = 2 = 2 - 2(0)$. The Euler characteristic is 2, confirming a genus-0 (sphere-topology) mesh."
+      },
+      {
+        "prompt": "After collapsing the interior edge $(v_a, v_b)$, one vertex is removed (merging $v_b$ into $v_a$), two triangles (the ones on either side of the edge) degenerate and are removed, and three edges are removed (the collapsed edge plus one edge from each removed triangle). What are the new $V$, $E$, $F$?",
+        "answer_key": "V = 999, E = 2991, F = 1994",
+        "explanation": "$V' = 1000 - 1 = 999$, $E' = 2994 - 3 = 2991$, $F' = 1996 - 2 = 1994$."
+      },
+      {
+        "prompt": "Verify Euler's formula still holds and state the change in genus.",
+        "answer_key": "$999 - 2991 + 1994 = 2$. Euler's formula holds, genus is still 0. Edge collapse preserves topology.",
+        "explanation": "$\\chi' = 999 - 2991 + 1994 = 2$. The Euler characteristic is unchanged. This confirms that a properly executed edge collapse (satisfying the link condition) preserves the topological genus of the mesh. The change is purely geometric — the surface shape changes, but its topology does not."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Why was the winged-edge data structure largely replaced by the half-edge structure in modern geometry processing libraries?",
+    "hint": "Think about what happens when you traverse edges — do you need to check which side you are on?",
+    "answer_key": "The winged-edge requires conditional checks during traversal to determine which side of an edge you are on (which face, which direction). The half-edge eliminates this ambiguity by giving each direction its own record, simplifying traversal code.",
+    "explanation": "In the winged-edge structure, each edge stores references to both adjacent faces and four wing edges. During traversal, you must determine which face you are on (left or right) to pick the correct wing edge — requiring conditional branches. The half-edge structure assigns a separate record to each direction, so traversal is always unambiguous: `h.next`, `h.twin`, `h.face` are direct pointers with no conditionals. This simplicity reduces bugs and makes code easier to maintain."
+  }
+]

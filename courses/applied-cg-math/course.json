@@ -1,0 +1,23 @@
+{
+  "id": "applied-cg-math",
+  "title": "Applied Graphics & Simulation Math",
+  "description": "Global illumination, physics simulation, computational geometry, and production rendering techniques.",
+  "modules": [
+    {
+      "title": "Global Illumination",
+      "lessons": ["01-path-tracing-fundamentals", "02-light-transport-notation", "03-photon-mapping", "04-restir-reservoir-sampling"]
+    },
+    {
+      "title": "Physics Simulation",
+      "lessons": ["05-numerical-integration", "06-rigid-body-dynamics", "07-position-based-dynamics", "08-fluid-simulation"]
+    },
+    {
+      "title": "Computational Geometry",
+      "lessons": ["09-voronoi-delaunay", "10-convex-hulls-minkowski", "11-mesh-data-structures", "12-subdivision-surfaces"]
+    },
+    {
+      "title": "Advanced Rendering Techniques",
+      "lessons": ["13-differentiable-rendering", "14-spectral-rendering", "15-volumetric-rendering", "16-procedural-textures-noise"]
+    }
+  ]
+}

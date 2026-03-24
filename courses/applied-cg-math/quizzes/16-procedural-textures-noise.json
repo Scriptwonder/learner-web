@@ -1,0 +1,203 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the primary advantage of procedural textures over bitmap textures?",
+    "hint": "Think about what happens when you zoom in very close to a bitmap texture vs. a procedural one.",
+    "options": ["A) Procedural textures are always faster to evaluate", "B) Procedural textures have infinite resolution, require no texture memory, and can be parameterized", "C) Procedural textures look more realistic in all cases", "D) Procedural textures can only be used in 2D"],
+    "answer_key": "B",
+    "explanation": "Procedural textures are computed algorithmically at each point, so they never pixelate regardless of zoom level (infinite resolution). They require no stored image data (zero texture memory), and their appearance can be controlled via parameters (frequency, amplitude, seed) at runtime. The trade-off is computation cost per evaluation."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In Perlin noise, what is stored at each integer lattice point?",
+    "hint": "It is not a scalar value -- it is a vector that determines how the noise varies near that point.",
+    "options": ["A) A random scalar height value", "B) A random color", "C) A pseudo-random gradient vector", "D) A distance to the nearest feature point"],
+    "answer_key": "C",
+    "explanation": "Perlin noise stores a pseudo-random gradient vector at each integer lattice point. The noise value at any point is computed by taking the dot product of each surrounding lattice point's gradient with the offset vector from that lattice point to the evaluation point, then smoothly interpolating the results."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What improvement did Perlin's 2002 revision make to the interpolation function?",
+    "hint": "The original used a cubic Hermite ($C^1$). The improvement adds smoother derivative continuity.",
+    "options": ["A) Switched from linear to cubic interpolation", "B) Replaced the cubic Hermite ($3t^2 - 2t^3$) with a quintic polynomial ($6t^5 - 15t^4 + 10t^3$) for $C^2$ continuity", "C) Removed interpolation entirely and used nearest-neighbor sampling", "D) Added trilinear interpolation for 3D noise"],
+    "answer_key": "B",
+    "explanation": "The original Hermite interpolant $u(t) = 3t^2 - 2t^3$ is $C^1$ (continuous first derivative) but has discontinuous second derivatives at lattice boundaries. This causes visible artifacts in bump maps and normal calculations. The quintic interpolant $u(t) = 6t^5 - 15t^4 + 10t^3$ is $C^2$ (continuous through the second derivative), eliminating these artifacts."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why does simplex noise require only $n + 1$ gradient evaluations per point in $n$ dimensions, compared to $2^n$ for Perlin noise?",
+    "hint": "Think about the geometric shape that encloses the evaluation point in each case.",
+    "options": ["A) Simplex noise uses a lower-quality approximation that needs fewer samples", "B) Simplex noise uses a simplicial grid (triangles in 2D, tetrahedra in 3D) where each simplex has $n + 1$ vertices, compared to the $2^n$ corners of a hypercube", "C) Simplex noise caches previous evaluations", "D) Simplex noise uses a coarser grid with fewer lattice points"],
+    "answer_key": "B",
+    "explanation": "Perlin noise uses a hypercubic grid: in 3D, each evaluation point is inside a cube with $2^3 = 8$ corners. Simplex noise uses a simplicial grid: in 3D, each point is inside a tetrahedron with $3 + 1 = 4$ vertices. Since the number of gradient evaluations equals the number of enclosing cell vertices, simplex noise scales as $O(n)$ while Perlin noise scales as $O(2^n)$."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In Worley (cellular) noise, what does the value $F_2 - F_1$ represent geometrically?",
+    "hint": "$F_1$ is the distance to the nearest feature point, $F_2$ is the distance to the second nearest.",
+    "options": ["A) The average cell size", "B) The distance between the two nearest feature points", "C) A measure of how close the evaluation point is to a Voronoi cell boundary -- small values indicate boundary proximity", "D) The gradient of the noise field at that point"],
+    "answer_key": "C",
+    "explanation": "At points deep inside a Voronoi cell, $F_1$ is small (close to that cell's feature point) and $F_2$ is large (far from the next cell's point), so $F_2 - F_1$ is large. At cell boundaries, $F_1 \\approx F_2$ (equidistant from two feature points), so $F_2 - F_1 \\approx 0$. This makes $F_2 - F_1$ an excellent edge detector for cell boundaries, used for stained glass, wire mesh, and cracked patterns."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In fractal Brownian motion (fBm), what does the lacunarity parameter control?",
+    "hint": "It multiplies the frequency between successive octaves.",
+    "options": ["A) The amplitude of the first octave", "B) The total number of octaves", "C) The frequency multiplier between consecutive octaves (how quickly detail increases)", "D) The random seed for the noise function"],
+    "answer_key": "C",
+    "explanation": "Lacunarity $L$ is the ratio of frequencies between consecutive octaves: $F_i = F_0 \\cdot L^i$. With the typical value $L = 2.0$, each octave has twice the frequency of the previous one. Higher lacunarity creates larger gaps between octave frequencies, producing a more 'gappy' or rough appearance; lower lacunarity creates more gradual frequency buildup."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is domain warping in the context of procedural noise?",
+    "hint": "Instead of evaluating noise at the original coordinates, you modify the coordinates using another noise function.",
+    "options": ["A) Rotating the noise pattern to align with a surface normal", "B) Feeding the output of one noise function into the input coordinates of another noise function", "C) Clamping the noise output to a specific range", "D) Tiling the noise pattern across UV coordinates"],
+    "answer_key": "B",
+    "explanation": "Domain warping evaluates $\\text{fBm}(\\mathbf{p} + \\text{fBm}(\\mathbf{p}))$ -- the coordinates are distorted by a noise function before being fed into another noise evaluation. This creates organic, flowing distortions that resemble geological strata, flowing paint, or alien organic patterns. Multi-level warping (Inigo Quilez) chains multiple warping stages for even more complex results."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "The classic marble texture is computed as $\\text{marble}(\\mathbf{p}) = \\sin(x + k \\cdot \\text{turb}(\\mathbf{p}))$. What role does the turbulence function play?",
+    "hint": "Without turbulence, this would just be straight parallel stripes.",
+    "options": ["A) It sets the overall brightness of the marble", "B) It adds random colored speckles to the surface", "C) It warps the straight sine-wave stripes into irregular, vein-like patterns by distorting the phase of the sine function", "D) It controls the spacing between the marble veins"],
+    "answer_key": "C",
+    "explanation": "Without turbulence ($k = 0$), the formula produces straight parallel stripes: $\\sin(x)$. The turbulence term $k \\cdot \\text{turb}(\\mathbf{p})$ adds a spatially-varying offset to the sine's input, bending and distorting the stripes. Since turbulence uses $|\\text{noise}|$ (absolute value), it creates sharp creases where the noise crosses zero, producing the characteristic irregular veining of real marble."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the difference between turbulence and standard fBm?",
+    "hint": "One key function is applied to the noise before summing octaves.",
+    "answer_key": "Turbulence uses the absolute value of each noise octave (|noise|) instead of the signed value, creating sharp creases at zero crossings",
+    "explanation": "Standard fBm sums signed noise: $\\sum A_i \\cdot \\text{noise}(F_i \\mathbf{p})$. Turbulence sums absolute noise: $\\sum A_i \\cdot |\\text{noise}(F_i \\mathbf{p})|$. The absolute value creates V-shaped creases wherever the noise crosses zero, producing vein-like and flame-like patterns instead of the smoother rolling hills of standard fBm."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "For the improved Perlin noise (2002), what are the 12 gradient directions used in 3D?",
+    "hint": "They point along the edges of a cube, each with two non-zero components of $\\pm 1$.",
+    "answer_key": "The 12 edge directions of a cube: (+-1, +-1, 0), (+-1, 0, +-1), (0, +-1, +-1)",
+    "explanation": "The improved gradient set uses vectors pointing along the 12 edges of a cube: $(\\pm 1, \\pm 1, 0)$, $(\\pm 1, 0, \\pm 1)$, $(0, \\pm 1, \\pm 1)$. These are evenly distributed on the unit sphere (up to normalization) and avoid the clustering artifacts of randomly chosen gradients. They also simplify computation since dot products with these vectors reduce to additions and subtractions."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In the fBm formula $A_i = A_0 \\cdot G^i$ and $F_i = F_0 \\cdot L^i$, what are the standard names for the parameters $G$ and $L$?",
+    "hint": "One controls amplitude decay, the other controls frequency growth.",
+    "answer_key": "G is gain (also called persistence), L is lacunarity",
+    "explanation": "Gain (persistence) $G$ controls how quickly the amplitude decreases with each octave; typical value is 0.5 (each octave has half the amplitude of the previous). Lacunarity $L$ controls the frequency multiplier between octaves; typical value is 2.0 (each octave has double the frequency). Together they determine the fractal character: the Hurst exponent $H$ relates them as $G = L^{-H}$."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Why must the gradient vectors in Perlin noise be pseudo-random (deterministic given the lattice coordinates) rather than truly random?",
+    "hint": "What would happen if you evaluated the same point twice and got different gradients?",
+    "answer_key": "The noise function must be deterministic -- the same input coordinates must always produce the same output value. True randomness would give different results on each evaluation, breaking spatial coherence.",
+    "explanation": "Procedural noise must be a well-defined function: $n(\\mathbf{p})$ must return the same value every time it is called with the same $\\mathbf{p}$. A hash function maps integer lattice coordinates to gradient indices deterministically, ensuring spatial coherence (nearby points get similar values) and repeatability (the same world can be regenerated from the same seed). True random gradients would produce different noise each evaluation."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "In the GLSL fBm implementation, the hash function uses $\\sin()$ with large multipliers (e.g., $\\text{fract}(\\sin(\\text{dot}(p, \\text{vec2}(127.1, 311.7))) \\times 43758.5453)$). Why is $\\sin()$ used for hashing on the GPU instead of a permutation table?",
+    "hint": "Think about how a permutation table would be accessed on the GPU vs. a pure arithmetic function.",
+    "answer_key": "A permutation table requires a texture lookup (memory access), while sin()-based hashing is pure arithmetic computed entirely in ALU registers, avoiding texture bandwidth bottlenecks and latency on massively parallel GPU cores",
+    "explanation": "GPU shaders run thousands of threads simultaneously. A permutation table stored in a texture or buffer requires memory reads that can become a bottleneck when thousands of threads access it concurrently. The $\\sin()$-based hash is a purely arithmetic operation computed in-register, with no memory access at all. The large multipliers and $\\text{fract}()$ exploit the chaotic behavior of floating-point sine at large arguments to produce pseudo-random values. While not cryptographically random, it is sufficient for procedural noise."
+  },
+  {
+    "id": 14,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "OpenSimplex noise was created as a patent-free alternative to simplex noise. What was the patent concern with the original simplex noise?",
+    "hint": "The patent was held by a company and covered the specific algorithm described by Perlin.",
+    "answer_key": "The original simplex noise algorithm was patented by the company where Perlin worked (US Patent 6867776, assigned to Nokia/WSA), creating licensing concerns for open-source and commercial use",
+    "explanation": "Ken Perlin's simplex noise was patented (US Patent 6,867,776, filed 2001, expired 2022), originally assigned to WSA (later Nokia). This meant that using the specific simplex noise algorithm in commercial or open-source software required a license. OpenSimplex (KdotJPG, 2014) and OpenSimplex2 (2020) were designed to produce similar quality noise using a different algorithm that avoids the patented method, providing a safe alternative. The patent has since expired."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Compute 2D Perlin noise step by step at the point $\\mathbf{p} = (0.6, 0.4)$.",
+    "hint": "Follow the four steps: find the grid cell, compute gradient dot products, apply the interpolant, and interpolate.",
+    "steps": [
+      {
+        "prompt": "Step 1: Determine the grid cell and fractional coordinates. The four lattice corners are $(0,0)$, $(1,0)$, $(0,1)$, $(1,1)$. Suppose the gradients are: $(0,0) \\to (1,0)$, $(1,0) \\to (0,1)$, $(0,1) \\to (-1,0)$, $(1,1) \\to (0,-1)$. Compute the dot product at each corner.",
+        "answer_key": "d00 = (1,0).(0.6,0.4) = 0.6; d10 = (0,1).(-0.4,0.4) = 0.4; d01 = (-1,0).(0.6,-0.6) = -0.6; d11 = (0,-1).(-0.4,-0.6) = 0.6",
+        "explanation": "Offset from $(0,0)$: $(0.6, 0.4)$, dot with $(1,0)$: $0.6$. Offset from $(1,0)$: $(-0.4, 0.4)$, dot with $(0,1)$: $0.4$. Offset from $(0,1)$: $(0.6, -0.6)$, dot with $(-1,0)$: $-0.6$. Offset from $(1,1)$: $(-0.4, -0.6)$, dot with $(0,-1)$: $0.6$."
+      },
+      {
+        "prompt": "Step 2: Compute the quintic interpolant $u(t) = 6t^5 - 15t^4 + 10t^3$ for $s = 0.6$ and $t = 0.4$.",
+        "answer_key": "u(0.6) = 6(0.07776) - 15(0.1296) + 10(0.216) = 0.4666 - 1.944 + 2.16 = 0.6826; u(0.4) = 6(0.01024) - 15(0.0256) + 10(0.064) = 0.0614 - 0.384 + 0.64 = 0.3174",
+        "explanation": "$u(0.6) = 6(0.6^5) - 15(0.6^4) + 10(0.6^3) = 6(0.07776) - 15(0.1296) + 10(0.216) = 0.46656 - 1.944 + 2.16 = 0.68256$. $u(0.4) = 6(0.4^5) - 15(0.4^4) + 10(0.4^3) = 6(0.01024) - 15(0.0256) + 10(0.064) = 0.06144 - 0.384 + 0.64 = 0.31744$."
+      },
+      {
+        "prompt": "Step 3: Perform the bilinear interpolation using these smoothed coordinates to get the final noise value.",
+        "answer_key": "Bottom = lerp(0.6, 0.4, 0.6826) = 0.6 + (0.4 - 0.6)*0.6826 = 0.4635; Top = lerp(-0.6, 0.6, 0.6826) = -0.6 + 1.2*0.6826 = 0.2191; Final = lerp(0.4635, 0.2191, 0.3174) = 0.4635 + (0.2191-0.4635)*0.3174 = 0.3859",
+        "explanation": "Bottom edge: $\\text{lerp}(d_{00}, d_{10}, u(s)) = \\text{lerp}(0.6, 0.4, 0.6826) = 0.6 + (0.4 - 0.6) \\times 0.6826 = 0.6 - 0.1365 = 0.4635$. Top edge: $\\text{lerp}(d_{01}, d_{11}, u(s)) = \\text{lerp}(-0.6, 0.6, 0.6826) = -0.6 + 1.2 \\times 0.6826 = 0.2191$. Final: $\\text{lerp}(0.4635, 0.2191, u(t)) = 0.4635 + (0.2191 - 0.4635) \\times 0.3174 = 0.4635 - 0.0776 = 0.3859$."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Compute a 3-octave fBm value at a point where the base noise values are known.",
+    "hint": "Apply the lacunarity and gain to accumulate octaves.",
+    "steps": [
+      {
+        "prompt": "Step 1: Given lacunarity $L = 2.0$, gain $G = 0.5$, base frequency $F_0 = 1.0$, and base amplitude $A_0 = 1.0$, list the frequency and amplitude for each of the 3 octaves.",
+        "answer_key": "Octave 0: F=1.0, A=1.0; Octave 1: F=2.0, A=0.5; Octave 2: F=4.0, A=0.25",
+        "explanation": "Octave $i$ has frequency $F_i = F_0 \\cdot L^i$ and amplitude $A_i = A_0 \\cdot G^i$. So: octave 0: $(1.0, 1.0)$; octave 1: $(2.0, 0.5)$; octave 2: $(4.0, 0.25)$."
+      },
+      {
+        "prompt": "Step 2: Suppose the noise function returns these values at the scaled coordinates: $\\text{noise}(1.0 \\cdot \\mathbf{p}) = 0.3$, $\\text{noise}(2.0 \\cdot \\mathbf{p}) = -0.7$, $\\text{noise}(4.0 \\cdot \\mathbf{p}) = 0.5$. Compute the fBm value.",
+        "answer_key": "fBm = 1.0*0.3 + 0.5*(-0.7) + 0.25*0.5 = 0.3 - 0.35 + 0.125 = 0.075",
+        "explanation": "$\\text{fBm} = A_0 \\cdot n_0 + A_1 \\cdot n_1 + A_2 \\cdot n_2 = 1.0(0.3) + 0.5(-0.7) + 0.25(0.5) = 0.3 - 0.35 + 0.125 = 0.075$."
+      },
+      {
+        "prompt": "Step 3: If this were turbulence instead (using $|\\text{noise}|$), what would the value be?",
+        "answer_key": "turb = 1.0*|0.3| + 0.5*|-0.7| + 0.25*|0.5| = 0.3 + 0.35 + 0.125 = 0.775",
+        "explanation": "$\\text{turb} = 1.0|0.3| + 0.5|{-0.7}| + 0.25|0.5| = 0.3 + 0.35 + 0.125 = 0.775$. The turbulence value is much larger because the absolute value prevents cancellation between positive and negative octaves. This is why turbulence produces brighter, more energetic patterns than fBm."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which type of procedural noise is based on distances to randomly scattered feature points rather than gradient interpolation?",
+    "hint": "It produces cell-like, Voronoi-style patterns.",
+    "options": ["A) Perlin noise", "B) Simplex noise", "C) Worley (cellular) noise", "D) White noise"],
+    "answer_key": "C",
+    "explanation": "Worley noise (also called cellular noise or Voronoi noise) places random feature points in space and computes distances from the evaluation point to the nearest feature points. This naturally produces cell-like patterns: $F_1$ (nearest distance) gives Voronoi cells, and $F_2 - F_1$ highlights cell boundaries."
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In production cloud rendering (e.g., Horizon: Zero Dawn), both Perlin noise and Worley noise are used together to define cloud density. What role does each play?",
+    "hint": "One provides the base billowy shape; the other carves out the wispy holes.",
+    "answer_key": "Perlin noise provides the base billowy shape of the cloud, while Worley noise (F1) is used to carve holes and create the characteristic wispy, cellular structure of cumulus clouds",
+    "explanation": "The typical formula is $\\text{density} = \\text{remap}(\\text{Perlin}, W - 1, 1, 0, 1)$ where $W$ is Worley $F_1$ noise. Perlin provides smooth, rolling density that forms the overall cloud shape. Worley $F_1$ creates spherical regions of low density (near each feature point), carving holes into the Perlin base. The combination produces realistic billowy cumulus clouds with wispy edges and cellular internal structure."
+  }
+]

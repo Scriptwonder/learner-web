@@ -1,0 +1,203 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does the inertia tensor describe?",
+    "hint": "It is the rotational analog of mass.",
+    "options": ["A) The total mass of the object", "B) How mass is distributed relative to rotation axes", "C) The center of mass position", "D) The object's linear velocity"],
+    "answer_key": "B",
+    "explanation": "The inertia tensor is a $3 \\times 3$ symmetric matrix that describes how mass is distributed relative to the rotation axes. It determines how much torque is needed to produce a given angular acceleration about each axis."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the inertia tensor of a solid sphere of mass $M$ and radius $R$ about its center?",
+    "hint": "All three diagonal entries are equal by symmetry.",
+    "options": ["A) $\\frac{1}{2}MR^2 \\mathbf{I}_3$", "B) $\\frac{2}{5}MR^2 \\mathbf{I}_3$", "C) $\\frac{2}{3}MR^2 \\mathbf{I}_3$", "D) $MR^2 \\mathbf{I}_3$"],
+    "answer_key": "B",
+    "explanation": "A solid sphere has $I_{xx} = I_{yy} = I_{zz} = \\frac{2}{5}MR^2$ by symmetry. The off-diagonal terms are zero when aligned with principal axes."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Why are quaternions preferred over Euler angles for representing orientation in rigid body simulations?",
+    "hint": "Think about what happens when two rotation axes align.",
+    "options": ["A) Quaternions use less memory", "B) Quaternions avoid gimbal lock and interpolate smoothly", "C) Euler angles cannot represent all rotations", "D) Quaternions are faster to compute"],
+    "answer_key": "B",
+    "explanation": "Euler angles suffer from gimbal lock — a loss of one degree of freedom when two rotation axes align. Unit quaternions represent all orientations without singularities and interpolate smoothly via slerp."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In Euler's equation of rotational motion $\\boldsymbol{\\tau} = \\mathbf{I}\\boldsymbol{\\alpha} + \\boldsymbol{\\omega} \\times (\\mathbf{I}\\boldsymbol{\\omega})$, what does the $\\boldsymbol{\\omega} \\times (\\mathbf{I}\\boldsymbol{\\omega})$ term represent?",
+    "hint": "This term exists even when no external torque is applied.",
+    "options": ["A) Friction torque", "B) The gyroscopic (precession) effect from the rotating inertia tensor", "C) Air resistance", "D) Constraint forces"],
+    "answer_key": "B",
+    "explanation": "The $\\boldsymbol{\\omega} \\times (\\mathbf{I}\\boldsymbol{\\omega})$ term is the gyroscopic effect — it arises because the inertia tensor, expressed in world coordinates, changes as the body rotates. This causes precession and nutation in spinning objects."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the purpose of the broad phase in collision detection?",
+    "hint": "It runs before the expensive narrow phase.",
+    "options": ["A) To compute exact contact points", "B) To quickly reject pairs that cannot possibly be colliding", "C) To resolve collisions with impulses", "D) To compute friction forces"],
+    "answer_key": "B",
+    "explanation": "The broad phase (e.g., sweep-and-prune) uses cheap bounding volume tests (AABBs) to quickly eliminate pairs that are far apart, reducing the number of expensive narrow-phase tests (GJK/EPA) needed."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "The GJK algorithm determines overlap by checking if the Minkowski difference of two shapes contains what?",
+    "hint": "If two shapes overlap, the difference of their point sets must include a specific point.",
+    "options": ["A) The center of mass", "B) The origin", "C) Any vertex of either shape", "D) The contact normal"],
+    "answer_key": "B",
+    "explanation": "Two convex shapes $A$ and $B$ overlap if and only if their Minkowski difference $A \\ominus B = \\{a - b \\mid a \\in A, b \\in B\\}$ contains the origin. GJK iteratively builds a simplex that tries to enclose the origin."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In the sequential impulse solver, what is 'warm-starting'?",
+    "hint": "It uses information from the previous frame.",
+    "options": ["A) Heating the simulation to increase particle velocity", "B) Using the previous frame's cached impulses as the initial guess", "C) Running extra iterations at the start of each frame", "D) Pre-computing the inertia tensor once"],
+    "answer_key": "B",
+    "explanation": "Warm-starting initializes each contact's impulse to the value from the previous frame. Since contacts persist and change slowly between frames (temporal coherence), this dramatically accelerates convergence of the iterative solver."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "The Coulomb friction model constrains tangential impulse $j_t$ by which inequality?",
+    "hint": "Friction force is limited by the normal force times a coefficient.",
+    "options": ["A) $|j_t| \\leq \\mu + j_n$", "B) $|j_t| \\leq \\mu \\cdot j_n$", "C) $|j_t| = \\mu \\cdot j_n$", "D) $j_t^2 + j_n^2 \\leq \\mu^2$"],
+    "answer_key": "B",
+    "explanation": "The Coulomb friction model states that the tangential (friction) impulse magnitude cannot exceed the friction coefficient times the normal impulse: $|j_t| \\leq \\mu \\cdot j_n$. When equal, the contact is sliding; when less, it is static."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "For a solid box with mass $M = 12$ kg and dimensions $w = 2$, $h = 3$, $d = 1$ meters, what is $I_{xx} = \\frac{M}{12}(h^2 + d^2)$?",
+    "hint": "Substitute: $I_{xx} = \\frac{12}{12}(9 + 1)$.",
+    "answer_key": "10",
+    "explanation": "$I_{xx} = \\frac{12}{12}(3^2 + 1^2) = 1 \\times (9 + 1) = 10$ kg$\\cdot$m$^2$."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "A 5 kg sphere with radius 0.5 m has $I = \\frac{2}{5}MR^2$. What is the moment of inertia (one diagonal entry)?",
+    "hint": "Substitute $M = 5$ and $R = 0.5$.",
+    "answer_key": "0.5",
+    "explanation": "$I = \\frac{2}{5} \\times 5 \\times 0.5^2 = \\frac{2}{5} \\times 5 \\times 0.25 = 2 \\times 0.25 = 0.5$ kg$\\cdot$m$^2$."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A ball (mass 3 kg) hits a wall with velocity $v_n = -8$ m/s along the contact normal. The wall has infinite mass. With coefficient of restitution $e = 0.5$ and no rotation, what is the impulse magnitude $j = \\frac{-(1+e)v_n}{1/m}$?",
+    "hint": "With infinite mass wall, the denominator is just $1/m$. Compute $j = -(1+0.5)(-8) \\times m$.",
+    "answer_key": "36",
+    "explanation": "$j = \\frac{-(1+0.5)(-8)}{1/3} = \\frac{12}{1/3} = 12 \\times 3 = 36$ N$\\cdot$s."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "After applying impulse $j = 36$ N$\\cdot$s to a 3 kg ball with initial normal velocity $v_n = -8$ m/s, what is the new normal velocity? ($v_{new} = v_n + j/m$)",
+    "hint": "Add the impulse-induced velocity change to the original velocity.",
+    "answer_key": "4",
+    "explanation": "$v_{new} = -8 + 36/3 = -8 + 12 = 4$ m/s. The ball bounces back at 4 m/s, which equals $e \\times 8 = 0.5 \\times 8 = 4$ m/s — consistent with the restitution coefficient."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "The quaternion derivative is $dq/dt = \\frac{1}{2}\\boldsymbol{\\omega} \\otimes q$. If $\\boldsymbol{\\omega} = (0, 0, \\pi)$ rad/s and $q = (1, 0, 0, 0)$ (identity rotation), what is the $w$-component of $dq/dt$?",
+    "hint": "The pure quaternion for $\\boldsymbol{\\omega}$ is $(0, 0, 0, \\pi)$. Compute the Hamilton product and multiply by $1/2$.",
+    "answer_key": "0",
+    "explanation": "$\\boldsymbol{\\omega}$ as a pure quaternion is $(0, 0, 0, \\pi)$. Hamilton product $(0, 0, 0, \\pi) \\otimes (1, 0, 0, 0)$: $w = 0 \\cdot 1 - 0 \\cdot 0 - 0 \\cdot 0 - \\pi \\cdot 0 = 0$. Multiplied by $1/2$: $w$-component of $dq/dt = 0$."
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A sphere (mass $m = 4$ kg, radius $R = 1$ m) with velocity $(2, -6, 0)$ m/s hits a static floor (normal $\\mathbf{n} = (0, 1, 0)$). No rotation. Coefficient of restitution $e = 0.8$. Compute the post-collision velocity.",
+    "hint": "Only the normal component of velocity changes. The tangential component is preserved (no friction).",
+    "steps": [
+      {
+        "prompt": "What is the closing speed along the normal $v_n = \\mathbf{v} \\cdot \\mathbf{n}$?",
+        "answer_key": "-6",
+        "explanation": "$v_n = (2, -6, 0) \\cdot (0, 1, 0) = -6$ m/s. Negative means approaching."
+      },
+      {
+        "prompt": "What is the impulse magnitude $j$? (Floor has infinite mass, no rotation: $j = -(1+e)v_n \\cdot m$)",
+        "answer_key": "43.2",
+        "explanation": "Denominator is $1/m = 0.25$, so $j = \\frac{-(1+0.8)(-6)}{0.25} = \\frac{10.8}{0.25} = 43.2$ N$\\cdot$s."
+      },
+      {
+        "prompt": "What is the post-collision velocity vector? ($\\mathbf{v}' = \\mathbf{v} + \\frac{j}{m}\\mathbf{n}$)",
+        "answer_key": "(2, 4.8, 0)",
+        "explanation": "$\\Delta\\mathbf{v} = \\frac{43.2}{4}(0, 1, 0) = (0, 10.8, 0)$. $\\mathbf{v}' = (2, -6, 0) + (0, 10.8, 0) = (2, 4.8, 0)$. The y-component is $0.8 \\times 6 = 4.8$, matching the restitution. The x-component is unchanged (no friction)."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Compute the inertia tensor diagonal entries for a box with mass $M = 6$ kg, width $w = 4$ m, height $h = 2$ m, depth $d = 3$ m.",
+    "hint": "Use $I_{xx} = \\frac{M}{12}(h^2 + d^2)$, and similarly for $I_{yy}$ and $I_{zz}$.",
+    "steps": [
+      {
+        "prompt": "What is $I_{xx} = \\frac{M}{12}(h^2 + d^2)$?",
+        "answer_key": "6.5",
+        "explanation": "$I_{xx} = \\frac{6}{12}(4 + 9) = 0.5 \\times 13 = 6.5$ kg$\\cdot$m$^2$."
+      },
+      {
+        "prompt": "What is $I_{yy} = \\frac{M}{12}(w^2 + d^2)$?",
+        "answer_key": "12.5",
+        "explanation": "$I_{yy} = \\frac{6}{12}(16 + 9) = 0.5 \\times 25 = 12.5$ kg$\\cdot$m$^2$."
+      },
+      {
+        "prompt": "What is $I_{zz} = \\frac{M}{12}(w^2 + h^2)$?",
+        "answer_key": "10",
+        "explanation": "$I_{zz} = \\frac{6}{12}(16 + 4) = 0.5 \\times 20 = 10$ kg$\\cdot$m$^2$."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In sweep-and-prune, two AABBs must overlap on how many axes to be considered a potential collision pair?",
+    "hint": "In 3D, an AABB is defined by intervals on each coordinate axis.",
+    "answer_key": "3",
+    "explanation": "Two AABBs overlap if and only if their intervals overlap on all three axes (x, y, and z). If they are separated on even one axis, they cannot be colliding."
+  },
+  {
+    "id": 17,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the center of mass of a uniform-density object?",
+    "hint": "For uniform density, mass distribution equals geometric distribution.",
+    "options": ["A) The topmost point of the object", "B) The geometric centroid", "C) The point of maximum curvature", "D) Always at the origin"],
+    "answer_key": "B",
+    "explanation": "For a uniform-density body, the center of mass equals the geometric centroid — the average position of all points in the volume."
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "How many iterations does the sequential impulse solver typically use per frame in game physics engines?",
+    "hint": "Erin Catto's Box2D defaults to a small number. Think single digits.",
+    "answer_key": "4-10",
+    "explanation": "Typical game physics engines use 4-10 iterations of the sequential impulse solver per frame. Box2D defaults to 8 velocity iterations. More iterations improve accuracy but cost more CPU time."
+  }
+]

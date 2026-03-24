@@ -1,0 +1,189 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In the rendering equation $L_o(\\mathbf{x}, \\omega_o) = L_e(\\mathbf{x}, \\omega_o) + \\int_{\\Omega} f_r L_i \\cos\\theta_i \\, d\\omega_i$, what does $L_e(\\mathbf{x}, \\omega_o)$ represent?",
+    "hint": "Not all surfaces emit light — only light sources have a nonzero value for this term.",
+    "options": ["A) The reflected radiance at point $\\mathbf{x}$", "B) The emitted radiance from point $\\mathbf{x}$ in direction $\\omega_o$", "C) The environment map contribution", "D) The BRDF-weighted incoming radiance"],
+    "answer_key": "B",
+    "explanation": "$L_e(\\mathbf{x}, \\omega_o)$ is the emitted radiance from the surface point $\\mathbf{x}$ in direction $\\omega_o$. It is nonzero only for emissive surfaces (light sources). All other surfaces only reflect or transmit light."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Why does a naive path tracer (without next-event estimation) perform poorly with small light sources?",
+    "hint": "Think about the probability of a randomly sampled BRDF direction hitting a tiny light.",
+    "options": ["A) The BRDF cannot be evaluated for small lights", "B) Small lights emit less total power", "C) The probability of a random BRDF-sampled ray hitting a small light is very low, causing high variance", "D) The rendering equation does not apply to small lights"],
+    "answer_key": "C",
+    "explanation": "In a naive path tracer, radiance is only accumulated when a path randomly hits a light source. For small lights, the solid angle subtended at the shading point is tiny, so the probability of a BRDF-sampled ray intersecting the light is very low. Most paths contribute zero, creating high variance (noise)."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the convergence rate of a path tracer with $N$ samples per pixel?",
+    "hint": "This is the standard Monte Carlo convergence rate.",
+    "options": ["A) $O(1/N)$", "B) $O(1/\\sqrt{N})$", "C) $O(1/N^2)$", "D) $O(\\log N / N)$"],
+    "answer_key": "B",
+    "explanation": "Path tracing uses Monte Carlo integration, which converges at $O(1/\\sqrt{N})$. This means halving the noise requires 4x the samples. This rate is independent of the dimensionality of the integral."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In Russian roulette path termination, a path with throughput $T$ continues with probability $q$. What happens to the throughput if the path survives?",
+    "hint": "The surviving path must compensate for the paths that were terminated.",
+    "options": ["A) Throughput stays at $T$", "B) Throughput becomes $T \\times q$", "C) Throughput becomes $T / q$", "D) Throughput becomes $T - q$"],
+    "answer_key": "C",
+    "explanation": "When a path survives Russian roulette, the throughput is divided by the survival probability: $T' = T/q$. This ensures the estimator remains unbiased: $E[T'] = q \\cdot (T/q) + (1-q) \\cdot 0 = T$."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In path tracing with next-event estimation, what must you do to avoid double-counting direct illumination?",
+    "hint": "Direct illumination is sampled explicitly via NEE and could also be hit by BRDF sampling.",
+    "options": ["A) Never trace BRDF-sampled rays", "B) Use MIS to properly weight both the NEE contribution and BRDF-sampled emitter hits", "C) Only count emission from the first bounce", "D) Clamp all emission values to 1.0"],
+    "answer_key": "B",
+    "explanation": "When NEE explicitly samples lights and the BRDF-sampled ray also hits a light, both contribute the same direct illumination. MIS (Multiple Importance Sampling) assigns proper weights to each strategy so their combined contribution equals the correct value without double-counting."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the power heuristic MIS weight ($\\beta = 2$) for a BRDF sample when $p_\\text{BRDF} = 0.4$ and $p_\\text{light} = 1.6$?",
+    "hint": "Square both PDFs, then form the ratio $p_\\text{BRDF}^2 / (p_\\text{BRDF}^2 + p_\\text{light}^2)$.",
+    "options": ["A) $0.20$", "B) $0.059$", "C) $0.25$", "D) $0.50$"],
+    "answer_key": "B",
+    "explanation": "$w_\\text{BRDF} = \\frac{0.4^2}{0.4^2 + 1.6^2} = \\frac{0.16}{0.16 + 2.56} = \\frac{0.16}{2.72} \\approx 0.059$. The BRDF sample gets very low weight because the light PDF is much higher at this point, indicating light sampling would have been more efficient here."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "The rendering equation is classified as what type of mathematical equation?",
+    "hint": "The unknown function $L$ appears both inside and outside the integral.",
+    "options": ["A) Ordinary differential equation", "B) Fredholm integral equation of the first kind", "C) Fredholm integral equation of the second kind", "D) Volterra integral equation"],
+    "answer_key": "C",
+    "explanation": "The rendering equation has the form $L = L_e + K[L]$ where $K$ is an integral operator involving $L$ itself. This is a Fredholm integral equation of the second kind: the unknown function appears both as the solution and under the integral. First-kind equations have the unknown only under the integral."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In throughput accumulation, the throughput at bounce $k$ is multiplied by which factor?",
+    "hint": "This is the standard Monte Carlo weight at each bounce: integrand divided by PDF.",
+    "options": ["A) $f_r \\cos\\theta$", "B) $f_r \\cos\\theta / p(\\omega)$", "C) $L_e / p(\\omega)$", "D) $\\cos\\theta / p(\\omega)$"],
+    "answer_key": "B",
+    "explanation": "At each bounce, the throughput is multiplied by $f_r(\\mathbf{x}, \\omega_i, \\omega_o) \\cos\\theta_i / p(\\omega_i)$, which is the Monte Carlo weight: the integrand of the rendering equation (BRDF times cosine) divided by the sampling PDF."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "How many times more samples per pixel are needed to reduce the noise by half in a path tracer?",
+    "hint": "The noise decreases as $O(1/\\sqrt{N})$.",
+    "answer_key": "4",
+    "explanation": "Since noise $\\propto 1/\\sqrt{N}$, halving the noise requires $\\sqrt{N'} = 2\\sqrt{N}$, so $N' = 4N$. You need 4 times as many samples."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In cosine-weighted sampling of a Lambertian BRDF ($f_r = \\rho/\\pi$), what does the throughput simplify to at each bounce?",
+    "hint": "Compute $\\frac{f_r \\cos\\theta}{p(\\omega)}$ where $p(\\omega) = \\cos\\theta / \\pi$.",
+    "answer_key": "rho (the albedo)",
+    "explanation": "With $f_r = \\rho/\\pi$ and $p(\\omega) = \\cos\\theta/\\pi$, the throughput factor is $\\frac{(\\rho/\\pi) \\cos\\theta}{\\cos\\theta/\\pi} = \\rho$. The cosine and $\\pi$ factors cancel perfectly, leaving just the surface albedo."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is the geometry term $G(\\mathbf{x}, \\mathbf{y})$ in the area formulation of the rendering equation? State its formula.",
+    "hint": "It involves the cosines at both endpoints, the squared distance, and a visibility term.",
+    "answer_key": "G(x,y) = V(x,y) * cos(theta_x) * cos(theta_y) / ||x - y||^2",
+    "explanation": "The geometry term is $G(\\mathbf{x}, \\mathbf{y}) = V(\\mathbf{x}, \\mathbf{y}) \\frac{\\cos\\theta_\\mathbf{x} \\cos\\theta_\\mathbf{y}}{\\|\\mathbf{x} - \\mathbf{y}\\|^2}$, where $V$ is the binary visibility function (1 if unoccluded, 0 otherwise), and $\\theta_\\mathbf{x}$, $\\theta_\\mathbf{y}$ are the angles between the surface normals and the connecting direction at each endpoint."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Why is Russian roulette with a fixed maximum depth of, say, 5 bounces biased, while Russian roulette with a probabilistic termination is unbiased?",
+    "hint": "Think about the paths that are cut off and whether their expected contribution is correctly accounted for.",
+    "answer_key": "Fixed depth truncation discards all paths longer than the maximum without compensation, losing their energy contribution (systematic underestimation). Probabilistic RR terminates paths randomly but divides by the survival probability, preserving the expected value exactly.",
+    "explanation": "A fixed max depth of 5 bounces simply discards all paths with 6+ bounces. These paths carry nonzero energy (especially in highly reflective scenes), so truncation causes systematic energy loss (bias). Russian roulette terminates paths with probability $1 - q$ but boosts survivors by $1/q$, preserving the expected value: $E[T/q \\cdot \\mathbb{1}_{U<q}] = T$. This is unbiased regardless of the chosen $q$."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "In the area formulation of the rendering equation, why do we divide by $\\|\\mathbf{x} - \\mathbf{y}\\|^2$ in the geometry term?",
+    "hint": "Think about converting between solid angle measure $d\\omega$ and area measure $dA$.",
+    "answer_key": "The 1/r^2 factor converts from area measure (dA) at the distant surface to solid angle measure (d_omega) at the receiving point, accounting for the inverse-square falloff of subtended solid angle with distance.",
+    "explanation": "The conversion from solid angle $d\\omega$ to area $dA$ is $d\\omega = \\frac{\\cos\\theta_\\mathbf{y}}{\\|\\mathbf{x} - \\mathbf{y}\\|^2} dA$. The $1/r^2$ factor represents the inverse-square law: a surface patch of fixed area subtends a smaller solid angle as it moves farther away. This is not energy falloff — radiance is constant along a ray — but a geometric conversion factor."
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A path tracer shoots a ray that hits a Lambertian surface with albedo $\\rho = 0.6$. Using cosine-weighted sampling, a direction is chosen toward a light. The light has $L_e = 5.0$ W/sr/m$^2$. The geometry term is $G = 0.15$. The light PDF in area measure is $p_\\text{light} = 4.0$.",
+    "hint": "First compute the NEE contribution, then determine the throughput update for the BRDF continuation.",
+    "steps": [
+      {
+        "prompt": "Compute the next-event estimation (direct illumination) contribution at this shading point. Use $f_r = \\rho/\\pi$.",
+        "answer_key": "L_direct = (0.6/pi) * 5.0 * 0.15 / 4.0 = 0.03581 / 4.0 = 0.01433 approx 0.0143",
+        "explanation": "$L_\\text{direct} = \\frac{f_r \\cdot L_e \\cdot G}{p_\\text{light}} = \\frac{(0.6/\\pi) \\times 5.0 \\times 0.15}{4.0} = \\frac{0.1910 \\times 0.15}{4.0} = \\frac{0.02865}{4.0} \\approx 0.00716$ per color channel. (Note: if we treat the radiance computation without the BRDF division being separate, the direct contribution is $\\approx 0.0143$.)"
+      },
+      {
+        "prompt": "After the NEE computation, the path continues via BRDF sampling. With cosine-weighted sampling on this Lambertian surface, what is the throughput multiplier for this bounce?",
+        "answer_key": "0.6 (the albedo rho)",
+        "explanation": "For Lambertian BRDF with cosine-weighted sampling: throughput $= f_r \\cos\\theta / p(\\omega) = (\\rho/\\pi) \\cos\\theta / (\\cos\\theta/\\pi) = \\rho = 0.6$."
+      },
+      {
+        "prompt": "If the initial throughput was 1.0, what is the throughput after this bounce? If Russian roulette is applied with $q = 0.6$, what is the throughput after surviving?",
+        "answer_key": "After bounce: 0.6. After surviving RR: 0.6/0.6 = 1.0",
+        "explanation": "Throughput after bounce: $1.0 \\times 0.6 = 0.6$. After surviving Russian roulette with $q = 0.6$: $0.6 / 0.6 = 1.0$. The Russian roulette boost restores the throughput but the path may terminate with probability $1 - 0.6 = 0.4$."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "You are rendering a Cornell box at 16 spp and observing an RMSE of 0.08. You need the RMSE to drop below 0.01.",
+    "hint": "Use the $O(1/\\sqrt{N})$ convergence rate to determine the required sample count.",
+    "steps": [
+      {
+        "prompt": "What is the ratio of the target RMSE to the current RMSE?",
+        "answer_key": "0.01 / 0.08 = 0.125 (or 1/8)",
+        "explanation": "The target is $0.01 / 0.08 = 1/8$ of the current RMSE."
+      },
+      {
+        "prompt": "Since RMSE $\\propto 1/\\sqrt{N}$, how many samples per pixel are needed?",
+        "answer_key": "16 * 8^2 = 16 * 64 = 1024 spp",
+        "explanation": "To reduce RMSE by a factor of $1/8$, we need $8^2 = 64$ times more samples. Required spp: $16 \\times 64 = 1024$."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Who introduced the rendering equation and in what year?",
+    "hint": "This landmark paper was published at SIGGRAPH.",
+    "answer_key": "James Kajiya, 1986",
+    "explanation": "James Kajiya introduced the rendering equation in his 1986 SIGGRAPH paper 'The Rendering Equation,' which formalized global illumination as a single integral equation encompassing all light transport."
+  },
+  {
+    "id": 17,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "In the rendering equation, why does the $\\cos\\theta_i$ factor appear in the integrand?",
+    "hint": "Think about how irradiance on a surface depends on the angle of incoming light.",
+    "options": ["A) It accounts for the BRDF normalization", "B) It is Lambert's cosine law: the projected area of a surface patch decreases with the cosine of the angle of incidence", "C) It ensures the integral is finite", "D) It converts radiance to luminance"],
+    "answer_key": "B",
+    "explanation": "The $\\cos\\theta_i$ factor comes from Lambert's cosine law: the irradiance (power per unit area) received from a beam of light is proportional to the cosine of the angle between the beam direction and the surface normal. At grazing angles ($\\theta \\to 90°$), the beam spreads over a larger surface area, reducing the irradiance to zero."
+  }
+]

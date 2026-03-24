@@ -1,0 +1,197 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What problem does ReSTIR DI (Bitterli et al. 2020) solve?",
+    "hint": "Think about scenes with millions of light sources.",
+    "options": ["A) Denoising path traced images", "B) Efficiently sampling direct illumination from millions of light sources in real time", "C) Computing global illumination for offline rendering", "D) Building acceleration structures for ray tracing"],
+    "answer_key": "B",
+    "explanation": "ReSTIR DI addresses the many-lights problem: in scenes with potentially millions of emissive triangles, it selects the most important light source at each pixel using reservoir sampling with spatiotemporal reuse, achieving high-quality direct illumination with only a few shadow rays per pixel."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does RIS (Resampled Importance Sampling) do?",
+    "hint": "It draws $M$ candidates and selects one.",
+    "options": ["A) Samples directly from the target distribution", "B) Draws $M$ candidates from a cheap source distribution, then selects one proportional to a target distribution", "C) Averages all $M$ candidate contributions equally", "D) Rejects all candidates below a threshold"],
+    "answer_key": "B",
+    "explanation": "RIS draws $M$ candidate samples from a simpler source distribution $q(x)$, computes weights $w_i = \\hat{p}(x_i)/q(x_i)$ based on the target distribution, and selects one candidate with probability proportional to its weight. This achieves near-ideal importance sampling while only evaluating the full target function for one sample."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In weighted reservoir sampling, what is stored in the reservoir?",
+    "hint": "The reservoir maintains minimal state for streaming weighted selection.",
+    "options": ["A) All $M$ candidate samples", "B) Only the currently selected sample and the running weight sum", "C) The top-$k$ highest weighted samples", "D) A histogram of sample weights"],
+    "answer_key": "B",
+    "explanation": "A reservoir stores just one selected sample $y$ and the running sum of all weights $w_\\text{sum}$, plus the count $M$ of candidates seen. This $O(1)$ memory allows processing an arbitrarily long stream of candidates while maintaining a properly weighted random selection."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In the reservoir update, a new candidate with weight $w_\\text{new}$ is processed. The current running weight sum is $w_\\text{sum}$. With what probability does the new candidate replace the current selection?",
+    "hint": "The replacement probability ensures each candidate is selected proportional to its weight.",
+    "options": ["A) $w_\\text{new} / w_\\text{sum}$ (before adding $w_\\text{new}$)", "B) $w_\\text{new} / (w_\\text{sum} + w_\\text{new})$ (after adding $w_\\text{new}$)", "C) $1/M$ where $M$ is the number of candidates seen", "D) Always 0.5"],
+    "answer_key": "B",
+    "explanation": "After adding $w_\\text{new}$ to the running sum (so $w_\\text{sum}' = w_\\text{sum} + w_\\text{new}$), the new candidate replaces the current selection with probability $w_\\text{new} / w_\\text{sum}'$. This ensures each of the $M$ candidates seen so far is the selected sample with probability proportional to its weight."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What are the three stages of the ReSTIR DI algorithm?",
+    "hint": "The three stages progressively increase the effective number of candidate samples.",
+    "options": ["A) BVH build, ray tracing, denoising", "B) Initial candidate generation (RIS), temporal reuse, spatial reuse", "C) Photon tracing, kd-tree build, radiance estimation", "D) Light culling, shadow mapping, compositing"],
+    "answer_key": "B",
+    "explanation": "ReSTIR DI runs three stages per frame: (1) Initial candidate generation: each pixel draws $M$ candidates via RIS and selects one. (2) Temporal reuse: combine with the previous frame's reservoir for the same pixel. (3) Spatial reuse: combine with reservoirs from random neighboring pixels. Each stage increases the effective candidate count."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why is the temporal history length capped (e.g., $M_\\text{max} = 20 \\times M_\\text{current}$) in ReSTIR DI?",
+    "hint": "Consider what happens when lighting changes between frames.",
+    "options": ["A) To save GPU memory", "B) To prevent stale samples from dominating when lighting changes, which would cause temporal lag or ghosting artifacts", "C) To reduce the number of shadow rays", "D) To ensure the algorithm is unbiased"],
+    "answer_key": "B",
+    "explanation": "Without capping, the temporal reservoir's $M$ count grows unboundedly over frames. If lighting changes (a light moves or turns off), the stale temporal sample dominates because its $M$ is thousands of times larger than the current frame's $M$. This causes temporal lag (lights appearing to 'stick'). The cap ensures new samples can replace stale ones within a bounded number of frames."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "In the biased variant of ReSTIR DI, what artifact occurs near geometric discontinuities (silhouettes, corners)?",
+    "hint": "The biased variant assumes all neighboring pixels see the same lighting.",
+    "options": ["A) Bright halos around edges", "B) Color bleeding from nearby surfaces", "C) Subtle darkening (energy loss) near edges where the neighbor assumption breaks down", "D) Temporal flickering"],
+    "answer_key": "C",
+    "explanation": "The biased variant uses a simplified normalization ($1/Z$) that assumes neighboring pixels have similar lighting geometry. Near silhouettes and corners, neighbors on different surfaces see different lighting, making the assumption invalid. The result is a subtle energy loss (darkening) at these boundaries, because the effective sample count is overestimated."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "What key insight did Lin et al. (2022) introduce with Generalized Resampled Importance Sampling (GRIS)?",
+    "hint": "Standard RIS assumes independent samples from known PDFs. GRIS removes these assumptions.",
+    "options": ["A) A faster kd-tree for photon storage", "B) A theoretical framework extending RIS to correlated samples, unknown PDFs, and different domains, enabling full path resampling (ReSTIR PT)", "C) A new denoising algorithm for path traced images", "D) A GPU-optimized BVH traversal algorithm"],
+    "answer_key": "B",
+    "explanation": "GRIS (Lin et al. 2022) generalizes the RIS framework to handle correlated samples (from neighboring pixels/frames), samples with unknown generation PDFs (from previous frames where the PDF is lost), and samples from different domains (paths of different lengths). This theoretical foundation enables ReSTIR PT — full path resampling across pixels and frames."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "In ReSTIR, how many shadow rays per pixel are traced in the initial candidate generation stage, regardless of how many candidates $M$ are generated?",
+    "hint": "The candidates are evaluated with an unshadowed target function. Only the winner needs a visibility test.",
+    "answer_key": "1",
+    "explanation": "Only one shadow ray is traced — for the winning candidate selected by the reservoir. The other $M - 1$ candidates are evaluated using the unshadowed target function $\\hat{p}$ (BRDF $\\times$ $L_e$ $\\times$ geometry term without visibility), which is cheap to compute. This is what makes ReSTIR real-time viable."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What does ReSTIR stand for?",
+    "hint": "It describes the two key techniques: reservoir-based and spatiotemporal.",
+    "answer_key": "Reservoir-based SpatioTemporal Importance Resampling",
+    "explanation": "ReSTIR stands for Reservoir-based SpatioTemporal Importance Resampling. It combines weighted reservoir sampling (from streaming algorithms) with spatiotemporal reuse (sharing samples across pixels and frames) to achieve high-quality importance sampling in real time."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Explain the key difference between ReSTIR DI and ReSTIR GI. What does each resample?",
+    "hint": "DI deals with direct lighting from lights; GI deals with indirect lighting from path bounces.",
+    "answer_key": "ReSTIR DI resamples light source samples for direct illumination (one-bounce lighting from emitters). ReSTIR GI resamples path suffixes (secondary ray directions and their indirect radiance) for multi-bounce indirect illumination.",
+    "explanation": "ReSTIR DI (Bitterli et al. 2020) selects which light source to sample at each pixel, handling the many-lights direct illumination problem. ReSTIR GI (Ouyang et al. 2021) instead resamples indirect illumination paths — the 'sample' stored in a reservoir is the direction and radiance of a secondary bounce, shared across pixels and frames to improve the quality of global illumination."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "How can two reservoirs be combined (merged) in constant time? Describe the process briefly.",
+    "hint": "Each reservoir's selected sample is fed as a candidate into a new reservoir.",
+    "answer_key": "Feed each reservoir's selected sample as a candidate into a new reservoir, with weight = target_pdf * W * M. The new reservoir's M is the sum of both input M values. This effectively represents a selection from all original candidates.",
+    "explanation": "To combine reservoirs A and B: create a new reservoir and feed A's selected sample with weight $\\hat{p}(y_A) \\cdot W_A \\cdot M_A$, then B's selected sample with weight $\\hat{p}(y_B) \\cdot W_B \\cdot M_B$. The combined reservoir's $M = M_A + M_B$. The result is equivalent to having run a single reservoir over all $M_A + M_B$ original candidates."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "What is a 'shift mapping' in ReSTIR PT, and why is it necessary?",
+    "hint": "When reusing a path from a neighboring pixel, the path starts from a different camera position.",
+    "answer_key": "A shift mapping transforms a path from one pixel's context to another pixel's context. It is necessary because a path traced from one pixel's camera ray cannot be directly reused at a neighboring pixel with a different primary hit point. The shift must reconnect or replay parts of the path, and its Jacobian must be included in the weight.",
+    "explanation": "In ReSTIR PT, paths sampled at one pixel are reused at neighboring pixels. But a path starting from pixel A's primary hit point is not directly valid for pixel B's different geometry. Shift mappings (reconnection shift for diffuse vertices, random replay for specular vertices) transform the path to make it valid at the new pixel. The determinant of the shift's Jacobian must be included in the resampling weight to account for the density change."
+  },
+  {
+    "id": 14,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "ReSTIR DI achieves 6x-60x faster equal-error rendering compared to state-of-the-art methods (unbiased variant). What two properties of the biased variant make it even faster (35x-65x) but introduce some error?",
+    "hint": "The biased variant simplifies the MIS weight computation.",
+    "answer_key": "The biased variant (1) assumes all neighboring pixels see the same target function (skipping per-neighbor target re-evaluation), and (2) uses a simplified normalization (1/Z instead of proper MIS weights), which introduces energy loss at geometric discontinuities but significantly reduces computation and noise.",
+    "explanation": "The unbiased variant requires evaluating the target function at each neighbor's geometry to compute proper MIS weights, which is expensive. The biased variant assumes neighbors have the same lighting geometry, using $1/Z$ normalization where $Z$ counts valid neighbors. This is simpler and reduces noise further, but causes subtle energy loss (darkening) where the assumption fails (near silhouettes, corners). In practice, the bias is small and the noise reduction is substantial."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "A reservoir processes 5 candidates with weights $w = [2, 5, 1, 8, 4]$. The target function evaluates to $\\hat{p}(y) = 3.0$ for the final selected sample $y$.",
+    "hint": "Track $w_\\text{sum}$ and $M$, then use the finalization formula.",
+    "steps": [
+      {
+        "prompt": "What is the total weight sum $w_\\text{sum}$ and the number of candidates $M$?",
+        "answer_key": "w_sum = 2 + 5 + 1 + 8 + 4 = 20, M = 5",
+        "explanation": "$w_\\text{sum} = 2 + 5 + 1 + 8 + 4 = 20$. $M = 5$ candidates were processed."
+      },
+      {
+        "prompt": "Compute the output weight $W = w_\\text{sum} / (M \\cdot \\hat{p}(y))$ for the selected sample.",
+        "answer_key": "W = 20 / (5 * 3.0) = 20 / 15 = 1.333",
+        "explanation": "$W = w_\\text{sum} / (M \\cdot \\hat{p}(y)) = 20 / (5 \\times 3.0) = 20/15 \\approx 1.333$. This weight $W$ is the inverse of the effective PDF and is used in the final estimator."
+      },
+      {
+        "prompt": "If the selected sample's contribution $f(y) = 6.0$, what is the RIS estimator value $\\frac{f(y)}{\\hat{p}(y)} \\cdot W$? (assuming $f = \\hat{p}$ for the target)",
+        "answer_key": "Estimator = (6.0 / 3.0) * 1.333 = 2.0 * 1.333 = 2.667",
+        "explanation": "The RIS estimator is $\\frac{f(y)}{\\hat{p}(y)} \\cdot W = \\frac{6.0}{3.0} \\times 1.333 = 2.667$. If $f = \\hat{p}$ (target equals integrand), then the estimator simplifies to $W = 1.333$."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "In a ReSTIR DI pipeline, each pixel generates $M = 16$ initial candidates, temporal reuse accumulates over $T$ frames (capped at $M_\\text{max} = 20M$), and spatial reuse combines $k = 4$ neighbors.",
+    "hint": "Compute the effective sample count step by step through each stage.",
+    "steps": [
+      {
+        "prompt": "After temporal reuse, what is the maximum effective candidate count per pixel's reservoir?",
+        "answer_key": "M_temporal = min(M * T, 20 * M) = 20 * 16 = 320 for the temporal history, plus 16 from current frame = 336",
+        "explanation": "The temporal cap limits the history to $20 \\times M = 320$ candidates. Adding the current frame's $M = 16$: $M_\\text{after\\_temporal} = 16 + 320 = 336$ effective candidates per pixel."
+      },
+      {
+        "prompt": "After spatial reuse with $k = 4$ neighbors, what is the final effective candidate count? How many actual new light evaluations did this pixel require in the current frame?",
+        "answer_key": "Effective: (k+1) * 336 = 5 * 336 = 1680 candidates. Actual new evaluations this frame: 16 (the initial M candidates).",
+        "explanation": "Spatial reuse combines self + 4 neighbors, each with ~336 effective candidates: $M_\\text{effective} = 5 \\times 336 = 1{,}680$. But the pixel only generated $M = 16$ new candidate evaluations this frame. The remaining effective samples come from reuse — temporal history and spatial neighbors. This 105x amplification is ReSTIR's key strength."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In the RIS framework, $M$ candidates are drawn from source distribution $q(x)$ and weights are computed as $w_i = \\hat{p}(x_i) / q(x_i)$. What happens to the effective sampling distribution as $M \\to \\infty$?",
+    "hint": "Think about what distribution the selected sample is drawn from in the limit.",
+    "answer_key": "As M approaches infinity, the effective sampling distribution converges to the target distribution p_hat(x) (normalized). With infinite candidates, the selection perfectly importance-samples from the target.",
+    "explanation": "With finitely many candidates, the selected sample approximates the target distribution $\\hat{p}$. As $M \\to \\infty$, the probability of selecting any particular value $x$ converges to $\\hat{p}(x) / \\int \\hat{p}$, which is the normalized target distribution. In the limit, RIS achieves perfect importance sampling. In practice, even $M = 32$ provides substantial variance reduction."
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Name the three papers that form the core ReSTIR family for direct illumination, global illumination, and full path tracing.",
+    "hint": "They were published in 2020, 2021, and 2022 respectively.",
+    "answer_key": "ReSTIR DI (Bitterli et al. 2020), ReSTIR GI (Ouyang et al. 2021), ReSTIR PT / GRIS (Lin et al. 2022)",
+    "explanation": "The three foundational papers are: (1) ReSTIR DI by Bitterli, Wyman, Pharr, Shirley, Lefohn, and Jarosz (SIGGRAPH 2020) for direct illumination, (2) ReSTIR GI by Ouyang, Liu, Harada, and colleagues (2021) for indirect illumination path resampling, and (3) GRIS / ReSTIR PT by Lin, Kettunen, Bitterli, Pantaleoni, Yuksel, and Wyman (SIGGRAPH 2022) providing the general theoretical framework and full path resampling."
+  }
+]

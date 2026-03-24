@@ -1272,59 +1272,74 @@ vec3 evalSH(vec3 n, vec3 sh[9]) {
 
 // === VISUALIZATION REGISTRY ===
 
+// Registry keyed by courseId/lessonId
 const vizRegistry = {
   // Fundamentals
-  '01-vectors': vizVectors,
-  '02-dot-product': vizDotProduct,
-  '03-cross-product': vizCrossProduct,
-  '04-coordinate-systems': vizTransforms,
-  '05-matrix-fundamentals': vizTransforms,
-  '06-2d-transforms': vizTransforms,
-  '07-3d-transforms': vizTransforms,
-  '08-homogeneous-coordinates': vizTransforms,
-  '09-transform-pipeline': vizCamera,
-  '10-camera-view-matrix': vizCamera,
-  '11-projection-matrices': vizCamera,
-  '14-lighting-models': vizLighting,
-  '16-quaternions': vizQuaternions,
-  '17-curves-surfaces': vizBezier,
-  '18-ray-intersections': vizRayIntersection,
+  'math-for-cg/01-vectors': vizVectors,
+  'math-for-cg/02-dot-product': vizDotProduct,
+  'math-for-cg/03-cross-product': vizCrossProduct,
+  'math-for-cg/04-coordinate-systems': vizTransforms,
+  'math-for-cg/05-matrix-fundamentals': vizTransforms,
+  'math-for-cg/06-2d-transforms': vizTransforms,
+  'math-for-cg/07-3d-transforms': vizTransforms,
+  'math-for-cg/08-homogeneous-coordinates': vizTransforms,
+  'math-for-cg/09-transform-pipeline': vizCamera,
+  'math-for-cg/10-camera-view-matrix': vizCamera,
+  'math-for-cg/11-projection-matrices': vizCamera,
+  'math-for-cg/14-lighting-models': vizLighting,
+  'math-for-cg/16-quaternions': vizQuaternions,
+  'math-for-cg/17-curves-surfaces': vizBezier,
+  'math-for-cg/18-ray-intersections': vizRayIntersection,
   // Advanced
-  '01-barycentric-coordinates': vizBarycentric,
-  '02-signed-distance-functions': vizSDF,
-  '03-spatial-acceleration-structures': vizTransforms, // reuse transforms for BVH concept
-  '04-pbr-microfacet-theory': vizPBR,
-  '05-sampling-monte-carlo': vizSampling,
-  '06-spherical-harmonics': vizSphericalHarmonics,
-  '07-fourier-analysis-aliasing': vizSampling, // sampling reused for signal concepts
-  '08-dual-quaternions': vizQuaternions, // quaternion viz applies
-  '09-neural-rendering-foundations': vizNeRF,
-  '10-neural-radiance-fields': vizNeRF,
-  '11-3d-gaussian-splatting': viz3DGS,
+  'advanced-cg-math/01-barycentric-coordinates': vizBarycentric,
+  'advanced-cg-math/02-signed-distance-functions': vizSDF,
+  'advanced-cg-math/03-spatial-acceleration-structures': vizTransforms,
+  'advanced-cg-math/04-pbr-microfacet-theory': vizPBR,
+  'advanced-cg-math/05-sampling-monte-carlo': vizSampling,
+  'advanced-cg-math/06-spherical-harmonics': vizSphericalHarmonics,
+  'advanced-cg-math/07-fourier-analysis-aliasing': vizSampling,
+  'advanced-cg-math/08-dual-quaternions': vizQuaternions,
+  'advanced-cg-math/09-neural-rendering-foundations': vizNeRF,
+  'advanced-cg-math/10-neural-radiance-fields': vizNeRF,
+  'advanced-cg-math/11-3d-gaussian-splatting': viz3DGS,
+  // Applied
+  'applied-cg-math/01-path-tracing-fundamentals': vizRayIntersection, // ray paths
+  'applied-cg-math/03-photon-mapping': vizSampling, // photon scatter
+  'applied-cg-math/04-restir-reservoir-sampling': vizSampling,
+  'applied-cg-math/05-numerical-integration': vizTransforms, // spring-mass
+  'applied-cg-math/06-rigid-body-dynamics': vizTransforms,
+  'applied-cg-math/07-position-based-dynamics': vizTransforms,
+  'applied-cg-math/08-fluid-simulation': vizSampling, // particles
+  'applied-cg-math/09-voronoi-delaunay': vizBarycentric, // triangle/points
+  'applied-cg-math/12-subdivision-surfaces': vizBezier, // surface refinement
+  'applied-cg-math/13-differentiable-rendering': vizPBR,
+  'applied-cg-math/14-spectral-rendering': vizLighting, // wavelength light
+  'applied-cg-math/15-volumetric-rendering': vizNeRF, // volume march
+  'applied-cg-math/16-procedural-textures-noise': vizSDF, // noise = SDF cousin
 };
 
 // Code snippets for fundamentals (already shown inline)
 const codeSnippets = {
-  '01-vectors': `// Vector operations in GLSL
+  'math-for-cg/01-vectors': `// Vector operations in GLSL
 vec3 v = vec3(2.0, 1.5, 1.0);
 float mag = length(v);           // |v| = 2.693
 vec3 n = normalize(v);           // unit vector
 float dist = distance(a, b);    // |a - b|`,
 
-  '02-dot-product': `// Dot product — the most used operation in CG
+  'math-for-cg/02-dot-product': `// Dot product — the most used operation in CG
 float d = dot(a, b);              // a·b
 float angle = acos(dot(n1, n2));  // angle between unit vectors
 float diffuse = max(dot(N, L), 0.0);  // Lambert
 vec3 R = reflect(-L, N);          // R = 2(N·L)N - L
 float spec = pow(max(dot(R, V), 0.0), shininess);`,
 
-  '03-cross-product': `// Cross product — perpendicular vector
+  'math-for-cg/03-cross-product': `// Cross product — perpendicular vector
 vec3 c = cross(a, b);            // a × b
 vec3 normal = normalize(cross(e1, e2));  // triangle normal
 float area = length(cross(e1, e2)) * 0.5;
 // TBN frame: B = normalize(cross(N, T))`,
 
-  '07-3d-transforms': `// 3D rotation matrices
+  'math-for-cg/07-3d-transforms': `// 3D rotation matrices
 mat4 rotateY(float a) {
     float c = cos(a), s = sin(a);
     return mat4(c,0,s,0, 0,1,0,0, -s,0,c,0, 0,0,0,1);
@@ -1332,7 +1347,7 @@ mat4 rotateY(float a) {
 // Compose: M = T * R * S  (scale first, rotate, translate)
 gl_Position = projection * view * model * vec4(pos, 1.0);`,
 
-  '10-camera-view-matrix': `// LookAt camera construction
+  'math-for-cg/10-camera-view-matrix': `// LookAt camera construction
 vec3 f = normalize(target - eye);   // forward
 vec3 r = normalize(cross(f, up));   // right
 vec3 u = cross(r, f);               // true up
@@ -1344,7 +1359,7 @@ mat4 view = mat4(
     -dot(r,eye), -dot(u,eye), dot(f,eye), 1
 );`,
 
-  '14-lighting-models': `// Blinn-Phong lighting
+  'math-for-cg/14-lighting-models': `// Blinn-Phong lighting
 vec3 L = normalize(lightPos - fragPos);
 vec3 V = normalize(camPos - fragPos);
 vec3 H = normalize(L + V);
@@ -1352,7 +1367,7 @@ float diff = max(dot(N, L), 0.0);
 float spec = pow(max(dot(N, H), 0.0), shininess);
 vec3 color = ambient + diff * albedo + spec * specColor;`,
 
-  '16-quaternions': `// Quaternion rotation
+  'math-for-cg/16-quaternions': `// Quaternion rotation
 // q = (w, x, y, z) = cos(θ/2) + sin(θ/2)(xi + yj + zk)
 // Rotate point: p' = q * p * q⁻¹
 
@@ -1364,7 +1379,7 @@ vec3 color = ambient + diff * albedo + spec * specColor;`,
 // |2(xy+wz)    1-2(x²+z²)  2(yz-wx)  |
 // |2(xz-wy)    2(yz+wx)    1-2(x²+y²)|`,
 
-  '17-curves-surfaces': `// Cubic Bézier curve
+  'math-for-cg/17-curves-surfaces': `// Cubic Bézier curve
 // B(t) = (1-t)³P₀ + 3(1-t)²tP₁ + 3(1-t)t²P₂ + t³P₃
 
 // De Casteljau (recursive lerps):
@@ -1377,7 +1392,7 @@ vec3 deCasteljau(vec3 p[4], float t) {
     return mix(d, e, t);  // point on curve
 }`,
 
-  '18-ray-intersections': `// Ray-sphere intersection
+  'math-for-cg/18-ray-intersections': `// Ray-sphere intersection
 // |O + tD - C|² = r²  →  at² + bt + c = 0
 float a = dot(D, D);
 float b = 2.0 * dot(D, O - C);
@@ -1390,7 +1405,7 @@ float t = (-b - sqrt(disc)) / (2.0 * a);`,
 // === PUBLIC API ===
 
 window.Visualizer = {
-  load(lessonId) {
+  load(lessonId, courseId) {
     initRenderer();
     disposeScene();
     createScene();
@@ -1401,13 +1416,14 @@ window.Visualizer = {
     canvasWrap.style.display = '';
     codeWrap.style.display = 'none';
 
-    const vizFn = vizRegistry[lessonId];
+    const key = courseId ? courseId + '/' + lessonId : lessonId;
+    const vizFn = vizRegistry[key];
     if (vizFn) {
       panel.classList.add('active');
       vizFn();
       // Set code snippet if not already set by the viz function
-      if (!currentCodeSnippet && codeSnippets[lessonId]) {
-        setCode(codeSnippets[lessonId]);
+      if (!currentCodeSnippet && codeSnippets[key]) {
+        setCode(codeSnippets[key]);
       }
       currentViz = { dispose: () => {} };
       animate();

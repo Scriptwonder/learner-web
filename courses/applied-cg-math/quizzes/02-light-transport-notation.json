@@ -1,0 +1,183 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In Heckbert's light transport notation, what does the symbol $D$ represent?",
+    "hint": "There are four symbols: $L$, $E$, $D$, and $S$.",
+    "options": ["A) Direct illumination", "B) Diffuse scattering event", "C) Distance attenuation", "D) Depth buffer"],
+    "answer_key": "B",
+    "explanation": "$D$ represents a diffuse scattering event at a surface vertex. In Heckbert's notation, $L$ = light, $E$ = eye, $D$ = diffuse, $S$ = specular."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What path type does the expression $LDE$ describe?",
+    "hint": "It has exactly one intermediate vertex between the light and the eye.",
+    "options": ["A) Direct specular illumination", "B) One-bounce caustic", "C) Direct diffuse illumination", "D) Indirect diffuse illumination"],
+    "answer_key": "C",
+    "explanation": "$LDE$ describes a path from light $L$ to a diffuse surface $D$ to the eye $E$ — this is basic direct diffuse illumination, the kind rendered by standard shadow-mapped rasterization."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which path expression describes a caustic (light focused through specular surfaces onto a diffuse surface)?",
+    "hint": "The light must undergo one or more specular interactions before hitting a diffuse surface.",
+    "options": ["A) $LDE$", "B) $LS^+DE$", "C) $LD^+E$", "D) $LDS^+E$"],
+    "answer_key": "B",
+    "explanation": "$LS^+DE$ means: light $\\to$ one or more specular bounces $\\to$ diffuse surface $\\to$ eye. This is the classic caustic — light focused by mirrors or glass onto a diffuse receiver."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In bidirectional path tracing (BDPT) for a path with $k = 5$ vertices, how many different $(s, t)$ connection strategies exist?",
+    "hint": "Each strategy has $s$ light vertices and $t$ eye vertices where $s + t = k$.",
+    "options": ["A) 4", "B) 5", "C) 6", "D) 10"],
+    "answer_key": "C",
+    "explanation": "For $k = 5$ vertices, $s$ ranges from 0 to 5, giving $k + 1 = 6$ strategies: $(0,5), (1,4), (2,3), (3,2), (4,1), (5,0)$. Each strategy constructs the same path using different numbers of light-side and eye-side vertices."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Which algorithm is best suited for rendering SDS paths ($LS^+D^+S^+E$)?",
+    "hint": "SDS paths require finding specular chains from both the light and eye sides.",
+    "options": ["A) Path tracing with NEE", "B) Photon mapping", "C) Metropolis Light Transport (MLT)", "D) Rasterization with screen-space reflections"],
+    "answer_key": "C",
+    "explanation": "SDS paths are extremely difficult because they require specular chains from both light and eye sides, connected through a diffuse segment. MLT excels here because once it finds such a path, it can mutate it to explore nearby SDS paths. Path tracing cannot find the light-side specular chain, and photon mapping struggles with the eye-side specular chain."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the key insight of Metropolis Light Transport (Veach-Guibas 1997)?",
+    "hint": "MLT does not generate independent paths — it builds new paths by modifying existing ones.",
+    "options": ["A) It traces photons from lights and stores them in a photon map", "B) It mutates existing paths using Metropolis-Hastings sampling, spending more time on high-contribution paths", "C) It uses bidirectional sub-paths without any mutation", "D) It caches radiance in a grid for fast lookup"],
+    "answer_key": "B",
+    "explanation": "MLT applies the Metropolis-Hastings MCMC algorithm to light transport. Starting from a seed path, it proposes mutations (small changes) and accepts/rejects them with a probability that ensures paths are sampled proportional to their contribution. This lets it efficiently explore regions of path space with high contribution, such as caustics and SDS paths."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "In MLT, the acceptance probability for mutating path $\\bar{x}$ to $\\bar{x}'$ is $a = \\min(1, f(\\bar{x}')/f(\\bar{x}))$. What distribution does the Markov chain converge to?",
+    "hint": "The Metropolis-Hastings algorithm is designed to sample from a specific target distribution.",
+    "options": ["A) Uniform over all paths", "B) Proportional to path length", "C) Proportional to the path contribution function $f(\\bar{x})$", "D) Proportional to the BRDF at the first bounce"],
+    "answer_key": "C",
+    "explanation": "The Metropolis-Hastings algorithm, with the acceptance ratio $f(\\bar{x}')/f(\\bar{x})$, ensures detailed balance with respect to the target distribution proportional to $f(\\bar{x})$ — the scalar contribution (luminance) of path $\\bar{x}$. The chain spends more time on high-contribution paths, which is exactly what we want for efficient rendering."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Why does standard path tracing (from the eye) fail at rendering caustics ($LS^+DE$)?",
+    "hint": "Consider the direction in which the path is built and what happens at the specular vertex.",
+    "options": ["A) The rendering equation does not account for caustics", "B) Path tracing builds paths from $E$ backward, and at the $D$ vertex, the probability of sampling the exact direction through specular surfaces to reach the light is essentially zero", "C) Caustics require more than 10 bounces, which is too expensive", "D) The BRDF is undefined for specular materials"],
+    "answer_key": "B",
+    "explanation": "Path tracing constructs paths from $E \\to D \\to S^+ \\to L$. At the diffuse vertex $D$, the tracer must sample a direction that hits the specular surface at precisely the correct angle to eventually reach the light. For a perfect mirror (delta-function BRDF), the probability of randomly finding this direction is zero. Even for near-specular surfaces, the probability is negligibly small."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Write the Heckbert notation for a path where light bounces off two diffuse surfaces before reaching the eye (one-bounce indirect diffuse).",
+    "hint": "Start with $L$, add the diffuse vertices, end with $E$.",
+    "answer_key": "LDDE",
+    "explanation": "$LDDE$: light $\\to$ first diffuse surface $\\to$ second diffuse surface $\\to$ eye. This is one-bounce indirect illumination, responsible for effects like color bleeding in a Cornell box."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "In Heckbert's notation, what does the $+$ operator mean when applied to a symbol (e.g., $S^+$)?",
+    "hint": "This follows standard regular expression syntax.",
+    "answer_key": "One or more repetitions",
+    "explanation": "$S^+$ means one or more specular scattering events. Similarly, $D^*$ would mean zero or more diffuse events. These are standard regular expression operators applied to light path classification."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In BDPT, what does the strategy $(s=0, t=k)$ correspond to, and what does $(s=k, t=0)$ correspond to?",
+    "hint": "One uses only eye-side vertices, the other only light-side vertices.",
+    "answer_key": "(s=0, t=k) is standard path tracing (all vertices from eye side); (s=k, t=0) is pure light tracing (all vertices from light side, splatted to the image)",
+    "explanation": "$(s=0, t=k)$: No light sub-path vertices are used — the entire path is traced from the eye, which is standard (unidirectional) path tracing. $(s=k, t=0)$: The entire path is traced from the light source. The path's contribution is splatted to whichever pixel the final light-side vertex projects onto. This is light tracing, useful for caustics."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Name one major disadvantage of Metropolis Light Transport compared to standard path tracing.",
+    "hint": "Think about the correlation between successive samples in the Markov chain.",
+    "answer_key": "Successive samples are correlated (not independent), producing structured noise artifacts instead of uniform noise, and MLT is difficult to parallelize on GPUs",
+    "explanation": "MLT generates correlated samples because each new path is a mutation of the previous one. This correlation can cause structured artifacts (splotchy patterns) instead of the uniform noise of independent path tracing. Additionally, the sequential Markov chain nature makes it difficult to parallelize efficiently on massively parallel GPU architectures."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Explain what an SDS path is in light transport notation and give a real-world example.",
+    "hint": "SDS stands for specular-diffuse-specular.",
+    "answer_key": "SDS paths have the form LS+D+S+E: light passes through specular surfaces, scatters diffusely, then exits through specular surfaces to the eye. Example: a caustic pattern seen through a glass window.",
+    "explanation": "An SDS path ($LS^+D^+S^+E$) involves specular interactions on both the light side and the eye side, with diffuse scattering in between. A real-world example is seeing the bright caustic pattern from a glass of water when viewed through another glass surface. These paths are extremely difficult because both endpoints of the diffuse segment must connect through specular chains to the light and eye respectively."
+  },
+  {
+    "id": 14,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Why is photon mapping rated 'Excellent' for caustics but 'Poor' for SDS paths in the algorithm comparison?",
+    "hint": "Consider the two passes of photon mapping: where are photons stored, and how is the final image rendered?",
+    "answer_key": "Photons naturally flow through specular chains and deposit on diffuse surfaces (capturing caustics). But the rendering pass traces from the eye, so the eye-side specular chain in SDS paths cannot be handled — photons on the diffuse segment are collected, but they cannot be 'seen' through the eye-side specular surface.",
+    "explanation": "In photon tracing (pass 1), photons follow specular chains and land on diffuse surfaces — capturing the $LS^+D$ part of caustics perfectly. However, in the rendering pass (pass 2), rays are traced from the eye. For SDS paths, the eye ray must pass through specular surfaces to reach the diffuse segment where photons are stored. The final gather step shoots diffuse secondary rays and queries the photon map at those hits, but it cannot efficiently trace through the eye-side specular chain to find the correct photon map query points."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "Consider a scene with a point light, a glass sphere, a Lambertian floor, and a camera. A caustic appears on the floor under the sphere.",
+    "hint": "Classify each vertex as L, S, D, or E and trace the path from light to eye.",
+    "steps": [
+      {
+        "prompt": "Write the Heckbert notation for the primary caustic path (light enters the sphere, refracts twice, hits the floor, then reaches the eye).",
+        "answer_key": "LSSDE",
+        "explanation": "$LSSDE$: light $\\to$ refraction entering sphere ($S$) $\\to$ refraction exiting sphere ($S$) $\\to$ floor ($D$) $\\to$ eye ($E$). Two specular events (glass refraction) followed by a diffuse bounce."
+      },
+      {
+        "prompt": "Which algorithm would handle this path most efficiently: (a) path tracing with NEE, (b) photon mapping, or (c) both equally well? Explain why.",
+        "answer_key": "Photon mapping",
+        "explanation": "Photon mapping handles this excellently. Photons emitted from the light refract through the glass sphere (following the $LS^+$ chain naturally) and deposit on the floor. The caustic photon map captures the focused light pattern. Path tracing from the eye would hit the floor and need to randomly sample the exact refraction angle back through the sphere to the light — nearly impossible for specular glass."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "In a BDPT implementation, you trace a light sub-path with 3 vertices ($\\mathbf{y}_0, \\mathbf{y}_1, \\mathbf{y}_2$) and an eye sub-path with 2 vertices ($\\mathbf{z}_0, \\mathbf{z}_1$). The vertex types are: $\\mathbf{y}_0$ = light, $\\mathbf{y}_1$ = specular, $\\mathbf{y}_2$ = diffuse, $\\mathbf{z}_0$ = eye, $\\mathbf{z}_1$ = diffuse.",
+    "hint": "Consider which connections are valid (you cannot connect to/from a specular vertex).",
+    "steps": [
+      {
+        "prompt": "List all possible $(s, t)$ connection strategies for these sub-paths (where $s$ is the number of light sub-path vertices used and $t$ is the number of eye sub-path vertices).",
+        "answer_key": "(s=0,t=2), (s=1,t=1), (s=1,t=2), (s=2,t=1), (s=2,t=2), (s=3,t=1), (s=3,t=2) but total path length s+t must be >= 2",
+        "explanation": "With 3 light vertices and 2 eye vertices, $s$ ranges 0-3 and $t$ ranges 0-2, with $s + t \\geq 2$. The valid combinations are: $(0,2), (1,1), (1,2), (2,1), (2,2), (3,1), (3,2)$. Note: $(s=0,t=1)$ would be just the eye looking directly, and some require connections that may not be geometrically valid."
+      },
+      {
+        "prompt": "Which strategy $(s, t)$ is invalid for connection because it would require connecting to a specular vertex? Explain.",
+        "answer_key": "(s=2, t=any) requires connecting from y_1 (specular), which is invalid because specular vertices have delta-function BRDFs that cannot be hit by a random connection ray.",
+        "explanation": "Strategy $(s=2, t=\\cdot)$ uses light vertices $\\mathbf{y}_0, \\mathbf{y}_1$ and connects from $\\mathbf{y}_1$ (specular) to an eye vertex. Since specular surfaces have delta-function BRDFs, the probability of a random connection ray arriving at exactly the correct specular reflection angle is zero. In practice, BDPT skips connections involving specular vertices."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is a Light Path Expression (LPE) and what is it used for in production rendering?",
+    "hint": "Think about compositing and post-production workflows in VFX.",
+    "answer_key": "LPEs are extensions of Heckbert's notation used to decompose a rendered image into individual lighting components (AOVs) such as direct diffuse, indirect specular, caustics, etc., for compositing in post-production.",
+    "explanation": "Light Path Expressions extend Heckbert's regex notation to let artists isolate specific lighting contributions. For example, the LPE `C<RD>L` extracts only the direct diffuse component, while `C<RS>L` extracts direct specular. This decomposition into Arbitrary Output Variables (AOVs) is essential for VFX compositing, allowing artists to adjust individual lighting components without re-rendering."
+  }
+]

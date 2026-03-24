@@ -1,0 +1,204 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the key difference between PBD and traditional force-based simulation?",
+    "hint": "Think about what PBD directly manipulates.",
+    "options": ["A) PBD uses higher-order integrators", "B) PBD directly modifies positions to satisfy constraints instead of computing forces", "C) PBD only works in 2D", "D) PBD requires implicit integration"],
+    "answer_key": "B",
+    "explanation": "PBD directly projects constraints onto particle positions, bypassing the force-acceleration-velocity-position pipeline. This makes it unconditionally stable but means stiffness behavior differs from physical springs."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In the PBD algorithm, what happens to velocities after constraint projection?",
+    "hint": "Positions have changed, so velocities must be updated to match.",
+    "options": ["A) Velocities are set to zero", "B) Velocities are computed from the position change: $v = (x_{new} - x_{old}) / \\Delta t$", "C) Velocities remain unchanged", "D) Velocities are halved for stability"],
+    "answer_key": "B",
+    "explanation": "After constraints move particles to new positions, velocities are recomputed as $\\mathbf{v}_i = (\\mathbf{x}_i^{new} - \\mathbf{x}_i^{old}) / \\Delta t$. This ensures velocity is consistent with the actual position change."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What iteration pattern does PBD use to solve multiple constraints?",
+    "hint": "Constraints are processed one at a time, each using the latest positions.",
+    "options": ["A) Jacobi iteration (all constraints solved simultaneously)", "B) Gauss-Seidel iteration (constraints solved sequentially)", "C) Newton-Raphson iteration", "D) Conjugate gradient"],
+    "answer_key": "B",
+    "explanation": "PBD uses Gauss-Seidel iteration: each constraint is projected in sequence, using the most recently updated positions from previous constraints. This converges faster than Jacobi (parallel) iteration for the same number of passes."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the fundamental problem with standard PBD that XPBD was designed to solve?",
+    "hint": "Try changing the number of solver iterations and see what happens to stiffness.",
+    "options": ["A) PBD is not unconditionally stable", "B) PBD cannot handle collision constraints", "C) Constraint stiffness depends on the iteration count and timestep", "D) PBD only works for distance constraints"],
+    "answer_key": "C",
+    "explanation": "In standard PBD, doubling the solver iterations or halving the timestep makes constraints stiffer. This couples solver parameters to material properties, making artist tuning extremely difficult. XPBD introduces compliance to decouple them."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In XPBD, what is the compliance parameter $\\alpha$?",
+    "hint": "It has units of inverse stiffness.",
+    "options": ["A) The friction coefficient", "B) The inverse of stiffness ($\\alpha = 1/k$), controlling how soft a constraint is", "C) The damping ratio", "D) The iteration count"],
+    "answer_key": "B",
+    "explanation": "Compliance $\\alpha = 1/k$ is the inverse of the spring constant. $\\alpha = 0$ means infinitely stiff (hard constraint), while larger values mean softer constraints. The time-scaled compliance is $\\tilde{\\alpha} = \\alpha / \\Delta t^2$."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "XPBD can be shown to be equivalent to solving which implicit integration method?",
+    "hint": "It is related to the most common implicit time integrator.",
+    "options": ["A) Explicit Euler", "B) Runge-Kutta 4", "C) Implicit (backward) Euler", "D) Velocity Verlet"],
+    "answer_key": "C",
+    "explanation": "XPBD with compliance $\\alpha$ is mathematically equivalent to solving the implicit Euler equations for a system with elastic potential energy $U = \\frac{1}{2\\alpha}C^2$. This connection provides theoretical justification for XPBD's stability and accuracy."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "For a distance constraint $C(\\mathbf{x}_1, \\mathbf{x}_2) = |\\mathbf{x}_1 - \\mathbf{x}_2| - d$, what is $\\nabla_1 C$?",
+    "hint": "The gradient points in the direction that most increases the constraint value.",
+    "options": ["A) $\\mathbf{x}_1 - \\mathbf{x}_2$", "B) The unit vector $\\hat{\\mathbf{n}} = (\\mathbf{x}_1 - \\mathbf{x}_2) / |\\mathbf{x}_1 - \\mathbf{x}_2|$", "C) $(0, 0, 0)$", "D) $-\\hat{\\mathbf{n}}$"],
+    "answer_key": "B",
+    "explanation": "The gradient of the distance constraint with respect to $\\mathbf{x}_1$ is the unit vector from $\\mathbf{x}_2$ to $\\mathbf{x}_1$: $\\nabla_1 C = (\\mathbf{x}_1 - \\mathbf{x}_2)/|\\mathbf{x}_1 - \\mathbf{x}_2|$. Moving $\\mathbf{x}_1$ in this direction increases the distance."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "In the XPBD position correction $\\Delta\\lambda = \\frac{-C - \\tilde{\\alpha}\\lambda}{\\nabla C^T \\mathbf{M}^{-1} \\nabla C + \\tilde{\\alpha}}$, what does $\\lambda$ represent?",
+    "hint": "It tracks something that accumulates across iterations within a timestep.",
+    "options": ["A) The constraint error", "B) The timestep size", "C) The accumulated Lagrange multiplier (cumulative constraint force)", "D) The particle mass"],
+    "answer_key": "C",
+    "explanation": "The Lagrange multiplier $\\lambda$ tracks the accumulated constraint force across iterations within a single timestep. It is initialized to zero at the start of each timestep and updated by $\\Delta\\lambda$ each iteration. This accumulation is what allows XPBD to decouple stiffness from iteration count."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Two particles with equal mass are connected by a distance constraint with rest length $d = 2.0$. If their current distance is $2.4$, what is the constraint value $C$?",
+    "hint": "$C = |\\mathbf{x}_1 - \\mathbf{x}_2| - d$.",
+    "answer_key": "0.4",
+    "explanation": "$C = 2.4 - 2.0 = 0.4$. Positive means the particles are too far apart; the constraint projection will pull them closer."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "In PBD, if particle 1 has mass 1 kg and particle 2 has mass 3 kg, what fraction of the total correction does particle 1 receive? (Express as a decimal.)",
+    "hint": "Corrections are proportional to inverse mass: $w_1/(w_1 + w_2)$ where $w = 1/m$.",
+    "answer_key": "0.75",
+    "explanation": "$w_1 = 1/1 = 1$, $w_2 = 1/3 \\approx 0.333$. Particle 1's fraction: $w_1/(w_1 + w_2) = 1/(1 + 1/3) = 1/(4/3) = 3/4 = 0.75$. The lighter particle moves more."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "For XPBD with compliance $\\alpha = 0.01$ and timestep $\\Delta t = 0.016$ (60 Hz), what is the time-scaled compliance $\\tilde{\\alpha} = \\alpha / \\Delta t^2$? Round to one decimal place.",
+    "hint": "Compute $0.01 / (0.016)^2$.",
+    "answer_key": "39.1",
+    "explanation": "$\\tilde{\\alpha} = 0.01 / (0.016)^2 = 0.01 / 0.000256 \\approx 39.1$."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A cloth mesh has a grid of $10 \\times 10$ particles. How many stretch (horizontal + vertical) distance constraints are there?",
+    "hint": "Count horizontal edges and vertical edges separately. A $10 \\times 10$ grid has $10 \\times 9$ horizontal and $9 \\times 10$ vertical edges.",
+    "answer_key": "180",
+    "explanation": "Horizontal constraints: $10$ rows $\\times$ $9$ edges per row $= 90$. Vertical constraints: $9$ columns of edges $\\times$ $10$ per column $= 90$. Total: $90 + 90 = 180$."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "In XPBD, a distance constraint has $C = 0.3$, $\\tilde{\\alpha} = 50$, $\\lambda = -0.02$, and $\\nabla C^T M^{-1} \\nabla C = 2.0$. What is $\\Delta\\lambda$? Round to 4 decimal places.",
+    "hint": "Use $\\Delta\\lambda = (-C - \\tilde{\\alpha}\\lambda) / (\\nabla C^T M^{-1} \\nabla C + \\tilde{\\alpha})$.",
+    "answer_key": "0.0135",
+    "explanation": "Numerator: $-0.3 - 50 \\times (-0.02) = -0.3 + 1.0 = 0.7$. Denominator: $2.0 + 50 = 52$. $\\Delta\\lambda = 0.7 / 52 \\approx 0.01346 \\approx 0.0135$."
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Two particles $\\mathbf{x}_1 = (3, 0, 0)$ and $\\mathbf{x}_2 = (0, 0, 0)$ are connected by a distance constraint with rest length $d = 2$. Both have mass $m = 1$. Compute the PBD position correction for each particle.",
+    "hint": "First compute $C$ and $\\hat{\\mathbf{n}}$, then apply the correction formula.",
+    "steps": [
+      {
+        "prompt": "What is the current distance $|\\mathbf{x}_1 - \\mathbf{x}_2|$ and the constraint value $C$?",
+        "answer_key": "distance = 3, C = 1",
+        "explanation": "$|\\mathbf{x}_1 - \\mathbf{x}_2| = |(3,0,0)| = 3$. $C = 3 - 2 = 1$."
+      },
+      {
+        "prompt": "What is the unit direction $\\hat{\\mathbf{n}}$ from $\\mathbf{x}_2$ to $\\mathbf{x}_1$?",
+        "answer_key": "(1, 0, 0)",
+        "explanation": "$\\hat{\\mathbf{n}} = (3,0,0)/3 = (1, 0, 0)$."
+      },
+      {
+        "prompt": "Compute the corrections $\\Delta\\mathbf{x}_1$ and $\\Delta\\mathbf{x}_2$. (Equal masses means each particle gets half the correction.)",
+        "answer_key": "dx1 = (-0.5, 0, 0), dx2 = (0.5, 0, 0)",
+        "explanation": "With equal masses, $w_1/(w_1+w_2) = 0.5$. $\\Delta\\mathbf{x}_1 = -0.5 \\times 1 \\times (1,0,0) = (-0.5, 0, 0)$. $\\Delta\\mathbf{x}_2 = +0.5 \\times 1 \\times (1,0,0) = (0.5, 0, 0)$. New positions: $(2.5, 0, 0)$ and $(0.5, 0, 0)$, distance $= 2.0$. Constraint satisfied."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "In a PBD cloth simulation, particle A (mass 1 kg, pinned: effectively infinite mass) is at $(0, 0, 0)$ and particle B (mass 1 kg) is at $(0, -1.5, 0)$. Rest length is $1.0$. Compute B's corrected position.",
+    "hint": "A pinned particle has $w_A \\approx 0$, so B receives the full correction.",
+    "steps": [
+      {
+        "prompt": "What is the constraint value $C = |\\mathbf{x}_A - \\mathbf{x}_B| - d$?",
+        "answer_key": "0.5",
+        "explanation": "$|\\mathbf{x}_A - \\mathbf{x}_B| = |(0, 1.5, 0)| = 1.5$. $C = 1.5 - 1.0 = 0.5$."
+      },
+      {
+        "prompt": "Since A is pinned ($w_A = 0$), what fraction of the correction goes to B?",
+        "answer_key": "1.0",
+        "explanation": "$w_B/(w_A + w_B) = w_B/(0 + w_B) = 1.0$. B receives 100% of the correction."
+      },
+      {
+        "prompt": "What is B's corrected position? ($\\Delta\\mathbf{x}_B = +\\frac{w_B}{w_A + w_B} C \\hat{\\mathbf{n}}$ where $\\hat{\\mathbf{n}}$ points from A to B)",
+        "answer_key": "(0, -1, 0)",
+        "explanation": "$\\hat{\\mathbf{n}}_{A \\to B} = (0, -1, 0)$. But the correction uses $\\nabla_2 C = -\\hat{\\mathbf{n}}_{1\\to2}$, so $\\Delta\\mathbf{x}_B = +1.0 \\times 0.5 \\times (0, -1, 0) \\cdot (-1) \\cdot (-1) = (0, 0.5, 0)$. More directly: B needs to move 0.5 units toward A: $(0, -1.5 + 0.5, 0) = (0, -1.0, 0)$. Distance from A: $1.0$ = rest length."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What types of constraints are used to build a cloth simulation in PBD?",
+    "hint": "Think about stretch, shear, and bending.",
+    "options": ["A) Only distance constraints between adjacent particles", "B) Distance constraints for stretch, shear (diagonal), and bending (skip-one)", "C) Only volume constraints", "D) Only collision constraints"],
+    "answer_key": "B",
+    "explanation": "Cloth uses stretch constraints (horizontal/vertical neighbors), shear constraints (diagonal neighbors), and bending constraints (particles two steps apart). Together these resist stretching, shearing, and folding."
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "If XPBD compliance $\\alpha = 0$, what does the constraint behave like?",
+    "hint": "Zero compliance means infinite stiffness.",
+    "answer_key": "A rigid (infinitely stiff) constraint",
+    "explanation": "With $\\alpha = 0$, the constraint has infinite stiffness ($k = 1/\\alpha = \\infty$), behaving as a hard/rigid constraint. The $\\tilde{\\alpha}\\lambda$ term vanishes from the XPBD formula, reducing it to standard PBD projection."
+  },
+  {
+    "id": 18,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "What recent extension (2024) allows PBD to simulate inelastic materials like mud, sand, and brittle fracture?",
+    "hint": "It extends XPBD with continuum mechanics constitutive laws.",
+    "options": ["A) MGPBD", "B) XPBI (Extended Position-Based Inelasticity)", "C) Position-Based Fluids", "D) Projective Dynamics"],
+    "answer_key": "B",
+    "explanation": "XPBI (2024) extends XPBD with an updated Lagrangian formulation to handle continuum inelastic behaviors — mud, viscoplastic paint, brittle fracture, sand, and snow — while integrating seamlessly with standard XPBD constraints."
+  }
+]

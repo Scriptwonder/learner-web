@@ -1,0 +1,203 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the fundamental goal of differentiable rendering?",
+    "hint": "Think about what information flows backward through the rendering pipeline.",
+    "options": ["A) To render images faster than traditional rasterization", "B) To compute gradients of the rendered image with respect to scene parameters, enabling gradient-based optimization", "C) To generate 3D models from text descriptions", "D) To simulate physically accurate light transport"],
+    "answer_key": "B",
+    "explanation": "Differentiable rendering computes $\\frac{\\partial \\text{image}}{\\partial \\theta}$ where $\\theta$ includes geometry, materials, lighting, and camera parameters. This enables gradient-based inverse rendering: optimizing scene parameters so the rendered image matches a target photograph."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Why is standard rasterization with a z-buffer not directly differentiable?",
+    "hint": "Consider what happens to a pixel at the boundary between two triangles.",
+    "options": ["A) The z-buffer uses integer arithmetic that cannot be differentiated", "B) The depth test is a discrete operation that creates step-function discontinuities at visibility boundaries", "C) Rasterization only works on triangles, not other primitives", "D) The z-buffer cannot store floating-point depth values"],
+    "answer_key": "B",
+    "explanation": "The z-buffer depth test selects the nearest fragment per pixel using a hard comparison. At silhouette and occlusion boundaries, a tiny perturbation to geometry causes a pixel to jump from one surface to another, creating a step function with zero gradient almost everywhere and undefined gradient at the boundary."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In the context of differentiable rendering, what does 'inverse rendering' mean?",
+    "hint": "Forward rendering goes from scene to image. Inverse rendering goes...",
+    "options": ["A) Rendering a scene from the back instead of the front", "B) Recovering scene parameters (geometry, materials, lighting) from observed images", "C) Inverting the color channels of the rendered image", "D) Rendering at lower resolution for faster performance"],
+    "answer_key": "B",
+    "explanation": "Inverse rendering solves $\\theta^* = \\arg\\min_\\theta \\mathcal{L}(\\mathcal{R}(\\theta), I_{\\text{target}})$ -- it recovers the scene description $\\theta$ (meshes, BRDFs, lights, camera) that best explains the observed images $I_{\\text{target}}$, using gradient descent through the differentiable renderer $\\mathcal{R}$."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why is reverse-mode automatic differentiation (backpropagation) preferred over forward-mode for differentiable rendering?",
+    "hint": "Count the number of inputs vs. outputs in a typical rendering optimization.",
+    "options": ["A) Reverse mode is always faster regardless of input/output count", "B) Forward mode cannot handle non-linear functions", "C) Reverse mode computes gradients w.r.t. all inputs in one pass when there is a single scalar loss, while forward mode requires one pass per input", "D) Reverse mode does not require storing intermediate values"],
+    "answer_key": "C",
+    "explanation": "A scene may have millions of parameters (vertex positions, texel values), but the optimization target is a single scalar loss. Forward-mode AD requires one pass per input parameter (millions of passes), while reverse-mode AD computes the gradient with respect to all inputs in a single backward pass. This makes reverse mode essential for practical differentiable rendering."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "How does SoftRas (Liu et al. 2019) handle the visibility discontinuity problem?",
+    "hint": "Instead of a hard yes/no triangle coverage test, it uses a probabilistic approach.",
+    "options": ["A) It blurs the entire rendered image as a post-process", "B) It replaces hard rasterization with a probabilistic formulation where every triangle contributes to every pixel with a soft, distance-dependent weight", "C) It uses ray tracing instead of rasterization", "D) It renders at very high resolution and downsamples"],
+    "answer_key": "B",
+    "explanation": "SoftRas computes a soft inside/outside test $D_i = \\text{sigmoid}(\\delta_i d_i^2 / \\sigma_s)$ for each triangle at each pixel, where $d_i$ is the signed distance to the triangle edge and $\\sigma_s$ controls sharpness. This ensures every triangle -- even fully occluded ones -- receives non-zero gradients, solving the vanishing gradient problem at visibility boundaries."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the key difference between nvdiffrast's approach and SoftRas's approach to differentiable rasterization?",
+    "hint": "One modifies the entire rasterization process; the other only modifies the edges.",
+    "options": ["A) nvdiffrast uses ray tracing while SoftRas uses rasterization", "B) nvdiffrast performs standard hardware rasterization for the forward pass and only adds differentiable antialiasing at silhouette edges, while SoftRas replaces the entire rasterization with a soft probabilistic formulation", "C) SoftRas is faster because it skips the depth test entirely", "D) nvdiffrast only supports 2D scenes while SoftRas supports 3D"],
+    "answer_key": "B",
+    "explanation": "nvdiffrast (Laine et al. 2020) leverages fast hardware rasterization for the forward pass and applies a differentiable antialiasing filter only at detected silhouette and occlusion edges. SoftRas replaces the entire rasterization pipeline with soft, probabilistic coverage. nvdiffrast's approach is much faster (millions of triangles at interactive rates) but relies on accurate edge detection."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In Li et al.'s (2018) edge-sampling method, the image gradient is decomposed into two terms. What are they?",
+    "hint": "One term handles smooth regions; the other handles the discontinuous boundaries.",
+    "options": ["A) A color term and a depth term", "B) A diffuse term and a specular term", "C) An interior term (smooth shading gradient) and a boundary term (integral along silhouette edges)", "D) A forward term and a backward term"],
+    "answer_key": "C",
+    "explanation": "The interior term $\\int_{\\mathcal{A}} \\frac{\\partial L}{\\partial \\theta} dA$ differentiates the smooth shading function (standard AD handles this). The boundary term $\\oint_{\\partial \\mathcal{A}} \\Delta L \\frac{\\partial \\mathbf{e}}{\\partial \\theta} \\cdot \\hat{n}\\, ds$ integrates along silhouette edges where radiance is discontinuous, capturing the gradient contribution from pixels that switch between surfaces."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "In the boundary integral $\\oint_{\\partial \\mathcal{A}} \\Delta L \\, \\frac{\\partial \\mathbf{e}}{\\partial \\theta} \\cdot \\hat{n} \\, ds$, what does the factor $\\Delta L$ represent?",
+    "hint": "Consider what changes as you cross a silhouette edge in the image.",
+    "options": ["A) The Laplacian of the radiance field", "B) The change in luminance over time", "C) The jump in radiance across the silhouette edge (foreground color minus background color)", "D) The gradient of the light source intensity"],
+    "answer_key": "C",
+    "explanation": "$\\Delta L$ is the discontinuity in radiance across the silhouette edge -- the difference between the color on the foreground side and the background side. When multiplied by $\\frac{\\partial \\mathbf{e}}{\\partial \\theta} \\cdot \\hat{n}$ (the rate at which the edge sweeps across pixels as $\\theta$ changes), it gives the rate at which pixels flip from one color to the other."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What custom just-in-time compiler does Mitsuba 3 use for automatic differentiation?",
+    "hint": "It is a custom AD framework developed at EPFL, named with two words.",
+    "answer_key": "Dr.Jit",
+    "explanation": "Mitsuba 3 is built on Dr.Jit, a just-in-time compiler for differentiable and parallel computation developed by Wenzel Jakob's group at EPFL. Dr.Jit supports both forward and reverse-mode AD and can target LLVM (CPU), CUDA, and OptiX (GPU) backends."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "In the inverse rendering optimization loop, what are the four steps that repeat each iteration?",
+    "hint": "Render, compare, compute gradients, update.",
+    "answer_key": "Render, compute loss (compare to target), backpropagate gradients, update parameters",
+    "explanation": "The loop is: (1) render the scene with current parameters $\\theta$, (2) compute the loss $\\mathcal{L}$ between the rendered image and the target, (3) backpropagate to compute $\\frac{\\partial \\mathcal{L}}{\\partial \\theta}$, (4) update parameters using an optimizer (e.g., Adam): $\\theta \\leftarrow \\theta - \\alpha \\frac{\\partial \\mathcal{L}}{\\partial \\theta}$."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In the soft silhouette model $S(p) = \\sigma(k(r - d_p))$, what happens to the gradient $\\frac{\\partial S}{\\partial r}$ as the sharpness parameter $k$ increases?",
+    "hint": "The sigmoid becomes steeper. Where is the gradient concentrated?",
+    "answer_key": "The gradient becomes more concentrated at the silhouette boundary (where d_p = r) and approaches zero everywhere else",
+    "explanation": "The gradient is $\\frac{\\partial S}{\\partial r} = k \\cdot \\sigma(k(r-d_p)) \\cdot (1 - \\sigma(k(r-d_p)))$. As $k \\to \\infty$, this becomes a Dirac delta centered at $d_p = r$. The gradient is large only in a narrow band of width $\\sim 1/k$ around the boundary. Very large $k$ gives sharp silhouettes but can cause optimization difficulties (vanishing gradients for pixels far from edges)."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Why is differentiating through shadows particularly challenging for differentiable rasterization approaches?",
+    "hint": "Think about what causes a shadow edge and where that discontinuity lives.",
+    "answer_key": "Shadow edges are visibility discontinuities from the light's perspective, requiring a second differentiable visibility query (shadow map or shadow ray), doubling the complexity of the boundary integral",
+    "explanation": "A shadow boundary occurs where the light's visibility changes -- this is a separate set of silhouette edges as seen from the light source. Differentiable rasterizers that handle camera-view silhouettes must additionally handle light-view silhouettes, effectively requiring differentiable shadow maps or shadow ray tracing. Most practical systems approximate shadow gradients or ignore them."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "nvdiffrec (Munkberg et al. 2022) jointly recovers geometry and PBR materials from multi-view images. What geometric representation does it use to allow topology changes during optimization?",
+    "hint": "It combines a deformable tetrahedral grid with marching to extract surfaces.",
+    "answer_key": "DMTet (Deep Marching Tetrahedra) -- a differentiable isosurface extraction from a deformable tetrahedral grid",
+    "explanation": "DMTet represents geometry as an SDF defined on a deformable tetrahedral grid. Differentiable marching tetrahedra extracts a triangle mesh from the SDF, and the mesh is rendered with nvdiffrast. Because the SDF can change sign at any vertex, the topology of the extracted surface can change during optimization -- holes can appear or close, and disconnected components can merge."
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Walk through one iteration of inverse rendering to optimize the albedo of a Lambertian sphere.",
+    "hint": "Start with the rendering equation for a Lambertian surface, then compute the loss gradient.",
+    "steps": [
+      {
+        "prompt": "Step 1: A Lambertian sphere with albedo $\\rho = 0.3$ (gray) is lit by a directional light with intensity $I_L = 1.0$. At a surface point where $\\cos\\theta = 0.8$ (angle between normal and light), what is the outgoing radiance? (Use $L = \\frac{\\rho}{\\pi} I_L \\cos\\theta$.)",
+        "answer_key": "L = (0.3 / pi) * 1.0 * 0.8 = 0.0764",
+        "explanation": "For a Lambertian surface: $L = \\frac{\\rho}{\\pi} I_L \\cos\\theta = \\frac{0.3}{\\pi} \\times 1.0 \\times 0.8 = \\frac{0.24}{\\pi} \\approx 0.0764$."
+      },
+      {
+        "prompt": "Step 2: The target image has radiance 0.127 at this pixel. Using L2 loss $\\mathcal{L} = (L - L_{\\text{target}})^2$, compute the loss and the gradient $\\frac{\\partial \\mathcal{L}}{\\partial \\rho}$.",
+        "answer_key": "Loss = (0.0764 - 0.127)^2 = 0.00256; gradient = 2(L - L_target) * (cos_theta / pi) = 2 * (-0.0506) * 0.2546 = -0.02577",
+        "explanation": "$\\mathcal{L} = (0.0764 - 0.127)^2 = (-0.0506)^2 = 0.00256$. By the chain rule: $\\frac{\\partial \\mathcal{L}}{\\partial \\rho} = 2(L - L_{\\text{target}}) \\cdot \\frac{\\partial L}{\\partial \\rho} = 2(-0.0506) \\cdot \\frac{0.8}{\\pi} = -0.1012 \\times 0.2546 = -0.02577$."
+      },
+      {
+        "prompt": "Step 3: Using gradient descent with learning rate $\\alpha = 1.0$, what is the updated albedo? Does it move in the correct direction?",
+        "answer_key": "rho_new = 0.3 - 1.0 * (-0.02577) = 0.3258; yes, it increases toward the target albedo of ~0.5",
+        "explanation": "$\\rho_{\\text{new}} = \\rho - \\alpha \\frac{\\partial \\mathcal{L}}{\\partial \\rho} = 0.3 - 1.0 \\times (-0.02577) = 0.3258$. The gradient is negative (rendered pixel is too dark), so the update increases $\\rho$, making the surface brighter to match the target. The correct albedo is $\\rho^* = L_{\\text{target}} \\pi / (I_L \\cos\\theta) = 0.127 \\pi / 0.8 \\approx 0.499$."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Analyze the computational cost of forward-mode vs. reverse-mode AD for differentiable rendering.",
+    "hint": "Consider a scene with N parameters being optimized and an image of M pixels.",
+    "steps": [
+      {
+        "prompt": "Step 1: A mesh has 10,000 vertices (30,000 scalar position parameters) and we render a $256 \\times 256$ image reduced to a scalar loss. How many forward-mode passes would be needed for the full gradient?",
+        "answer_key": "30,000 passes (one per scalar input parameter)",
+        "explanation": "Forward-mode AD propagates derivatives of one input at a time. To compute $\\frac{\\partial \\mathcal{L}}{\\partial \\theta_i}$ for all 30,000 position scalars, we need 30,000 forward passes through the renderer."
+      },
+      {
+        "prompt": "Step 2: How many reverse-mode passes are needed for the same gradient?",
+        "answer_key": "1 pass",
+        "explanation": "Reverse-mode AD (backpropagation) propagates derivatives of one output at a time. Since we reduce the $256 \\times 256$ image to a single scalar loss, one reverse pass computes $\\frac{\\partial \\mathcal{L}}{\\partial \\theta_i}$ for all 30,000 parameters simultaneously."
+      },
+      {
+        "prompt": "Step 3: What is the main memory disadvantage of reverse mode, and how do differentiable renderers mitigate it?",
+        "answer_key": "Reverse mode must store all intermediate values (the computation tape) for the backward pass; renderers use checkpointing (recomputing instead of storing) and adjoint methods to reduce memory",
+        "explanation": "Reverse mode records every intermediate computation in a tape during the forward pass, then walks the tape backward. For a path tracer evaluating millions of rays, this tape can consume gigabytes of memory. Solutions include gradient checkpointing (re-run parts of the forward pass during backprop instead of storing them) and adjoint methods that compute gradients without storing the full tape."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "FlexiCubes (Shen et al. 2023) improves upon DMTet for differentiable mesh extraction. What key geometric feature does it add that DMTet lacks?",
+    "hint": "Think about the position of extracted vertices relative to the grid.",
+    "answer_key": "Flexible vertex positioning -- vertices can move freely within grid cells rather than being constrained to tetrahedral edges",
+    "explanation": "FlexiCubes allows extracted surface vertices to move freely within their grid cells (controlled by learnable weights), rather than being interpolated strictly along edges. This gives the optimization more degrees of freedom to fit fine geometric details without requiring an extremely fine grid, producing higher-quality meshes with fewer artifacts."
+  },
+  {
+    "id": 17,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which of the following is NOT a common loss function used in inverse rendering?",
+    "hint": "Three of these are standard losses for comparing rendered and target images.",
+    "options": ["A) L2 pixel loss (MSE between rendered and target pixels)", "B) Perceptual loss (LPIPS, comparing deep features)", "C) Cross-entropy loss on vertex labels", "D) Silhouette/mask loss (BCE between rendered and target masks)"],
+    "answer_key": "C",
+    "explanation": "L2 pixel loss, perceptual loss (LPIPS), and silhouette loss are all standard in inverse rendering. Cross-entropy on vertex labels is a classification loss that has no role in the render-compare-update loop. Inverse rendering losses compare rendered images or masks to target observations."
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Mitsuba 3 separates the rendering algorithm from the differentiation strategy. Why is this separation architecturally valuable?",
+    "hint": "Think about modularity -- changing one component without affecting the other.",
+    "answer_key": "It allows users to swap rendering integrators (path tracing, volumetric, etc.) independently of the AD mode (forward/reverse), enabling flexible experimentation without rewriting code",
+    "explanation": "By decoupling the integrator (which determines how light transport is simulated) from the AD backend (which determines how gradients are computed), Mitsuba 3 lets researchers mix and match: the same path tracer can run with forward or reverse AD, and the same AD engine can differentiate through different integrators. This modular design avoids the combinatorial explosion of implementing every integrator-AD combination from scratch."
+  }
+]

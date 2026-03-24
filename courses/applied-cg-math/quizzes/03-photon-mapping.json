@@ -1,0 +1,194 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Photon mapping is a two-pass algorithm. What are the two passes?",
+    "hint": "The first pass traces from lights, the second renders the image.",
+    "options": ["A) Shadow map generation and rasterization", "B) Photon tracing (from lights into the scene) and rendering (radiance estimation at visible points)", "C) Ray tracing and denoising", "D) BVH construction and path tracing"],
+    "answer_key": "B",
+    "explanation": "Pass 1 (photon tracing): Emit photons from light sources, trace them through the scene, and store them at diffuse surface interactions. Pass 2 (rendering): For each visible point, estimate radiance using the stored photons via density estimation."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Why does photon mapping excel at rendering caustics?",
+    "hint": "Think about the direction photons travel in the first pass.",
+    "options": ["A) Photons are stored at specular surfaces", "B) Photons naturally flow through specular chains (mirrors, glass) and deposit on diffuse surfaces, capturing the focused light patterns", "C) The kd-tree has special support for caustic lookup", "D) Caustics require fewer photons than diffuse illumination"],
+    "answer_key": "B",
+    "explanation": "In photon tracing, photons emitted from lights naturally refract through glass and reflect off mirrors (following specular chains) and are stored where they hit diffuse surfaces. This directly captures caustic light patterns ($LS^+D$ paths) that path tracing from the eye cannot efficiently find."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What data structure is typically used to store photons for efficient nearest-neighbor queries?",
+    "hint": "It is a spatial partitioning tree that splits along coordinate axes.",
+    "options": ["A) Hash grid", "B) Octree", "C) Kd-tree", "D) BVH (bounding volume hierarchy)"],
+    "answer_key": "C",
+    "explanation": "Jensen recommends a balanced kd-tree for the photon map. It supports efficient $k$-nearest-neighbor queries in $O(\\log n + k)$ time, handles non-uniform photon distributions well, and is compact in memory."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In the radiance estimate $L_r \\approx \\frac{1}{\\pi r^2} \\sum_{j=1}^{k} f_r \\Phi_j K(d_j/r)$, what does $\\pi r^2$ represent?",
+    "hint": "It is the area over which the photon density is estimated.",
+    "options": ["A) The total power of all $k$ photons", "B) The projected area of the disk enclosing the $k$ nearest photons on the surface", "C) The surface area of the sphere of radius $r$", "D) The solid angle of the hemisphere"],
+    "answer_key": "B",
+    "explanation": "$\\pi r^2$ is the area of the disk of radius $r$ centered at the query point, projected onto the surface plane. This is the area over which the $k$ nearest photons are distributed, used to convert total photon power to irradiance (power per unit area)."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why are photons NOT stored at specular surface interactions?",
+    "hint": "Think about what happens to light at a perfect mirror — does it scatter or redirect?",
+    "options": ["A) Specular surfaces do not obey the rendering equation", "B) Specular surfaces have delta-function BRDFs, so the photon would only contribute from one exact direction, making density estimation meaningless", "C) Specular surfaces absorb all photon energy", "D) Storing at specular surfaces would violate energy conservation"],
+    "answer_key": "B",
+    "explanation": "Specular surfaces (perfect mirrors, glass) have delta-function BRDFs — they redirect light in a single direction. Storing a photon at such a surface would require querying it from exactly the correct reflected/refracted direction, which density estimation over a neighborhood cannot provide. Instead, photons are traced through specular surfaces and only stored at diffuse interactions."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the bias-variance trade-off when choosing the number of nearest neighbors $k$ in photon mapping?",
+    "hint": "Larger $k$ means a larger search radius.",
+    "options": ["A) Large $k$: low bias, high variance. Small $k$: high bias, low variance.", "B) Large $k$: low variance but high bias (blurry). Small $k$: low bias but high variance (noisy).", "C) Both bias and variance decrease with larger $k$.", "D) The choice of $k$ does not affect the result."],
+    "answer_key": "B",
+    "explanation": "With large $k$, the search radius is large, averaging over many photons for a smooth result (low variance) but blurring fine details (high bias). With small $k$, the radius is small, preserving detail (low bias) but with few photons contributing, giving a noisy result (high variance). Typical values are $k \\in [50, 500]$."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "In Progressive Photon Mapping (Hachisuka 2008), the search radius is updated after each photon pass using $r_{i+1} = r_i \\sqrt{\\frac{N_i + \\alpha M_i}{N_i + M_i}}$. What does $\\alpha$ control?",
+    "hint": "$\\alpha \\in (0, 1)$ and a typical value is $2/3$.",
+    "options": ["A) The emission rate of photons from light sources", "B) The rate at which the search radius shrinks, balancing convergence speed against noise", "C) The kernel function shape", "D) The photon power normalization"],
+    "answer_key": "B",
+    "explanation": "$\\alpha \\in (0, 1)$ controls the radius reduction rate. Smaller $\\alpha$ means faster shrinking (faster bias reduction but slower variance reduction). Larger $\\alpha$ means slower shrinking (slower bias reduction but faster variance reduction). The typical value $\\alpha = 2/3$ provides a good balance. In the limit, the radius converges to zero, eliminating bias."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "What key property does Stochastic Progressive Photon Mapping (SPPM) add over standard Progressive Photon Mapping?",
+    "hint": "Think about what varies between iterations in SPPM vs. PPM.",
+    "options": ["A) SPPM uses a different kd-tree data structure", "B) SPPM re-traces eye paths with new random samples each iteration, enabling distributed effects like depth of field and motion blur", "C) SPPM stores photons in a hash grid instead of a kd-tree", "D) SPPM uses bidirectional path tracing instead of photon tracing"],
+    "answer_key": "B",
+    "explanation": "In standard PPM, the eye paths (visible hit points) are fixed across all iterations. SPPM re-traces the eye paths each iteration with new random jitter, allowing the algorithm to handle distributed effects: depth of field (varying lens position), motion blur (varying time), and glossy reflections (varying secondary ray directions). This makes SPPM a consistent estimator for the full rendering equation."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What does each photon in the photon map store? Name the three essential fields.",
+    "hint": "Think about what information is needed to reconstruct the light contribution at query time.",
+    "answer_key": "Position, incoming direction, and power (flux)",
+    "explanation": "Each photon stores: (1) its position in 3D space where it was deposited, (2) the incoming direction $\\omega$ from which it arrived, and (3) its power $\\Phi$ (flux in watts), representing the energy it carries. The incoming direction is needed to evaluate the BRDF at query time."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Why does Jensen recommend using two separate photon maps (caustic and global) instead of one?",
+    "hint": "Caustics are high-frequency; indirect diffuse is low-frequency.",
+    "answer_key": "Caustics are localized high-frequency features needing dense photons visualized directly, while indirect diffuse is smooth and can use a sparser map with final gather. Separating them allows each to use the appropriate resolution and estimation technique.",
+    "explanation": "The caustic map needs high photon density to resolve sharp focused light patterns and is visualized directly (no final gather). The global map handles smooth indirect illumination and can be sparser, using a final gather step for quality. A single map would either waste resources on the smooth component or blur the caustics."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is 'final gather' in the context of photon mapping, and why is it used?",
+    "hint": "It is an additional step in the rendering pass that shoots secondary rays.",
+    "answer_key": "Final gather shoots secondary rays from the visible point and queries the global photon map at the secondary hit points, averaging the results. This reduces the visible noise and boundary artifacts of directly visualizing the photon map.",
+    "explanation": "Directly visualizing the global photon map at primary hit points produces visible noise (splotchy artifacts) because photon density varies. Final gather traces many secondary rays from each visible point, queries the photon map at each secondary hit, and averages the results. This additional integration step smooths out the photon noise at the cost of extra ray tracing."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Is the standard photon map radiance estimate biased or unbiased? Explain briefly.",
+    "hint": "Consider what happens at an edge or corner where the search disk overlaps different surfaces.",
+    "answer_key": "Biased. The radiance estimate averages photons over a finite area (search radius r), blurring the true radiance. This systematic blurring is bias. The bias decreases as r shrinks (more photons, smaller radius).",
+    "explanation": "The radiance estimate uses $k$ nearest neighbors within a disk of radius $r$, effectively averaging the radiance over that area. If the true radiance varies within the disk (e.g., at shadow boundaries or across different surfaces), the estimate is systematically blurred — this is bias. The bias is $O(r^2)$ and vanishes only as $r \\to 0$ with photon count $\\to \\infty$."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "In progressive photon mapping, explain why the estimate converges to the correct result as the number of iterations approaches infinity.",
+    "hint": "What happens to the search radius and the accumulated photon count in the limit?",
+    "answer_key": "As iterations increase, the accumulated photon count grows to infinity while the search radius shrinks to zero. The infinite photon count eliminates variance, and the zero radius eliminates bias, so the estimate converges to the true radiance.",
+    "explanation": "After $i$ iterations with $n$ photons per iteration, the total photon count grows as $O(in)$ while the radius shrinks as $O(i^{(\\alpha-1)/2})$ where $\\alpha < 1$. In the limit: (1) $r \\to 0$ means the bias (spatial averaging error) vanishes, and (2) the photon count within the shrinking radius still grows without bound (since the total photon count grows faster than the area shrinks), ensuring variance also vanishes. This dual convergence guarantees the correct result."
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "You are performing photon mapping with $k = 4$ nearest photons at a Lambertian surface point ($f_r = 0.7/\\pi$). The photons have distances and powers as follows: $d = [0.03, 0.05, 0.08, 0.12]$ m, $\\Phi = [0.002, 0.004, 0.001, 0.003]$ W. Use a flat (box) kernel.",
+    "hint": "The search radius $r$ equals the distance to the farthest photon.",
+    "steps": [
+      {
+        "prompt": "What is the search radius $r$, and what is the search area $\\pi r^2$?",
+        "answer_key": "r = 0.12 m, area = pi * 0.0144 = 0.04524 m^2",
+        "explanation": "The search radius is the distance to the 4th (farthest) photon: $r = 0.12$ m. The search disk area is $\\pi r^2 = \\pi \\times 0.0144 = 0.04524$ m$^2$."
+      },
+      {
+        "prompt": "Compute the irradiance estimate $E = \\frac{1}{\\pi r^2} \\sum \\Phi_j$ (using the box kernel, all weights are 1).",
+        "answer_key": "E = (0.002 + 0.004 + 0.001 + 0.003) / 0.04524 = 0.010 / 0.04524 = 0.221 W/m^2",
+        "explanation": "Total flux: $\\sum \\Phi_j = 0.002 + 0.004 + 0.001 + 0.003 = 0.010$ W. Irradiance: $E = 0.010 / 0.04524 \\approx 0.221$ W/m$^2$."
+      },
+      {
+        "prompt": "Convert to reflected radiance using the BRDF $f_r = 0.7/\\pi$.",
+        "answer_key": "L_r = (0.7/pi) * 0.221 = 0.2228 * 0.221 = 0.0492 W/(m^2 sr)",
+        "explanation": "$L_r = f_r \\times E = (0.7/\\pi) \\times 0.221 = 0.2228 \\times 0.221 \\approx 0.0492$ W/(m$^2$sr). This is the radiance reflected from the surface point, reconstructed from just 4 photons."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "In Progressive Photon Mapping, a hit point starts with $N_0 = 0$ accumulated photons and $r_0 = 0.2$ m. After three photon passes, $M_1 = 8$, $M_2 = 15$, $M_3 = 10$ photons fall within the respective search radii. Use $\\alpha = 2/3$.",
+    "hint": "Apply the update formula $N_{i+1} = N_i + \\alpha M_{i+1}$, $r_{i+1} = r_i \\sqrt{\\frac{N_{i+1}}{N_i + M_{i+1}}}$ at each step.",
+    "steps": [
+      {
+        "prompt": "Compute $N_1$ and $r_1$ after the first photon pass ($M_1 = 8$).",
+        "answer_key": "N_1 = 0 + (2/3)(8) = 5.333, r_1 = 0.2 * sqrt(5.333/8) = 0.2 * 0.8165 = 0.1633 m",
+        "explanation": "$N_1 = 0 + (2/3) \\times 8 = 5.333$. $r_1 = 0.2 \\sqrt{5.333/8} = 0.2 \\sqrt{0.6667} = 0.2 \\times 0.8165 = 0.1633$ m."
+      },
+      {
+        "prompt": "Compute $N_2$ and $r_2$ after the second pass ($M_2 = 15$).",
+        "answer_key": "N_2 = 5.333 + (2/3)(15) = 15.333, r_2 = 0.1633 * sqrt(15.333/20.333) = 0.1633 * 0.8682 = 0.1418 m",
+        "explanation": "$N_2 = 5.333 + 10 = 15.333$. $r_2 = 0.1633 \\sqrt{15.333/(5.333 + 15)} = 0.1633 \\sqrt{15.333/20.333} = 0.1633 \\times 0.8682 = 0.1418$ m."
+      },
+      {
+        "prompt": "Compute $N_3$ and $r_3$ after the third pass ($M_3 = 10$). What fraction of the original radius remains?",
+        "answer_key": "N_3 = 15.333 + (2/3)(10) = 22.0, r_3 = 0.1418 * sqrt(22.0/25.333) = 0.1418 * 0.9319 = 0.1321 m. Fraction: 0.1321/0.2 = 66.1%",
+        "explanation": "$N_3 = 15.333 + 6.667 = 22.0$. $r_3 = 0.1418 \\sqrt{22.0/25.333} = 0.1418 \\times 0.9319 = 0.1321$ m. The radius has shrunk to $0.1321/0.2 = 66.1\\%$ of its original value after 3 passes, progressively reducing bias."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Explain the difference between the Epanechnikov kernel and the box (flat) kernel for photon map radiance estimation, and why the Epanechnikov kernel is considered statistically optimal.",
+    "hint": "Consider boundary discontinuities and the efficiency of the density estimator.",
+    "answer_key": "The box kernel weights all photons equally regardless of distance, causing a discontinuity at the boundary (photons just inside contribute fully, those just outside contribute nothing). The Epanechnikov kernel K(t) = 1 - t^2 smoothly decreases to zero at the boundary, eliminating the discontinuity. It is statistically optimal because it minimizes the mean integrated squared error among all non-negative kernels.",
+    "explanation": "The box kernel $K(t) = 1$ creates a hard boundary: a photon at distance $r - \\epsilon$ contributes fully, while one at $r + \\epsilon$ contributes nothing. This discontinuity produces visible artifacts at the search radius boundary. The Epanechnikov kernel $K(t) = 1 - t^2$ (for $t \\in [0,1]$) smoothly transitions to zero, eliminating boundary artifacts. It is proven to minimize the mean integrated squared error (MISE) among all kernels of compact support, making it the optimal choice in the statistical sense."
+  },
+  {
+    "id": 17,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In the photon tracing pass, how is photon power typically determined for each emitted photon?",
+    "hint": "The total emitted power must be distributed equally among all photons.",
+    "options": ["A) Each photon carries the full light power", "B) Photon power equals the light power divided by the number of photons: $\\Phi = P_\\text{light} / N_\\text{photons}$", "C) Photon power is set to 1.0 and scaled during rendering", "D) Photon power is proportional to the BRDF at the first hit"],
+    "answer_key": "B",
+    "explanation": "If a light source has total power $P$ and we emit $N$ photons, each photon carries power $\\Phi = P / N$. As photons bounce off surfaces, their power is modulated by the surface albedo (or more precisely by the BRDF evaluation divided by the sampling PDF). Russian roulette provides unbiased termination, with the continuation probability typically set to the surface albedo."
+  }
+]

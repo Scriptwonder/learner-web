@@ -1,0 +1,198 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What defines the Voronoi cell of a site $p_i$ in a Voronoi diagram?",
+    "hint": "Think about which points in the plane are closest to $p_i$ versus any other site.",
+    "options": ["A) The convex hull of all sites within distance $r$ of $p_i$", "B) The set of all points in the plane that are closer to $p_i$ than to any other site", "C) The circle centered at $p_i$ passing through the nearest neighboring site", "D) The triangle formed by $p_i$ and its two nearest neighbors"],
+    "answer_key": "B",
+    "explanation": "The Voronoi cell of $p_i$ is defined as $\\text{Vor}(p_i) = \\{ x \\in \\mathbb{R}^2 \\mid \\|x - p_i\\| \\leq \\|x - p_j\\| \\; \\forall \\; j \\neq i \\}$ — all points closer to $p_i$ than to any other site. Each cell is a convex polygon."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the fundamental property that defines a Delaunay triangulation?",
+    "hint": "Consider the circumscribed circle of each triangle and what must be true about the other points.",
+    "options": ["A) Every triangle has equal area", "B) No point lies inside the circumcircle of any triangle (the empty circumcircle property)", "C) All edges have equal length", "D) Every vertex has the same number of adjacent triangles"],
+    "answer_key": "B",
+    "explanation": "The Delaunay triangulation satisfies the empty circumcircle property: for every triangle in the triangulation, the circumscribed circle contains no other site from the point set in its interior."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the time complexity of Fortune's sweep line algorithm for constructing a Voronoi diagram?",
+    "hint": "It uses a priority queue and a balanced BST — both logarithmic data structures.",
+    "options": ["A) $O(n)$", "B) $O(n \\log n)$", "C) $O(n^2)$", "D) $O(n^2 \\log n)$"],
+    "answer_key": "B",
+    "explanation": "Fortune's algorithm runs in $O(n \\log n)$ time and $O(n)$ space. Each of the $O(n)$ site and circle events is processed in $O(\\log n)$ time using the beach line BST and event priority queue."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In the Bowyer-Watson algorithm, what happens when a new point is inserted into an existing Delaunay triangulation?",
+    "hint": "Think about which triangles violate the empty circumcircle property after the insertion.",
+    "options": ["A) All triangles are recomputed from scratch", "B) The triangle containing the point is split into three new triangles", "C) Triangles whose circumcircle contains the new point are removed, and the resulting polygonal hole is re-triangulated by connecting its boundary to the new point", "D) The nearest triangle is subdivided and all edges are flipped"],
+    "answer_key": "C",
+    "explanation": "Bowyer-Watson identifies all 'bad' triangles whose circumcircle contains the new point, removes them to create a star-shaped polygonal hole, then fills the hole by connecting each boundary edge to the new point. This directly restores the Delaunay property."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the geometric relationship between a Voronoi vertex and the corresponding Delaunay triangle?",
+    "hint": "A Voronoi vertex is equidistant from exactly three sites. What circle passes through three points?",
+    "options": ["A) The Voronoi vertex is the centroid of the Delaunay triangle", "B) The Voronoi vertex is the incenter (center of the inscribed circle) of the Delaunay triangle", "C) The Voronoi vertex is the circumcenter of the Delaunay triangle", "D) The Voronoi vertex lies at the midpoint of the longest edge of the Delaunay triangle"],
+    "answer_key": "C",
+    "explanation": "A Voronoi vertex is equidistant from exactly three sites, so it is the center of the circle passing through those three sites — the circumcenter of the corresponding Delaunay triangle. This is the core of the Voronoi-Delaunay duality."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In a Constrained Delaunay Triangulation (CDT), how is the Delaunay property modified to accommodate constraint edges?",
+    "hint": "Think about which points can 'see' a triangle — constraint edges act as visibility blockers.",
+    "options": ["A) The circumcircle property is completely abandoned for all triangles", "B) Only triangles not adjacent to constraint edges satisfy the circumcircle property", "C) Each triangle's circumcircle contains no point that is visible from the triangle's interior (where constraint edges block visibility)", "D) Constraint edges are subdivided until the standard Delaunay property is restored everywhere"],
+    "answer_key": "C",
+    "explanation": "In a CDT, the circumcircle of each triangle must contain no point that is visible from the triangle interior. A point $p$ is 'visible' if the segment from $p$ to the triangle interior does not cross any constraint edge. This relaxation allows constraint edges to exist while maintaining the Delaunay property where possible."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "In a power diagram with weighted sites, the bisector between two sites is a hyperplane (straight line in 2D). Why does the bisector remain linear, unlike the bisector in a multiplicatively weighted Voronoi diagram?",
+    "hint": "Write out the equation $\\|x - p_i\\|^2 - w_i = \\|x - p_j\\|^2 - w_j$ and simplify.",
+    "options": ["A) The weights cancel out due to symmetry", "B) The $\\|x\\|^2$ terms cancel when subtracting the two power distance equations, leaving a linear equation in $x$", "C) Power diagrams use Manhattan distance, which always produces linear bisectors", "D) The bisector is actually a parabola, not a hyperplane"],
+    "answer_key": "B",
+    "explanation": "Setting $\\|x - p_i\\|^2 - w_i = \\|x - p_j\\|^2 - w_j$ and expanding: $\\|x\\|^2 - 2x \\cdot p_i + \\|p_i\\|^2 - w_i = \\|x\\|^2 - 2x \\cdot p_j + \\|p_j\\|^2 - w_j$. The $\\|x\\|^2$ terms cancel, leaving $2x \\cdot (p_j - p_i) = \\|p_j\\|^2 - \\|p_i\\|^2 - w_j + w_i$, which is linear in $x$ — a hyperplane."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "What key property does the Delaunay triangulation optimize that makes it preferred for finite element meshes?",
+    "hint": "Thin, elongated triangles cause numerical problems in FEM. What angle metric does Delaunay optimize?",
+    "options": ["A) It minimizes the total edge length", "B) It maximizes the minimum interior angle across all triangles", "C) It minimizes the maximum area of any triangle", "D) It ensures all triangles are equilateral"],
+    "answer_key": "B",
+    "explanation": "The Delaunay triangulation maximizes the minimum angle among all possible triangulations of the same point set. This avoids sliver triangles with very small angles, which cause poor conditioning in FEM stiffness matrices and large interpolation errors."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "For a Voronoi diagram of $n$ points in general position in 2D, what is the asymptotic complexity (Big-O) of the number of Voronoi vertices?",
+    "hint": "By Euler's formula for planar graphs, the complexity is related to $n$.",
+    "answer_key": "O(n)",
+    "explanation": "A Voronoi diagram of $n$ sites in 2D has $O(n)$ vertices, edges, and faces. Specifically, if $h$ is the number of convex hull vertices, there are exactly $2n - h - 2$ Voronoi vertices and $3n - h - 3$ Voronoi edges."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "In the Bowyer-Watson algorithm, what is the purpose of the 'super-triangle' added at the beginning?",
+    "hint": "The algorithm needs an initial valid Delaunay triangulation before inserting any points.",
+    "answer_key": "It provides an initial triangulation that contains all points, which is needed as a starting point for incremental insertion.",
+    "explanation": "The super-triangle must be large enough to enclose all input points, providing a valid initial Delaunay triangulation (a single triangle). As points are inserted, they are added within this triangle. At the end, all triangles sharing a vertex with the super-triangle are removed, leaving only the Delaunay triangulation of the input points."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In Worley noise (cell noise), what do the values $F_1(x)$ and $F_2(x)$ represent, and what pattern does $F_2 - F_1$ produce?",
+    "hint": "$F_k$ is the distance to the $k$-th nearest feature point. Think about where $F_2 - F_1$ is small versus large.",
+    "answer_key": "$F_1$ is the distance to the nearest site, $F_2$ is the distance to the second nearest site. $F_2 - F_1$ produces cell outlines / edges because it is small near Voronoi boundaries and large near cell centers.",
+    "explanation": "$F_1(x)$ = distance from $x$ to the nearest feature point (cell center), $F_2(x)$ = distance to the second nearest. Near Voronoi edges, $F_1 \\approx F_2$ so $F_2 - F_1 \\approx 0$ (dark lines). At cell centers, $F_2 - F_1$ is large (bright). This creates the characteristic outlined-cell pattern used for cobblestone, scales, and cracked earth textures."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Given triangle $\\triangle ABC$ with $A = (0, 0)$, $B = (6, 0)$, $C = (3, 4)$, compute the circumcenter $(x_c, y_c)$.",
+    "hint": "The circumcenter is equidistant from all three vertices. Set $|PA|^2 = |PB|^2$ and $|PA|^2 = |PC|^2$ to get two linear equations.",
+    "answer_key": "(3, 7/8) or equivalently (3, 0.875)",
+    "explanation": "From $|PA|^2 = |PB|^2$: $x_c^2 + y_c^2 = (x_c - 6)^2 + y_c^2$, expanding: $12x_c = 36$, so $x_c = 3$. From $|PA|^2 = |PC|^2$: $x_c^2 + y_c^2 = (x_c - 3)^2 + (y_c - 4)^2$, expanding: $6x_c + 8y_c = 25$. Substituting $x_c = 3$: $18 + 8y_c = 25$, so $y_c = 7/8 = 0.875$. Circumcenter = $(3, 7/8)$."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "In Fortune's algorithm, what are the two types of events, and what does each event produce in the Voronoi diagram?",
+    "hint": "One event type occurs when the sweep line reaches a new site; the other occurs when three parabolic arcs on the beach line converge.",
+    "answer_key": "Site events (insert new arc into beach line, begin tracing a Voronoi edge) and circle events (three arcs converge, creating a Voronoi vertex and finalizing edges).",
+    "explanation": "A site event occurs when the sweep line reaches a new site, inserting a new parabolic arc into the beach line and beginning to trace new Voronoi edges at the breakpoints. A circle event occurs when three consecutive arcs converge and the middle arc shrinks to zero width — the convergence point is a Voronoi vertex where two edges meet, and a new edge begins."
+  },
+  {
+    "id": 14,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Explain why the in-circle determinant test $\\det \\begin{pmatrix} a_x & a_y & a_x^2 + a_y^2 & 1 \\\\ b_x & b_y & b_x^2 + b_y^2 & 1 \\\\ c_x & c_y & c_x^2 + c_y^2 & 1 \\\\ d_x & d_y & d_x^2 + d_y^2 & 1 \\end{pmatrix}$ determines whether point $d$ is inside the circumcircle of triangle $abc$.",
+    "hint": "Consider the paraboloid $z = x^2 + y^2$. Lifting points onto this surface transforms circles into planes.",
+    "answer_key": "Lifting 2D points onto the paraboloid $z = x^2 + y^2$ maps circles to plane intersections. The determinant checks whether $d$ is above or below the plane through the lifted images of $a, b, c$ — above means inside the circumcircle.",
+    "explanation": "The map $(x, y) \\to (x, y, x^2 + y^2)$ lifts points onto a 3D paraboloid. A circle in 2D maps to the intersection of the paraboloid with a plane. The 4x4 determinant checks the orientation of point $d$ relative to the plane through the lifted $a$, $b$, $c$. If $d$ lies below the plane (inside the projection of the half-space), it is inside the circumcircle. The sign of the determinant encodes this relationship."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Determine whether point $D = (2, 1)$ lies inside the circumcircle of triangle $\\triangle ABC$ with $A = (0, 0)$, $B = (4, 0)$, $C = (0, 4)$.",
+    "hint": "Use the in-circle determinant test with the translated coordinates (subtract $D$).",
+    "steps": [
+      {
+        "prompt": "Translate the points so that $D$ is at the origin. What are the new coordinates $A'$, $B'$, $C'$?",
+        "answer_key": "A' = (-2, -1), B' = (2, -1), C' = (-2, 3)",
+        "explanation": "Subtract $D = (2, 1)$ from each: $A' = (0-2, 0-1) = (-2, -1)$, $B' = (4-2, 0-1) = (2, -1)$, $C' = (0-2, 4-1) = (-2, 3)$."
+      },
+      {
+        "prompt": "Compute the $3 \\times 3$ in-circle determinant $\\det \\begin{pmatrix} a_x & a_y & a_x^2 + a_y^2 \\\\ b_x & b_y & b_x^2 + b_y^2 \\\\ c_x & c_y & c_x^2 + c_y^2 \\end{pmatrix}$ using the translated coordinates.",
+        "answer_key": "112",
+        "explanation": "$\\det \\begin{pmatrix} -2 & -1 & 5 \\\\ 2 & -1 & 5 \\\\ -2 & 3 & 13 \\end{pmatrix}$ $= -2[(-1)(13) - (5)(3)] - (-1)[(2)(13) - (5)(-2)] + 5[(2)(3) - (-1)(-2)]$ $= -2(-28) + 1(36) + 5(4) = 56 + 36 + 20 = 112$. Since $112 > 0$ (for CCW-oriented $\\triangle ABC$), point $D$ is inside the circumcircle."
+      },
+      {
+        "prompt": "Based on the sign of the determinant, is $D$ inside or outside the circumcircle? What does this mean for a Delaunay triangulation containing $\\triangle ABC$?",
+        "answer_key": "D is inside the circumcircle (determinant > 0). This means triangle ABC is not Delaunay if D is in the point set; the edge opposite D must be flipped.",
+        "explanation": "Since the determinant is positive (for CCW triangle orientation), $D$ lies inside the circumcircle of $\\triangle ABC$, violating the empty circumcircle property. In a Delaunay triangulation, the diagonal connecting $A$ and $B$ (or whichever edge is opposite $D$) would need to be flipped to restore the Delaunay property."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "Using the Bowyer-Watson algorithm, insert point $P = (1, 1)$ into a triangulation consisting of a single triangle $\\triangle ABC$ with $A = (0, 0)$, $B = (4, 0)$, $C = (2, 3)$.",
+    "hint": "First check if $P$ is inside the circumcircle of $\\triangle ABC$, then identify the boundary polygon.",
+    "steps": [
+      {
+        "prompt": "Compute the circumcenter of $\\triangle ABC$ and check whether $P = (1, 1)$ is inside the circumcircle.",
+        "answer_key": "Circumcenter is at $(2, 5/6)$ with radius $\\approx 2.11$. Distance from circumcenter to $P$ is $\\approx 1.02 < 2.11$, so $P$ is inside.",
+        "explanation": "From $|OA|^2 = |OB|^2$: $x^2 + y^2 = (x-4)^2 + y^2 \\Rightarrow x = 2$. From $|OA|^2 = |OC|^2$: $4 + y^2 = (2-2)^2 + (y-3)^2 = 9 - 6y + y^2 \\Rightarrow 6y = 5 \\Rightarrow y = 5/6$. Circumcenter = $(2, 5/6)$. Radius = $\\sqrt{4 + 25/36} = \\sqrt{169/36} = 13/6 \\approx 2.167$. Distance to $P$: $\\sqrt{1 + 1/36} = \\sqrt{37/36} \\approx 1.014 < 2.167$. Yes, $P$ is inside."
+      },
+      {
+        "prompt": "Since $\\triangle ABC$ is the only triangle and $P$ is in its circumcircle, what is the boundary polygon? What new triangles are created?",
+        "answer_key": "Boundary polygon is edges AB, BC, CA (the entire triangle boundary). New triangles: $\\triangle ABP$, $\\triangle BCP$, $\\triangle CAP$.",
+        "explanation": "With only one triangle, all three edges are on the boundary (none are shared with another bad triangle). The triangle is removed and replaced by three new triangles connecting each boundary edge to $P$: $\\triangle ABP = \\triangle(A, B, P)$, $\\triangle BCP = \\triangle(B, C, P)$, $\\triangle CAP = \\triangle(C, A, P)$."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "The Euclidean minimum spanning tree (EMST) of a point set is always a subset of the Delaunay triangulation. Why does this property allow the EMST to be computed in $O(n \\log n)$ time?",
+    "hint": "How many edges does a Delaunay triangulation have compared to the complete graph? What is the complexity of MST on a sparse graph?",
+    "answer_key": "The Delaunay triangulation has $O(n)$ edges (vs. $O(n^2)$ in the complete graph). Computing DT takes $O(n \\log n)$, then running Kruskal's/Prim's on $O(n)$ edges takes $O(n \\log n)$, giving $O(n \\log n)$ total.",
+    "explanation": "Computing the EMST directly on the complete graph of $n$ points would require $O(n^2)$ edges and $O(n^2 \\log n)$ time. Since EMST $\\subseteq$ DT and DT has only $O(n)$ edges, we first build the DT in $O(n \\log n)$, then compute MST on this sparse graph in $O(n \\log n)$ (e.g., Kruskal's with sorting). Total: $O(n \\log n)$."
+  },
+  {
+    "id": 18,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which of the following is NOT a common application of Voronoi diagrams in computer graphics?",
+    "hint": "Think about what Voronoi diagrams partition and what they cannot directly represent.",
+    "options": ["A) Procedural destruction / shattering of objects", "B) Cell noise for texture generation", "C) Shadow map generation", "D) Terrain biome assignment and LOD"],
+    "answer_key": "C",
+    "explanation": "Shadow maps use depth buffers rendered from the light's perspective and have nothing to do with Voronoi partitioning. Voronoi diagrams are widely used for procedural destruction (Voronoi fracture), cell noise (Worley noise), and terrain generation (biome assignment, view-dependent LOD)."
+  }
+]

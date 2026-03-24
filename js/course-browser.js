@@ -1,6 +1,6 @@
 const courseList = document.getElementById('course-list');
 
-const COURSE_IDS = ['math-for-cg', 'advanced-cg-math'];
+const COURSE_IDS = ['math-for-cg', 'advanced-cg-math', 'applied-cg-math'];
 
 // Store manifests keyed by course id
 const courseManifests = {};
@@ -150,7 +150,7 @@ async function openLesson(courseId, lessonId) {
     // Update URL
     updateHash(courseId, lessonId);
     // Load 3D visualization
-    if (window.Visualizer) Visualizer.load(lessonId);
+    if (window.Visualizer) Visualizer.load(lessonId, courseId);
   } catch (err) {
     alert('Failed to load lesson: ' + err.message);
   }

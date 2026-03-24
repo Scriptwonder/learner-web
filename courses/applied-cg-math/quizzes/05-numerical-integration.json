@@ -1,0 +1,204 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the order of accuracy of the explicit (forward) Euler method?",
+    "hint": "Think about how the global error scales with the timestep $\\Delta t$.",
+    "options": ["A) Zeroth-order", "B) First-order", "C) Second-order", "D) Fourth-order"],
+    "answer_key": "B",
+    "explanation": "Explicit Euler has a local truncation error of $O(\\Delta t^2)$ per step, which accumulates to a global error of $O(\\Delta t)$, making it a first-order method."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What key property makes symplectic integrators preferred for long-running physics simulations?",
+    "hint": "Think about what happens to total energy over time.",
+    "options": ["A) They are higher-order accurate", "B) They require fewer function evaluations", "C) They conserve phase-space volume and prevent energy drift", "D) They are unconditionally stable for all systems"],
+    "answer_key": "C",
+    "explanation": "Symplectic integrators preserve the symplectic structure of Hamiltonian systems, which means energy oscillates around the true value but does not systematically drift. This prevents simulations from exploding or decaying over time."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "How does symplectic Euler differ from explicit Euler?",
+    "hint": "Look at which velocity is used to update position.",
+    "options": ["A) It uses a smaller timestep", "B) It updates velocity first, then uses the new velocity to update position", "C) It evaluates forces at the midpoint", "D) It uses implicit integration for both position and velocity"],
+    "answer_key": "B",
+    "explanation": "Symplectic Euler updates velocity first ($v_{n+1} = v_n + \\Delta t \\cdot a_n$), then uses the updated velocity to advance position ($x_{n+1} = x_n + \\Delta t \\cdot v_{n+1}$). This small change makes the method symplectic."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the global error order of the Velocity Verlet integrator?",
+    "hint": "The method uses both current and next-step accelerations.",
+    "options": ["A) $O(\\Delta t)$", "B) $O(\\Delta t^2)$", "C) $O(\\Delta t^3)$", "D) $O(\\Delta t^4)$"],
+    "answer_key": "B",
+    "explanation": "Velocity Verlet is a second-order method. The derivation from adding forward and backward Taylor expansions cancels odd-order error terms, giving a local error of $O(\\Delta t^3)$ and global error of $O(\\Delta t^2)$."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "How many function evaluations (force computations) does one step of RK4 require?",
+    "hint": "Count the $k$ stages in the RK4 formula.",
+    "options": ["A) 1", "B) 2", "C) 3", "D) 4"],
+    "answer_key": "D",
+    "explanation": "RK4 evaluates the derivative function four times per step: at the current point ($k_1$), twice at the midpoint ($k_2$, $k_3$), and once at the endpoint ($k_4$)."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "For the test equation $y' = \\lambda y$ with $\\lambda = i\\omega$ (purely imaginary), what is the amplification factor of explicit Euler?",
+    "hint": "Substitute $z = \\lambda \\Delta t = i\\omega\\Delta t$ into $R(z) = 1 + z$.",
+    "options": ["A) $|R| = 1$ exactly", "B) $|R| = \\sqrt{1 + \\omega^2 \\Delta t^2} > 1$", "C) $|R| = 1 - \\omega^2 \\Delta t^2 < 1$", "D) $|R| = \\omega \\Delta t$"],
+    "answer_key": "B",
+    "explanation": "For explicit Euler, $R(z) = 1 + z = 1 + i\\omega\\Delta t$. The magnitude is $|R| = \\sqrt{1^2 + (\\omega\\Delta t)^2} = \\sqrt{1 + \\omega^2\\Delta t^2}$, which is always greater than 1. This means explicit Euler always adds energy to oscillatory systems."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Which integrator is NOT symplectic?",
+    "hint": "One of these methods does not preserve phase-space volume.",
+    "options": ["A) Symplectic Euler", "B) Velocity Verlet", "C) Störmer-Verlet", "D) Runge-Kutta 4"],
+    "answer_key": "D",
+    "explanation": "RK4 is not symplectic. While it achieves fourth-order accuracy, it does not preserve the symplectic structure and will exhibit slow energy drift in conservative systems like orbits and undamped oscillators."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "In the RK4 formula $y_{n+1} = y_n + \\frac{\\Delta t}{6}(k_1 + 2k_2 + 2k_3 + k_4)$, why are the weights $(1, 2, 2, 1)$?",
+    "hint": "Think about which quadrature rule these weights resemble.",
+    "options": ["A) They minimize computational cost", "B) They match the Taylor expansion through fourth-order terms, resembling Simpson's rule", "C) They are arbitrary and any weights would give fourth-order accuracy", "D) They ensure the method is symplectic"],
+    "answer_key": "B",
+    "explanation": "The weights $(1, 2, 2, 1)/6$ are derived by matching the Taylor series of the true solution through the fourth-order term. They follow a Simpson's-rule-like pattern: endpoints weighted 1, midpoints weighted 2, all divided by 6."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "A spring has stiffness $k = 400$ N/m and mass $m = 1$ kg. What is the natural frequency $\\omega = \\sqrt{k/m}$?",
+    "hint": "Just compute $\\sqrt{400/1}$.",
+    "answer_key": "20",
+    "explanation": "$\\omega = \\sqrt{k/m} = \\sqrt{400/1} = 20$ rad/s."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "For a system with natural frequency $\\omega = 50$ rad/s, what is the maximum stable timestep for explicit Euler (approximately)? Express in seconds.",
+    "hint": "The stability limit is $\\Delta t < 2/\\omega$.",
+    "answer_key": "0.04",
+    "explanation": "The stability limit for explicit methods with purely imaginary eigenvalues is approximately $\\Delta t < 2/\\omega = 2/50 = 0.04$ s."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Using explicit Euler with $\\Delta t = 0.1$, if the current state is $x = 2.0$ and $v = -3.0$ (no forces), what is $x$ at the next step?",
+    "hint": "$x_{n+1} = x_n + \\Delta t \\cdot v_n$.",
+    "answer_key": "1.7",
+    "explanation": "$x_{n+1} = x_n + \\Delta t \\cdot v_n = 2.0 + 0.1 \\times (-3.0) = 2.0 - 0.3 = 1.7$."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In the Velocity Verlet formula, the new position depends on $v_n$ and $a_n$. What is the coefficient in front of $\\Delta t^2 \\cdot a_n$ in the position update?",
+    "hint": "The position update is $x_{n+1} = x_n + \\Delta t \\cdot v_n + ? \\cdot \\Delta t^2 \\cdot a_n$.",
+    "answer_key": "0.5",
+    "explanation": "The Velocity Verlet position update is $x_{n+1} = x_n + \\Delta t \\cdot v_n + \\frac{1}{2}\\Delta t^2 \\cdot a_n$. The coefficient is $1/2 = 0.5$."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "The amplification factor of explicit Euler for the test equation is $R(z) = 1 + z$. For a real negative eigenvalue $\\lambda = -10$ and $\\Delta t = 0.15$, what is $|R(z)|$?",
+    "hint": "Compute $z = \\lambda \\Delta t = -1.5$, then $|R| = |1 + z| = |1 - 1.5|$.",
+    "answer_key": "0.5",
+    "explanation": "$z = \\lambda \\Delta t = -10 \\times 0.15 = -1.5$. $R(z) = 1 + (-1.5) = -0.5$. $|R(z)| = 0.5 < 1$, so this timestep is stable (though the sign flip means the solution oscillates)."
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A spring-mass system has $k = 25$ N/m, $m = 1$ kg, starting at $x_0 = 2$, $v_0 = 0$. Perform one step of symplectic Euler with $\\Delta t = 0.1$.",
+    "hint": "The force is $F = -kx$. Update velocity first, then position.",
+    "steps": [
+      {
+        "prompt": "What is the acceleration $a_0 = F(x_0)/m = -kx_0/m$?",
+        "answer_key": "-50",
+        "explanation": "$a_0 = -kx_0/m = -25 \\times 2 / 1 = -50$ m/s$^2$."
+      },
+      {
+        "prompt": "What is the new velocity $v_1 = v_0 + \\Delta t \\cdot a_0$?",
+        "answer_key": "-5",
+        "explanation": "$v_1 = 0 + 0.1 \\times (-50) = -5$ m/s."
+      },
+      {
+        "prompt": "What is the new position $x_1 = x_0 + \\Delta t \\cdot v_1$ (using the updated velocity)?",
+        "answer_key": "1.5",
+        "explanation": "$x_1 = 2 + 0.1 \\times (-5) = 2 - 0.5 = 1.5$. Note we used $v_1$ (not $v_0$) — this is what makes it symplectic."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Compute one step of RK4 for $y' = -2y$, with $y_0 = 1$ and $\\Delta t = 0.5$.",
+    "hint": "Apply the four stages: $k_1 = f(y_n)$, $k_2 = f(y_n + 0.5 \\Delta t \\cdot k_1)$, etc.",
+    "steps": [
+      {
+        "prompt": "Compute $k_1 = f(y_0) = -2y_0$.",
+        "answer_key": "-2",
+        "explanation": "$k_1 = f(1) = -2 \\times 1 = -2$."
+      },
+      {
+        "prompt": "Compute $k_2 = f(y_0 + 0.5 \\cdot \\Delta t \\cdot k_1)$. First find the argument: $y_0 + 0.25 \\cdot k_1$.",
+        "answer_key": "-1",
+        "explanation": "Argument: $1 + 0.5 \\times 0.5 \\times (-2) = 1 - 0.5 = 0.5$. $k_2 = -2 \\times 0.5 = -1$."
+      },
+      {
+        "prompt": "Compute $k_3$ and $k_4$, then the final result $y_1 = y_0 + \\frac{\\Delta t}{6}(k_1 + 2k_2 + 2k_3 + k_4)$.",
+        "answer_key": "0.375",
+        "explanation": "$k_3 = f(y_0 + 0.5 \\Delta t \\cdot k_2) = f(1 + 0.25(-1)) = f(0.75) = -1.5$. $k_4 = f(y_0 + \\Delta t \\cdot k_3) = f(1 + 0.5(-1.5)) = f(0.25) = -0.5$. Weighted sum: $k_1 + 2k_2 + 2k_3 + k_4 = -2 + 2(-1) + 2(-1.5) + (-0.5) = -7.5$. $y_1 = 1 + (0.5/6)(-7.5) = 1 - 0.625 = 0.375$. The exact answer is $e^{-1} \\approx 0.3679$; RK4 gives $0.375$, an error of about $1.9\\%$."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "The CFL condition for a wave equation with speed $c = 340$ m/s on a grid with spacing $\\Delta x = 0.01$ m requires $\\Delta t \\leq \\Delta x / c$. What is the maximum timestep in microseconds (rounded to nearest integer)?",
+    "hint": "$\\Delta t \\leq 0.01 / 340$ seconds, then convert to microseconds.",
+    "answer_key": "29",
+    "explanation": "$\\Delta t \\leq 0.01/340 \\approx 2.941 \\times 10^{-5}$ s $= 29.41$ $\\mu$s $\\approx 29$ $\\mu$s."
+  },
+  {
+    "id": 17,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In game development, what technique is commonly used to ensure physics stability at high frame rates without changing the integrator?",
+    "hint": "Running physics more often than rendering.",
+    "options": ["A) Increasing the rendering resolution", "B) Using substeps (multiple physics updates per frame)", "C) Switching to double-precision floating point", "D) Adding random noise to forces"],
+    "answer_key": "B",
+    "explanation": "Substeps run the physics integrator at a higher rate than the rendering framerate. For example, 4 substeps at 60 Hz display means physics runs at 240 Hz, allowing a smaller effective $\\Delta t$ for stability."
+  },
+  {
+    "id": 18,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why does the Störmer-Verlet method achieve second-order accuracy despite appearing similar to Euler?",
+    "hint": "Think about which Taylor expansion terms cancel when you add forward and backward expansions.",
+    "options": ["A) It uses a smaller timestep internally", "B) Adding forward and backward Taylor expansions cancels odd-order error terms", "C) It evaluates forces at multiple points like RK4", "D) It uses implicit integration"],
+    "answer_key": "B",
+    "explanation": "Störmer-Verlet adds $x(t+\\Delta t)$ and $x(t-\\Delta t)$. The first-order ($\\Delta t \\cdot v$) and third-order ($\\Delta t^3$) terms have opposite signs and cancel, leaving only even-order terms. The leading error is $O(\\Delta t^4)$ per step, giving $O(\\Delta t^2)$ global accuracy."
+  }
+]
