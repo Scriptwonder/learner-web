@@ -1,0 +1,198 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In the Cook-Torrance specular BRDF $\\frac{D \\cdot F \\cdot G}{4 (\\omega_i \\cdot \\mathbf{n})(\\omega_o \\cdot \\mathbf{n})}$, what does the Normal Distribution Function $D$ represent?",
+    "hint": "Think about a rough surface as composed of tiny flat mirrors (microfacets) — which ones can bounce light from $\\omega_i$ to $\\omega_o$?",
+    "options": ["A) The probability that a random photon is absorbed by the surface", "B) The statistical distribution of microfacet normals — specifically, the density of facets aligned with the half-vector", "C) The fraction of light that is reflected vs. refracted at a surface boundary", "D) The fraction of microfacets that are visible to both the light source and the camera"],
+    "answer_key": "B",
+    "explanation": "The NDF $D(\\mathbf{h})$ describes the concentration of microfacet normals around the half-vector $\\mathbf{h}$. Only microfacets whose normal equals $\\mathbf{h}$ can reflect light from $\\omega_i$ to $\\omega_o$. GGX/Trowbridge-Reitz is the standard NDF used in modern PBR."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why does the GGX (Trowbridge-Reitz) normal distribution function produce more realistic highlights than the Beckmann distribution?",
+    "hint": "Compare how quickly the specular highlight intensity drops off at grazing angles between the two models.",
+    "options": ["A) GGX is computationally cheaper to evaluate", "B) GGX has longer tails, producing a gradual highlight falloff that matches real-world materials", "C) GGX does not require a roughness parameter", "D) GGX handles transparency better than Beckmann"],
+    "answer_key": "B",
+    "explanation": "GGX has wider, longer tails compared to Beckmann. This means the specular highlight falls off more gradually at the edges, producing the characteristic soft halo seen on rough metals and plastics. This was demonstrated by Walter et al. (2007)."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In the metallic-roughness PBR workflow, what happens when the metallic parameter is set to 1.0?",
+    "hint": "Metals absorb refracted light immediately. Where does their color come from?",
+    "options": ["A) The surface becomes fully transparent", "B) The base color is used as the diffuse color and $F_0 = 0.04$", "C) The base color is used as $F_0$ (colored specular), and the diffuse term is set to zero", "D) Roughness is automatically set to 0 for a mirror-like finish"],
+    "answer_key": "C",
+    "explanation": "Metals absorb refracted light immediately, so they have no diffuse component. The base color becomes the specular $F_0$, giving metals their characteristic colored reflections (e.g., gold reflects yellow-orange). This is why $k_D$ is multiplied by $(1 - \\text{metallic})$ in the shader."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "The split-sum approximation (Karis 2013) for image-based lighting factors the rendering integral into which two precomputed components?",
+    "hint": "One component depends only on the environment map and roughness; the other depends only on the viewing angle and roughness.",
+    "options": ["A) A shadow map and a normal map", "B) A pre-filtered environment map (indexed by roughness) and a 2D BRDF integration LUT", "C) A diffuse irradiance map and a specular reflection probe", "D) A hemisphere visibility buffer and a light attenuation texture"],
+    "answer_key": "B",
+    "explanation": "The split-sum approximation separates $\\int f_r \\cdot L_i \\cdot \\cos\\theta\\,d\\omega$ into (1) a pre-filtered environment map convolved with the GGX lobe at each roughness level, and (2) a 2D lookup texture indexed by $(\\cos\\theta_v, \\text{roughness})$ that stores a scale and bias for $F_0$."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Using Schlick's approximation, what is the Fresnel reflectance $F_0$ for a dielectric material with index of refraction $n = 1.5$ (typical glass) in air ($n_1 = 1.0$)?",
+    "hint": "$F_0 = \\left(\\frac{n_1 - n_2}{n_1 + n_2}\\right)^2$. Plug in the values.",
+    "answer_key": "0.04",
+    "explanation": "$F_0 = \\left(\\frac{n_1 - n_2}{n_1 + n_2}\\right)^2 = \\left(\\frac{1.0 - 1.5}{1.0 + 1.5}\\right)^2 = \\left(\\frac{-0.5}{2.5}\\right)^2 = 0.04$. This means glass reflects only 4% of light at normal incidence."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Name the three properties that a physically valid BRDF must satisfy.",
+    "hint": "Think about: can it produce negative light? Does swapping in/out directions matter? Can it create energy from nothing?",
+    "answer_key": "positivity, Helmholtz reciprocity, energy conservation",
+    "explanation": "A valid BRDF must be non-negative (positivity), symmetric with respect to swapping incoming and outgoing directions (Helmholtz reciprocity), and must not reflect more light than it receives (energy conservation: $\\int f_r \\cos\\theta\\,d\\omega \\leq 1$)."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the half-vector $\\mathbf{h}$ used in microfacet BRDFs?",
+    "hint": "It is the direction that a microfacet must face to perfectly reflect light from $\\omega_i$ to $\\omega_o$.",
+    "options": ["A) The average of the surface normal and the light direction", "B) The normalized sum of the incoming and outgoing light directions: $\\mathbf{h} = \\frac{\\omega_i + \\omega_o}{|\\omega_i + \\omega_o|}$", "C) The cross product of the light and view directions", "D) The surface normal projected onto the light plane"],
+    "answer_key": "B",
+    "explanation": "The half-vector $\\mathbf{h} = \\text{normalize}(\\omega_i + \\omega_o)$ is the unique direction such that a perfect mirror with normal $\\mathbf{h}$ would reflect $\\omega_i$ into $\\omega_o$. The NDF $D(\\mathbf{h})$ measures how many microfacets are aligned with this direction."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What physical phenomenon does Schlick's Fresnel approximation model?",
+    "hint": "Think about how a lake's surface looks at different viewing angles — directly down vs. at a shallow angle.",
+    "options": ["A) Diffuse subsurface scattering", "B) The increase in reflectance at grazing angles (the Fresnel effect)", "C) Color absorption as light passes through a material", "D) The roughness-dependent width of specular highlights"],
+    "answer_key": "B",
+    "explanation": "Schlick's approximation $F(\\theta) = F_0 + (1 - F_0)(1 - \\cos\\theta)^5$ models how reflectance increases as the viewing angle becomes more grazing. At normal incidence, reflectance is $F_0$; at grazing angles, it approaches 1.0 for all materials. This is why floors and water appear more reflective when viewed at shallow angles."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the standard $F_0$ value used for all non-metallic (dielectric) materials in the metallic-roughness PBR workflow?",
+    "hint": "This value corresponds to a typical index of refraction around 1.5.",
+    "options": ["A) 0.0", "B) 0.02", "C) 0.04", "D) 0.5"],
+    "answer_key": "C",
+    "explanation": "$F_0 = 0.04$ is the standard value for dielectrics in the metallic-roughness workflow. It corresponds to an IOR of approximately 1.5, which covers most common non-metallic materials (plastic, glass, wood, stone). Gemstones like diamond ($F_0 \\approx 0.17$) are notable exceptions."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "In the Lambertian diffuse BRDF, what is the value of $f_r$ for a surface with albedo $\\rho$?",
+    "hint": "Lambertian diffuse reflection is constant in all directions. The factor of $\\pi$ comes from energy conservation.",
+    "answer_key": "rho / pi",
+    "explanation": "The Lambertian BRDF is $f_r = \\frac{\\rho}{\\pi}$, where $\\rho$ is the diffuse albedo (0 to 1). The $\\frac{1}{\\pi}$ factor ensures energy conservation: $\\int_{\\Omega} \\frac{\\rho}{\\pi} \\cos\\theta\\,d\\omega = \\rho \\leq 1$."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What role does the geometry/masking-shadowing function $G(\\omega_i, \\omega_o, \\mathbf{h})$ play in the Cook-Torrance BRDF?",
+    "hint": "Microfacets can block each other. Think about two effects: a facet being hidden from the light source, and hidden from the camera.",
+    "answer_key": "It accounts for self-shadowing and self-masking of microfacets — the fraction of facets that are visible from both the light and the viewer",
+    "explanation": "The $G$ term models the fraction of microfacets that are not blocked by neighboring facets. Shadowing occurs when a facet is occluded from the light source by a taller neighboring facet; masking occurs when it is occluded from the viewer. Smith's height-correlated form is the standard: $G \\approx G_1(\\omega_i) \\cdot G_1(\\omega_o)$."
+  },
+  {
+    "id": 12,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the roughness parameter $\\alpha$ in the GGX NDF, and how does it relate to the perceptual roughness used in artist-facing PBR tools?",
+    "hint": "Artists typically author a perceptual roughness that is remapped before being plugged into the NDF.",
+    "options": ["A) $\\alpha$ equals the perceptual roughness directly", "B) $\\alpha = \\text{roughness}^2$ — perceptual roughness is squared to produce a more linear visual response", "C) $\\alpha = 1 - \\text{roughness}$", "D) $\\alpha = \\sqrt{\\text{roughness}}$"],
+    "answer_key": "B",
+    "explanation": "The standard remapping is $\\alpha = \\text{roughness}^2$ (sometimes called $\\alpha_{\\text{linear}}$). This squaring gives artists a perceptually more linear control: equal increments in the authored roughness slider produce roughly equal visual changes in highlight size. Without squaring, low roughness values would appear to change too quickly."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Using Schlick's approximation $F(\\theta) = F_0 + (1 - F_0)(1 - \\cos\\theta)^5$, compute the Fresnel reflectance for gold ($F_0 \\approx 1.0$ for the red channel) at $\\theta = 60°$.",
+    "hint": "What happens when $F_0$ is already close to 1.0? The $(1 - F_0)$ term controls how much the angle matters.",
+    "answer_key": "1.0",
+    "explanation": "$F(60°) = 1.0 + (1 - 1.0)(1 - \\cos 60°)^5 = 1.0 + 0 \\cdot (0.5)^5 = 1.0$. When $F_0 = 1.0$, the Fresnel reflectance is 1.0 at all angles — the material reflects 100% of light regardless of incidence angle. This is why highly reflective metals show little angular variation in their dominant reflection channel."
+  },
+  {
+    "id": 14,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Why does the denominator of the Cook-Torrance BRDF contain $4 (\\omega_i \\cdot \\mathbf{n})(\\omega_o \\cdot \\mathbf{n})$?",
+    "hint": "It comes from the Jacobian of the transformation between the microfacet normal distribution and the reflected direction distribution.",
+    "options": ["A) It normalizes the BRDF to integrate to 1 over the hemisphere", "B) It corrects for the projection of the differential solid angle from microfacet normal space to incident/outgoing direction space", "C) It accounts for the ambient light contribution", "D) It converts from radiance to irradiance units"],
+    "answer_key": "B",
+    "explanation": "The $4 (\\omega_i \\cdot \\mathbf{n})(\\omega_o \\cdot \\mathbf{n})$ factor arises from the change of variables when converting the NDF (a distribution over microfacet normals $\\mathbf{h}$) into a BRDF (a function of incident and outgoing directions). The factor of 4 comes from the Jacobian of the reflection mapping, and the cosine terms come from the projected solid angle transformation."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Compute the Schlick Fresnel reflectance for water ($n = 1.33$) viewed at an angle of $\\theta = 80°$ from the normal.",
+    "hint": "First compute $F_0$ from the IOR, then apply Schlick's formula.",
+    "steps": [
+      {
+        "prompt": "Compute $F_0$ for water with $n = 1.33$ in air ($n_1 = 1.0$).",
+        "answer_key": "0.02",
+        "explanation": "$F_0 = \\left(\\frac{1.0 - 1.33}{1.0 + 1.33}\\right)^2 = \\left(\\frac{-0.33}{2.33}\\right)^2 = (0.1416)^2 \\approx 0.02$."
+      },
+      {
+        "prompt": "Apply Schlick's formula with $\\cos(80°) \\approx 0.1736$. Compute $(1 - \\cos\\theta)^5$.",
+        "answer_key": "0.3487",
+        "explanation": "$(1 - 0.1736)^5 = (0.8264)^5$. Step by step: $0.8264^2 = 0.6829$, $0.6829 \\times 0.8264 = 0.5643$, $0.5643 \\times 0.8264 = 0.4665$, $0.4665 \\times 0.8264 = 0.3856$. So $(1 - \\cos 80°)^5 \\approx 0.386$."
+      },
+      {
+        "prompt": "Compute the final Fresnel reflectance $F(80°)$.",
+        "answer_key": "0.398",
+        "explanation": "$F(80°) = 0.02 + (1 - 0.02)(0.386) = 0.02 + 0.98 \\times 0.386 = 0.02 + 0.378 \\approx 0.398$. Water reflects about 40% of light at $80°$ — a dramatic increase from the 2% at normal incidence. This is why lakes appear highly reflective at shallow viewing angles."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "You are implementing the PBR metallic-roughness workflow. Given base color $\\vec{c} = (0.9, 0.6, 0.2)$ (gold-like), metallic $= 0.8$, and dielectric $F_0 = 0.04$.",
+    "hint": "The metallic parameter blends between dielectric and metal behavior for both the diffuse and specular terms.",
+    "steps": [
+      {
+        "prompt": "Compute the effective $F_0$ by linearly interpolating between the dielectric $F_0$ (0.04) and the base color based on the metallic parameter.",
+        "answer_key": "(0.732, 0.492, 0.172)",
+        "explanation": "$F_0' = \\text{lerp}(0.04, \\vec{c}, \\text{metallic}) = (1 - 0.8) \\cdot 0.04 + 0.8 \\cdot (0.9, 0.6, 0.2) = (0.008, 0.008, 0.008) + (0.72, 0.48, 0.16) = (0.728, 0.488, 0.168)$. Approximately $(0.73, 0.49, 0.17)$."
+      },
+      {
+        "prompt": "Compute the diffuse albedo, accounting for the metallic parameter.",
+        "answer_key": "(0.18, 0.12, 0.04)",
+        "explanation": "$k_D = \\vec{c} \\cdot (1 - \\text{metallic}) = (0.9, 0.6, 0.2) \\cdot 0.2 = (0.18, 0.12, 0.04)$. Since metallic = 0.8, only 20% of the base color contributes to diffuse reflection. A fully metallic surface (metallic = 1.0) would have zero diffuse."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What does the acronym PBR stand for in the context of real-time rendering?",
+    "hint": "It describes a rendering approach grounded in real-world light behavior.",
+    "answer_key": "Physically Based Rendering",
+    "explanation": "PBR stands for Physically Based Rendering. It refers to shading models that approximate the physics of light-surface interaction, using energy-conserving BRDFs, Fresnel reflectance, and measured material properties to produce consistent, realistic results across all lighting conditions."
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Explain why the energy conservation constraint for the combined diffuse + specular BRDF requires multiplying the diffuse term by $(1 - F)$ in addition to $(1 - \\text{metallic})$.",
+    "hint": "Light that is reflected (Fresnel) cannot also be refracted and contribute to diffuse scattering.",
+    "answer_key": "Light reflected at the surface (fraction F) never enters the material, so only the transmitted fraction (1 - F) can contribute to subsurface diffuse scattering",
+    "explanation": "The Fresnel term $F$ gives the fraction of incoming light that is reflected at the surface interface. The remaining fraction $(1 - F)$ is transmitted into the material, where it may be scattered back out as diffuse light. Multiplying the diffuse term by $(1 - F)$ ensures that reflected and diffuse contributions sum to at most the incoming light, maintaining energy conservation. Without this factor, the BRDF would appear to create energy at grazing angles where $F \\to 1$."
+  }
+]

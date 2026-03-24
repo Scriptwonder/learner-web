@@ -1,0 +1,205 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In 3D Gaussian Splatting, the covariance matrix $\\boldsymbol{\\Sigma}$ is parameterized as $\\boldsymbol{\\Sigma} = RSS^TR^T$ rather than optimized directly. Why?",
+    "hint": "Think about what constraints a valid covariance matrix must satisfy.",
+    "options": ["A) To reduce the number of parameters from 9 to 7", "B) To guarantee that $\\boldsymbol{\\Sigma}$ remains positive semi-definite during gradient-based optimization", "C) To enable faster matrix multiplication on GPUs", "D) To convert the covariance from world space to camera space"],
+    "answer_key": "B",
+    "explanation": "A covariance matrix must be positive semi-definite (all eigenvalues $\\geq 0$). Unconstrained gradient descent could produce invalid matrices with negative eigenvalues. Parameterizing as $RSS^TR^T$ with a rotation $R$ (from a quaternion) and diagonal scale $S$ guarantees positive semi-definiteness by construction, since $S^TS$ is always PSD and rotation preserves definiteness."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "What is the purpose of the Jacobian $J$ in the 3DGS covariance projection formula $\\boldsymbol{\\Sigma}' = JW\\boldsymbol{\\Sigma}W^TJ^T$?",
+    "hint": "Perspective projection is nonlinear — the Jacobian provides a local linear approximation.",
+    "options": ["A) It rotates the Gaussian from world space to camera space", "B) It locally linearizes the perspective projection at the Gaussian center, enabling an affine approximation", "C) It scales the Gaussian by the camera's focal length", "D) It converts spherical harmonics to RGB color"],
+    "answer_key": "B",
+    "explanation": "Perspective projection is nonlinear (it divides by $z$), so a 3D Gaussian does not project to an exact 2D Gaussian. The Jacobian $J$ is the first-order Taylor approximation of the projection at the Gaussian's center, creating a local affine map. Under this approximation, the projected distribution is Gaussian with covariance $J\\boldsymbol{\\Sigma}_{\\text{cam}}J^T$. This is the EWA splatting technique from Zwicker et al. (2002)."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "During 3DGS adaptive density control, a Gaussian with high position gradient and large spatial extent is subjected to which operation?",
+    "hint": "Large Gaussians that are being pulled in different directions need to be broken apart.",
+    "options": ["A) Cloning — duplicated and moved in the gradient direction", "B) Splitting — replaced by two smaller Gaussians", "C) Pruning — removed from the scene", "D) Freezing — excluded from further optimization"],
+    "answer_key": "B",
+    "explanation": "High gradient + large scale indicates over-reconstruction: a single Gaussian is too coarse and is being pulled in different directions by different parts of the scene it covers. Splitting replaces it with two smaller Gaussians (scale divided by 1.6), allowing finer detail. Cloning is used when the Gaussian is small (under-reconstruction), and pruning is for near-transparent Gaussians."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "How does 2D Gaussian Splatting (Huang et al. 2024) differ from the original 3D Gaussian Splatting?",
+    "hint": "Think about the dimensionality of each primitive and what that means for surface reconstruction.",
+    "options": ["A) It uses neural networks instead of explicit primitives", "B) It replaces 3D ellipsoids with 2D oriented planar disks for better surface geometry", "C) It removes the need for Structure-from-Motion initialization", "D) It uses voxel grids instead of Gaussians"],
+    "answer_key": "B",
+    "explanation": "3D Gaussians are volumetric blobs without a well-defined surface, leading to multi-view geometric inconsistency. 2DGS collapses each Gaussian to a flat 2D oriented disk embedded in 3D space. Ray-splat intersection is computed analytically, providing perspective-correct rendering and significantly better surface reconstruction, which is critical for mesh extraction."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In 3DGS, each Gaussian stores spherical harmonics coefficients of degree $\\ell_{\\max} = 3$ for view-dependent color. How many SH coefficients are stored per Gaussian across all three RGB channels?",
+    "hint": "First compute the number of SH basis functions for degree 3, then multiply by 3 channels.",
+    "answer_key": "48",
+    "explanation": "For SH of degree $\\ell_{\\max} = 3$, the number of basis functions is $(\\ell_{\\max} + 1)^2 = (3+1)^2 = 16$. With 3 color channels (R, G, B), the total is $16 \\times 3 = 48$ SH coefficients per Gaussian."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "The 3DGS training loss is $\\mathcal{L} = (1 - \\lambda) \\mathcal{L}_1 + \\lambda \\mathcal{L}_{\\text{D-SSIM}}$ with default $\\lambda = 0.2$. What structural information does D-SSIM capture that L1 loss alone misses?",
+    "hint": "D-SSIM compares local image patches rather than individual pixels.",
+    "answer_key": "local statistics such as mean, variance, and covariance (structural patterns)",
+    "explanation": "D-SSIM (Differentiable Structural Similarity) compares local patches of the rendered and ground-truth images using their mean, variance, and cross-covariance. This captures perceptual structural patterns — edges, textures, contrast — that pixel-wise L1 loss treats independently. The combination ensures both pixel accuracy and perceptual quality."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What type of 3D data is typically used to initialize the Gaussians in 3DGS?",
+    "hint": "It is a sparse set of 3D points obtained from multi-view image matching.",
+    "options": ["A) A dense triangle mesh", "B) A sparse point cloud from Structure-from-Motion (SfM)", "C) A voxel grid from CT scanning", "D) Random points uniformly distributed in a bounding box"],
+    "answer_key": "B",
+    "explanation": "3DGS initializes each Gaussian at the location of a sparse 3D point produced by SfM (typically COLMAP). The initial color is set from the point's observed color, and the scale/rotation are initialized to small isotropic values. Adaptive density control then adds, splits, and prunes Gaussians during training."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What rendering technique does 3DGS use instead of ray marching?",
+    "hint": "Each primitive is projected ('thrown') onto the image plane rather than tracing rays through the scene.",
+    "options": ["A) Ray tracing", "B) Rasterization-based splatting", "C) Path tracing", "D) Photon mapping"],
+    "answer_key": "B",
+    "explanation": "3DGS uses a splatting approach: each 3D Gaussian is projected onto the 2D image plane as a 2D Gaussian (ellipse), and its contribution is accumulated into the pixels it overlaps. This is fundamentally different from ray-based methods — it is object-order (iterate over primitives) rather than image-order (iterate over pixels), enabling a highly parallel GPU rasterization pipeline."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "How many parameters define a single 3D Gaussian's shape (not counting color)? List what they represent.",
+    "hint": "You need a position, a way to describe the ellipsoid's size, and a way to describe its orientation.",
+    "answer_key": "3 (position) + 3 (scale) + 4 (rotation quaternion) + 1 (opacity) = 11 parameters",
+    "explanation": "Each Gaussian's geometry is defined by: 3 floats for the mean position $(\\mu_x, \\mu_y, \\mu_z)$, 3 floats for scale $(s_x, s_y, s_z)$, 4 floats for the rotation quaternion $(q_w, q_x, q_y, q_z)$, and 1 float for opacity $\\alpha$. The scale and rotation together define the $3 \\times 3$ covariance matrix $\\boldsymbol{\\Sigma}$."
+  },
+  {
+    "id": 10,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In 3DGS, Gaussians are sorted by depth before rendering. Why is this sorting necessary?",
+    "hint": "Alpha compositing requires a specific ordering to produce correct results.",
+    "options": ["A) To reduce GPU memory usage", "B) To enable correct front-to-back alpha blending, which depends on depth ordering", "C) To speed up the rasterization by culling occluded Gaussians", "D) To ensure Gaussians are evenly distributed across tiles"],
+    "answer_key": "B",
+    "explanation": "Alpha compositing (the 'over' operator) requires processing semi-transparent primitives in front-to-back order. If a background Gaussian is composited before a foreground one, the result will be incorrect. 3DGS sorts Gaussians by their depth (distance to camera) within each tile to ensure correct blending order."
+  },
+  {
+    "id": 11,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Compared to NeRF, what is the primary speed advantage of 3DGS at rendering time?",
+    "hint": "NeRF requires many MLP evaluations per pixel, while 3DGS does not use a neural network at render time.",
+    "options": ["A) 3DGS uses a smaller neural network", "B) 3DGS requires no neural network evaluation at render time — it directly rasterizes explicit Gaussian primitives", "C) 3DGS uses lower-resolution rendering", "D) 3DGS caches previous frames"],
+    "answer_key": "B",
+    "explanation": "At render time, 3DGS performs no neural network inference. Each Gaussian's color is computed from its stored SH coefficients (a simple dot product), and rendering is a standard rasterization pipeline: project, sort, blend. This enables real-time rendering at 100+ FPS, compared to NeRF's seconds-per-frame due to hundreds of MLP evaluations per pixel."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In the 3DGS tile-based rasterizer, the image is divided into $16 \\times 16$ pixel tiles. Why is this tiling used instead of processing the entire image at once?",
+    "hint": "Think about GPU architecture and how threads cooperate within a workgroup.",
+    "answer_key": "To enable parallel processing with shared memory within GPU thread groups, limiting the number of Gaussians each tile must sort and blend",
+    "explanation": "Tiling partitions the rendering work into independent chunks that map to GPU thread groups (warps/wavefronts). Each tile only processes Gaussians that overlap it, dramatically reducing the sort and blend workload. The $16 \\times 16 = 256$ pixels per tile fit well into GPU shared memory, enabling fast parallel alpha compositing within each thread group."
+  },
+  {
+    "id": 13,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What happens to a Gaussian's opacity during the periodic opacity reset in 3DGS training?",
+    "hint": "The reset is designed to let the optimization re-evaluate whether each Gaussian is truly needed.",
+    "options": ["A) All opacities are set to 1.0", "B) All opacities are set to a low value close to zero, forcing Gaussians to re-justify their existence through gradient updates", "C) Only the highest-opacity Gaussians are reset", "D) Opacities are randomly shuffled among Gaussians"],
+    "answer_key": "B",
+    "explanation": "Periodically (every 3000 iterations in the original paper), all Gaussian opacities are reset to a low value. Gaussians that are important for reconstruction will quickly regain high opacity through gradient updates, while unnecessary ones will remain near-transparent and be pruned in the next density control step. This prevents opacity bloat and redundant Gaussians."
+  },
+  {
+    "id": 14,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "A typical 3DGS scene contains 1-5 million Gaussians. Each Gaussian stores 11 shape parameters + 48 SH coefficients + 1 opacity = 59 floats (ignoring the position which is already counted). Approximately how much GPU memory does a 3 million Gaussian scene require for these parameters alone (in single-precision)?",
+    "hint": "Multiply the number of Gaussians by the number of floats per Gaussian by 4 bytes per float.",
+    "options": ["A) ~70 MB", "B) ~350 MB", "C) ~700 MB", "D) ~1.4 GB"],
+    "answer_key": "C",
+    "explanation": "Each Gaussian uses approximately 59 floats $\\times$ 4 bytes = 236 bytes. For 3 million Gaussians: $3{,}000{,}000 \\times 236 = 708{,}000{,}000$ bytes $\\approx 700$ MB. In practice, additional buffers for gradients, optimizer state (Adam uses 2x), and intermediate rendering data push total GPU memory usage significantly higher."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Work through the 2D Gaussian splatting evaluation for a single pixel.",
+    "hint": "Compute the Gaussian's value at the pixel, then apply alpha compositing.",
+    "steps": [
+      {
+        "prompt": "Step 1: A 2D Gaussian (after projection) has mean $\\boldsymbol{\\mu}' = (100, 200)$ and 2D covariance $\\boldsymbol{\\Sigma}' = \\begin{pmatrix} 25 & 0 \\\\ 0 & 16 \\end{pmatrix}$. What is the Gaussian's value at pixel $(103, 196)$?",
+        "answer_key": "exp(-0.5 * ((3^2/25) + ((-4)^2/16))) = exp(-0.5 * (0.36 + 1.0)) = exp(-0.68) ≈ 0.507",
+        "explanation": "The offset is $\\Delta = (103 - 100, 196 - 200) = (3, -4)$. Since the covariance is diagonal, $\\Delta^T \\boldsymbol{\\Sigma}'^{-1} \\Delta = \\frac{3^2}{25} + \\frac{(-4)^2}{16} = 0.36 + 1.0 = 1.36$. The Gaussian value is $\\exp(-\\frac{1}{2} \\cdot 1.36) = \\exp(-0.68) \\approx 0.507$."
+      },
+      {
+        "prompt": "Step 2: If this Gaussian has stored opacity $\\alpha_0 = 0.9$, what is the effective opacity $\\alpha$ at this pixel?",
+        "answer_key": "alpha = 0.9 * 0.507 ≈ 0.456",
+        "explanation": "The effective opacity is the stored opacity multiplied by the Gaussian's value at the pixel: $\\alpha = \\alpha_0 \\cdot G(\\Delta) = 0.9 \\times 0.507 \\approx 0.456$. This means the Gaussian is about 46% opaque at this pixel — less than at its center (where it would be 90%)."
+      },
+      {
+        "prompt": "Step 3: If this Gaussian (color = red $(1, 0, 0)$, $\\alpha \\approx 0.456$) is the first in the sorted order, and the second Gaussian contributes color green $(0, 1, 0)$ with effective $\\alpha_2 = 0.8$, what is the composited color?",
+        "answer_key": "C ≈ (0.456, 0.435, 0) — approximately equal parts red and green",
+        "explanation": "$C = \\alpha_1 c_1 + (1 - \\alpha_1) \\alpha_2 c_2 = 0.456 \\cdot (1,0,0) + (1 - 0.456) \\cdot 0.8 \\cdot (0,1,0) = (0.456, 0, 0) + (0, 0.544 \\times 0.8, 0) = (0.456, 0.435, 0)$. The first Gaussian contributes red, attenuated by its opacity. The second Gaussian's green is further attenuated by the transmittance through the first."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Analyze the adaptive density control decision for three Gaussians during training.",
+    "hint": "The decision depends on both the position gradient magnitude and the Gaussian's spatial extent.",
+    "steps": [
+      {
+        "prompt": "Step 1: Gaussian A has average position gradient $\\|\\nabla_\\mu\\| = 0.001$ (below threshold $\\tau = 0.0002$... wait, that's above). Given threshold $\\tau_{\\text{grad}} = 0.0002$, which Gaussians exceed the gradient threshold: A ($\\|\\nabla\\| = 0.001$), B ($\\|\\nabla\\| = 0.0001$), C ($\\|\\nabla\\| = 0.0005$)?",
+        "answer_key": "A and C exceed the threshold; B does not",
+        "explanation": "Comparing against $\\tau_{\\text{grad}} = 0.0002$: A ($0.001 > 0.0002$, yes), B ($0.0001 < 0.0002$, no), C ($0.0005 > 0.0002$, yes). B's low gradient means it is well-reconstructed and needs no densification."
+      },
+      {
+        "prompt": "Step 2: Among A and C, Gaussian A has max scale $s_{\\max} = 0.01$ (small) and C has $s_{\\max} = 0.5$ (large). The scale threshold is $\\tau_s = 0.05$. What operation is applied to each?",
+        "answer_key": "A is cloned (small + high gradient = under-reconstruction); C is split (large + high gradient = over-reconstruction)",
+        "explanation": "A is small ($0.01 < 0.05$) with high gradient, indicating under-reconstruction: there aren't enough Gaussians in this region. Cloning duplicates A and shifts the copy in the gradient direction. C is large ($0.5 > 0.05$) with high gradient, indicating over-reconstruction: C is too broad and should be split into two smaller Gaussians with scales reduced by a factor of 1.6."
+      },
+      {
+        "prompt": "Step 3: After splitting Gaussian C (scale $s = 0.5$), what are the approximate scales of the two new Gaussians?",
+        "answer_key": "0.5 / 1.6 ≈ 0.3125 each",
+        "explanation": "The original paper divides the scale by a factor of $\\phi = 1.6$: $s_{\\text{new}} = \\frac{0.5}{1.6} \\approx 0.3125$. Both new Gaussians start at this reduced scale, and their positions are sampled from the original Gaussian's distribution (using its covariance as a PDF). This allows the two children to specialize for different parts of the region the parent was covering."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What does the acronym 'SH' stand for in the context of 3DGS view-dependent color?",
+    "hint": "It is a set of orthogonal basis functions defined on the sphere.",
+    "answer_key": "Spherical Harmonics",
+    "explanation": "Spherical Harmonics (SH) are a set of orthogonal basis functions defined on the unit sphere $S^2$. In 3DGS, SH coefficients encode how the color of each Gaussian varies with viewing direction, enabling effects like specular highlights without a neural network. The SH evaluation is a simple polynomial in the viewing direction components."
+  },
+  {
+    "id": 18,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why can 3DGS struggle with large, textureless regions like white walls?",
+    "hint": "Think about what drives the densification process and what happens when gradients are low everywhere.",
+    "options": ["A) The SH representation cannot encode white colors", "B) Gaussians in low-gradient regions are never split or cloned, so a few large Gaussians cover the area with insufficient detail", "C) The tile-based rasterizer skips large tiles", "D) White surfaces reflect too much light for the camera model"],
+    "answer_key": "B",
+    "explanation": "Adaptive density control triggers splitting/cloning based on high position gradients. In textureless regions, the photometric loss is easily satisfied by a few large Gaussians, producing low gradients. These Gaussians are never densified, leading to artifacts like banding or floaters at oblique angles. Some follow-up methods add regularization or depth supervision to improve reconstruction of featureless areas."
+  }
+]

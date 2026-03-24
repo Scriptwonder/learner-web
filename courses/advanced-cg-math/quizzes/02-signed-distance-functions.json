@@ -1,0 +1,198 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does a signed distance function (SDF) return for a point $\\vec{p}$ that is inside the surface?",
+    "hint": "Remember the sign convention: outside is positive, on the surface is zero...",
+    "options": ["A) A positive value equal to the distance to the nearest surface point", "B) Zero, because the point is enclosed by the surface", "C) A negative value whose magnitude is the distance to the nearest surface point", "D) The surface normal at the nearest point"],
+    "answer_key": "C",
+    "explanation": "By convention, an SDF returns negative values for points inside the surface, zero on the surface, and positive values for points outside. The magnitude is always the Euclidean distance to the closest point on the surface."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Which scalar operation computes the CSG subtraction $A \\setminus B$ (shape $A$ minus shape $B$) from their SDFs $f_A$ and $f_B$?",
+    "hint": "Subtraction keeps the inside of $A$ but removes the inside of $B$. Negating an SDF flips inside/outside.",
+    "options": ["A) $\\min(f_A, f_B)$", "B) $\\max(f_A, f_B)$", "C) $\\min(f_A, -f_B)$", "D) $\\max(f_A, -f_B)$"],
+    "answer_key": "D",
+    "explanation": "CSG subtraction keeps the region inside $A$ but outside $B$. Negating $f_B$ flips inside/outside for shape $B$, then $\\max(f_A, -f_B)$ gives the intersection of $A$ with the complement of $B$. A point is inside the result only when $f_A < 0$ (inside $A$) AND $-f_B < 0$, i.e., $f_B > 0$ (outside $B$)."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In sphere tracing, why is it safe to advance along the ray by the SDF value $d = f(\\vec{p})$ at the current position?",
+    "hint": "The SDF gives the distance to the nearest surface in any direction — what does that guarantee about stepping along one specific direction?",
+    "options": ["A) The SDF value equals the exact distance to the intersection point along the ray", "B) The SDF value is the distance to the nearest surface point in any direction, so no surface can be closer than $d$ — making $d$ a safe step size", "C) Sphere tracing always uses a fixed step size; the SDF value is only used for the normal", "D) The SDF value overestimates the distance, providing a safety margin"],
+    "answer_key": "B",
+    "explanation": "The SDF returns the minimum distance to the nearest surface from the current point. Since the nearest surface in any direction is at least $d$ away, stepping $d$ along the ray is guaranteed not to pass through any surface. This is the key property that makes sphere tracing converge safely — the step is conservative but as large as possible."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "How are surface normals typically computed from an SDF in a shader?",
+    "hint": "The gradient of a scalar field points in the direction of steepest increase...",
+    "options": ["A) By taking the cross product of two tangent vectors stored at each surface point", "B) By computing the gradient of the SDF using finite differences (central or tetrahedral)", "C) By looking up the normal from a precomputed normal map", "D) By using the ray direction as an approximation of the normal"],
+    "answer_key": "B",
+    "explanation": "The gradient $\\nabla f$ of an SDF at the surface equals the outward unit normal. Since we rarely have an analytic gradient, we approximate it numerically using finite differences: evaluate the SDF at small offsets in each axis direction. The central-difference method requires 6 evaluations; the tetrahedral method reduces this to 4."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the SDF value of a sphere with center $(0, 0, 0)$ and radius $3$ at the point $\\vec{p} = (4, 0, 0)$?",
+    "hint": "The sphere SDF formula is $|\\vec{p} - \\vec{c}| - r$. Compute the distance from $\\vec{p}$ to the center first.",
+    "answer_key": "1",
+    "explanation": "The sphere SDF is $f(\\vec{p}) = |\\vec{p} - \\vec{c}| - r = |(4,0,0)| - 3 = 4 - 3 = 1$. The point is 1 unit outside the sphere surface."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In Quilez's polynomial smooth minimum function $\\text{smin}(a, b, k)$, what does the parameter $k$ control?",
+    "hint": "Consider what happens as $k$ approaches zero — the smooth min should approach the hard min.",
+    "answer_key": "the blending radius",
+    "explanation": "The parameter $k$ (in world-space units) defines the distance over which the smooth blending occurs between two shapes. When the two SDF values differ by more than $k$, the smooth minimum degenerates to the hard $\\min(a, b)$. Larger $k$ produces a wider, softer blend region; smaller $k$ gives a tighter transition."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the SDF for an infinite plane with normal $\\hat{n}$ and signed distance $d$ from the origin?",
+    "hint": "The signed distance from a point to a plane involves a dot product with the plane normal.",
+    "options": ["A) $f(\\vec{p}) = |\\vec{p}| - d$", "B) $f(\\vec{p}) = \\vec{p} \\cdot \\hat{n} + d$", "C) $f(\\vec{p}) = |\\vec{p} \\times \\hat{n}|$", "D) $f(\\vec{p}) = |\\vec{p} \\cdot \\hat{n}|$"],
+    "answer_key": "B",
+    "explanation": "The signed distance from point $\\vec{p}$ to a plane defined by $\\hat{n} \\cdot \\vec{x} + d = 0$ is $f(\\vec{p}) = \\hat{n} \\cdot \\vec{p} + d$. The sign tells you which side of the plane the point is on, and the magnitude is the perpendicular distance."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which SDF operation produces the CSG union of two shapes $A$ and $B$?",
+    "hint": "A point is inside the union if it is inside either shape — meaning its SDF to at least one shape is negative.",
+    "options": ["A) $\\min(f_A, f_B)$", "B) $\\max(f_A, f_B)$", "C) $f_A + f_B$", "D) $f_A \\cdot f_B$"],
+    "answer_key": "A",
+    "explanation": "The union of two SDF shapes is $\\min(f_A, f_B)$. A point is inside the union (negative SDF) if it is inside either shape. Taking the minimum ensures the result is negative when at least one of $f_A$ or $f_B$ is negative."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does the `abs()` function do to an SDF shape?",
+    "hint": "Think about what happens when you take the absolute value of a negative number (i.e., an interior point).",
+    "options": ["A) It doubles the size of the shape", "B) It creates a hollow shell — the surface becomes a thin boundary with no interior", "C) It mirrors the shape across the origin", "D) It inverts the shape (swaps inside and outside)"],
+    "answer_key": "B",
+    "explanation": "$|f(\\vec{p})|$ is zero only on the original surface and positive everywhere else (both inside and outside). This effectively removes the interior of the shape, turning a solid object into an infinitely thin shell. To create a shell with a specific thickness $t$, use $|f(\\vec{p})| - t$."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Write the SDF for a box centered at the origin with half-extents $(b_x, b_y, b_z) = (2, 3, 1)$ evaluated at $\\vec{p} = (4, 0, 0)$.",
+    "hint": "The box SDF uses $\\vec{q} = |\\vec{p}| - \\vec{b}$ (component-wise), then $\\text{length}(\\max(\\vec{q}, 0)) + \\min(\\max(q_x, q_y, q_z), 0)$.",
+    "answer_key": "2",
+    "explanation": "$\\vec{q} = |\\vec{p}| - \\vec{b} = (|4|-2, |0|-3, |0|-1) = (2, -3, -1)$. The exterior distance is $\\text{length}(\\max(\\vec{q}, 0)) = \\text{length}(2, 0, 0) = 2$. The interior term is $\\min(\\max(2, -3, -1), 0) = \\min(2, 0) = 0$. Total SDF $= 2 + 0 = 2$."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "How do you round the edges of any SDF shape with a radius $r$ using a simple SDF modification?",
+    "hint": "Rounding shrinks the distance field uniformly. What single operation applied to the SDF achieves this?",
+    "answer_key": "Subtract r from the SDF: f(p) - r",
+    "explanation": "Subtracting a constant $r$ from an SDF expands the surface outward by $r$ in all directions, effectively rounding all edges and corners with radius $r$. The shape $f(\\vec{p}) - r$ has the same topology as $f(\\vec{p})$ but with all features rounded by $r$."
+  },
+  {
+    "id": 12,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In sphere tracing, what typically determines that the ray has \"hit\" the surface?",
+    "hint": "The SDF value gets closer and closer to zero as you approach the surface. When is it close enough?",
+    "options": ["A) When the SDF value becomes exactly zero", "B) When the SDF value falls below a small epsilon threshold (e.g., $10^{-4}$)", "C) When the ray has taken exactly 64 steps", "D) When the SDF value becomes negative"],
+    "answer_key": "B",
+    "explanation": "Due to floating-point precision limits and the asymptotic convergence of sphere tracing, we declare a hit when $|f(\\vec{p})| < \\epsilon$ for a small threshold $\\epsilon$. Waiting for exactly zero would require infinite iterations. A maximum step count is also used to terminate rays that miss all surfaces."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Why does applying a non-uniform scale (e.g., stretching only along the $x$-axis) to an SDF break the distance field property, and how can you fix it?",
+    "hint": "An SDF must return the exact Euclidean distance. Non-uniform scaling changes distances differently along different axes.",
+    "answer_key": "Non-uniform scale distorts distances so the SDF no longer returns the true nearest distance; fix by dividing the SDF by the largest scale factor to get a conservative bound",
+    "explanation": "A true SDF has $|\\nabla f| = 1$ everywhere (the Eikonal property). Non-uniform scaling violates this because distances along scaled axes are no longer consistent. The result is an overestimate or underestimate of the true distance. The common fix is to divide the SDF by the largest component of the scale vector, which ensures the SDF is a lower bound (conservative) and sphere tracing remains safe, though it may take more steps."
+  },
+  {
+    "id": 14,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "In sphere tracing, what artifact occurs when sphere tracing misses thin geometry, and what is a common mitigation?",
+    "hint": "If the SDF value at the current position is larger than the thickness of a thin feature ahead, the step overshoots it.",
+    "options": ["A) Z-fighting; mitigated by increasing the depth buffer precision", "B) The ray can step over thin features entirely; mitigated by capping the maximum step size or using relaxed sphere tracing", "C) The normals become inverted; mitigated by flipping the SDF sign", "D) The surface appears transparent; mitigated by increasing the epsilon threshold"],
+    "answer_key": "B",
+    "explanation": "When geometry is thinner than the SDF value at the marching point, the conservative sphere tracing step can overshoot it completely. Relaxed sphere tracing (Enhanced Sphere Tracing by Keinert et al.) takes steps larger than the SDF value but checks for sign changes between consecutive steps, catching missed intersections. Alternatively, capping the maximum step size helps at the cost of more iterations."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "You have two spheres defined as SDFs: sphere $A$ centered at $(0,0,0)$ with radius 3, and sphere $B$ centered at $(2,0,0)$ with radius 2. You want to compute the SDF of their smooth union using $\\text{smin}(a, b, k)$ with $k = 1$.",
+    "hint": "First compute each SDF at the given point, then apply the polynomial smooth min formula.",
+    "steps": [
+      {
+        "prompt": "Compute $f_A$ and $f_B$ at the point $\\vec{p} = (3, 0, 0)$.",
+        "answer_key": "f_A = 0, f_B = -1",
+        "explanation": "$f_A = |\\vec{p}| - 3 = |(3,0,0)| - 3 = 3 - 3 = 0$. $f_B = |\\vec{p} - (2,0,0)| - 2 = |(1,0,0)| - 2 = 1 - 2 = -1$."
+      },
+      {
+        "prompt": "Using Quilez's polynomial smooth min: $h = \\max(k - |a - b|, 0) / k$ and $\\text{smin}(a,b,k) = \\min(a,b) - h^2 \\cdot k / 4$. Compute $h$ for $a = 0$, $b = -1$, $k = 1$.",
+        "answer_key": "h = 0",
+        "explanation": "$h = \\max(k - |a - b|, 0) / k = \\max(1 - |0 - (-1)|, 0) / 1 = \\max(1 - 1, 0) / 1 = 0/1 = 0$. Since $|a - b| = k$, we are at the boundary of the blending region."
+      },
+      {
+        "prompt": "Compute the final smooth union SDF value at this point.",
+        "answer_key": "-1",
+        "explanation": "$\\text{smin}(0, -1, 1) = \\min(0, -1) - 0^2 \\cdot 1/4 = -1 - 0 = -1$. At this point, there is no blending correction because we are exactly at the edge of the blend region. The result equals the hard minimum."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "You need to approximate the surface normal of an SDF using central differences with step size $\\epsilon = 0.001$.",
+    "hint": "Central differences evaluate $f$ at small offsets along each axis and compute the slope.",
+    "steps": [
+      {
+        "prompt": "Write the formula for the $x$-component of the gradient $\\nabla f$ using central differences at point $\\vec{p}$.",
+        "answer_key": "(f(p + (eps,0,0)) - f(p - (eps,0,0))) / (2*eps)",
+        "explanation": "The central difference approximation for $\\frac{\\partial f}{\\partial x}$ is $\\frac{f(\\vec{p} + (\\epsilon, 0, 0)) - f(\\vec{p} - (\\epsilon, 0, 0))}{2\\epsilon}$. The same pattern applies for the $y$ and $z$ components."
+      },
+      {
+        "prompt": "How many SDF evaluations does the central difference normal estimation require in total (for all three components)?",
+        "answer_key": "6",
+        "explanation": "Each axis requires 2 evaluations (one offset forward, one backward), and there are 3 axes, giving $2 \\times 3 = 6$ evaluations. The tetrahedral normal estimation method achieves the same result with only 4 evaluations by using cleverly chosen diagonal offsets."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the SDF for an infinite cylinder aligned along the $y$-axis with radius $r$? Express it in terms of $\\vec{p} = (p_x, p_y, p_z)$.",
+    "hint": "An infinite cylinder along $y$ has circular cross-sections in the $xz$-plane. The distance depends only on $p_x$ and $p_z$.",
+    "answer_key": "sqrt(p_x^2 + p_z^2) - r",
+    "explanation": "The distance from a point to the $y$-axis is $\\sqrt{p_x^2 + p_z^2}$. Subtracting the radius $r$ gives the signed distance to the cylinder surface: positive outside, negative inside, zero on the surface."
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Explain why the smooth minimum operation $\\text{smin}(f_A, f_B, k)$ does not produce an exact SDF — what property of distance fields does it violate?",
+    "hint": "A true SDF has a specific property about the magnitude of its gradient everywhere.",
+    "answer_key": "It violates the Eikonal property (|gradient| = 1); the gradient magnitude exceeds 1 in the blending region, so values are not true nearest distances",
+    "explanation": "A true SDF satisfies $|\\nabla f| = 1$ everywhere (the Eikonal equation). The smooth minimum blends the two distance fields in a way that distorts distances — the result underestimates the true distance in the blend region (the gradient magnitude can exceed 1). Sphere tracing still works because the SDF remains a lower bound on the true distance, but it may take extra steps in the blended area."
+  }
+]

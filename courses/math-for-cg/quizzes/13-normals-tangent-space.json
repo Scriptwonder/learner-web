@@ -1,0 +1,191 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the correct matrix to transform normals when the model matrix includes non-uniform scaling?",
+    "hint": "Normals are covectors, not ordinary vectors. Think about what preserves perpendicularity.",
+    "options": ["A) The model matrix $M$", "B) The transpose of the model matrix $M^T$", "C) The inverse transpose $(M^{-1})^T$", "D) The projection matrix $P$"],
+    "answer_key": "C",
+    "explanation": "Normals are covectors and transform contravariantly. The inverse transpose $(M^{-1})^T$ preserves their perpendicularity to the surface even under non-uniform scaling."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does the typical blue-purple color $(0.5, 0.5, 1.0)$ in a normal map represent?",
+    "hint": "Decode the RGB to a direction using $\\vec{N} = \\text{texel} \\times 2 - 1$.",
+    "options": ["A) A normal pointing to the right", "B) A normal pointing upward in world space", "C) No perturbation — the normal points straight out from the surface", "D) Maximum bumpiness"],
+    "answer_key": "C",
+    "explanation": "The RGB value $(0.5, 0.5, 1.0)$ decodes to the tangent-space direction $(0, 0, 1)$, meaning no perturbation from the geometric normal."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What are the three vectors that form the TBN matrix?",
+    "hint": "Each letter in TBN stands for one axis of the tangent-space basis.",
+    "options": ["A) Translation, Basis, Normal", "B) Tangent, Bitangent, Normal", "C) Top, Bottom, Near", "D) Transform, Blend, Normalize"],
+    "answer_key": "B",
+    "explanation": "The TBN matrix is built from the Tangent ($\\vec{T}$, along the texture's U direction), Bitangent ($\\vec{B}$, along V), and Normal ($\\vec{N}$, perpendicular to the surface)."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "How are vertex normals for smooth shading typically computed?",
+    "hint": "Think about how to blend the orientations of adjacent faces at a shared vertex.",
+    "options": ["A) By taking the normal of the largest adjacent face", "B) By averaging the face normals of all adjacent triangles and normalizing", "C) By using the cross product of the vertex position with the origin", "D) By interpolating between the object center and the vertex position"],
+    "answer_key": "B",
+    "explanation": "Vertex normals are computed by averaging the face normals of all triangles sharing that vertex, then normalizing. This enables smooth (Phong/Gouraud) shading via interpolation."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "To decode a normal map sample from $[0, 1]$ range to $[-1, 1]$ range, what formula is used?",
+    "hint": "You need a linear mapping from $[0, 1]$ to $[-1, 1]$.",
+    "answer_key": "n * 2.0 - 1.0",
+    "explanation": "Normal map values are stored in $[0, 1]$ and decoded to $[-1, 1]$ using $\\vec{N} = \\text{texel} \\times 2.0 - 1.0$."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What technique is used to re-orthogonalize the tangent vector with respect to the normal in the TBN computation?",
+    "hint": "It's a classic linear algebra procedure for making vectors perpendicular.",
+    "answer_key": "Gram-Schmidt",
+    "explanation": "Gram-Schmidt orthogonalization removes the component of $\\vec{T}$ along $\\vec{N}$: $\\vec{T}' = \\text{normalize}(\\vec{T} - (\\vec{N} \\cdot \\vec{T})\\vec{N})$, ensuring perpendicularity."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is a face normal?",
+    "hint": "Think about a flat triangle and what direction is perpendicular to it.",
+    "options": ["A) The average of all vertex positions", "B) A vector perpendicular to the plane of a triangle, computed via a cross product of two edges", "C) The direction from the triangle center to the camera", "D) The texture coordinate gradient across the face"],
+    "answer_key": "B",
+    "explanation": "A face normal is computed as the cross product of two edges of the triangle: $\\vec{N} = \\text{normalize}((V_1 - V_0) \\times (V_2 - V_0))$. It is perpendicular to the triangle's surface."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "If the model matrix contains only rotation and uniform scaling, can you use the model matrix directly to transform normals?",
+    "hint": "The inverse transpose simplifies when scaling is uniform.",
+    "options": ["A) Yes, because uniform scaling preserves angles between vectors", "B) No, normals always require the inverse transpose", "C) Only if the rotation is less than 90 degrees", "D) Only for 2D normals"],
+    "answer_key": "A",
+    "explanation": "With uniform scaling $s$, the inverse transpose equals $\\frac{1}{s} R$, which points in the same direction as $M \\cdot \\vec{N}$. After re-normalizing, the result is correct. Non-uniform scaling breaks this."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why must interpolated normals be re-normalized in the fragment shader?",
+    "hint": "Linear interpolation between two unit vectors does not generally produce a unit vector.",
+    "options": ["A) The GPU automatically denormalizes them", "B) Rasterizer interpolation produces vectors shorter than unit length", "C) Fragment shaders cannot read vertex attributes directly", "D) Normal maps override interpolated normals entirely"],
+    "answer_key": "B",
+    "explanation": "Linear interpolation between unit vectors produces sub-unit-length vectors (e.g., lerp between $(1,0,0)$ and $(0,1,0)$ gives $(0.5, 0.5, 0)$ with length $\\approx 0.707$). Re-normalizing is necessary for correct lighting."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "The TBN matrix transforms normals from tangent space to which space?",
+    "hint": "The TBN columns are defined in the same space as the surface geometry after model transformation.",
+    "answer_key": "world space",
+    "explanation": "The TBN matrix columns ($\\vec{T}$, $\\vec{B}$, $\\vec{N}$) are in world space (or view space, depending on implementation). Multiplying a tangent-space normal by TBN produces a world-space normal."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "A normal map texel reads $(0.5, 1.0, 0.5)$ in RGB. After decoding to $[-1, 1]$, what is the tangent-space normal?",
+    "hint": "Apply $n = \\text{texel} \\times 2 - 1$ to each component.",
+    "answer_key": "(0, 1, 0)",
+    "explanation": "$x = 0.5 \\times 2 - 1 = 0$, $y = 1.0 \\times 2 - 1 = 1$, $z = 0.5 \\times 2 - 1 = 0$. The decoded normal is $(0, 1, 0)$."
+  },
+  {
+    "id": 12,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the bitangent's relationship to the tangent and normal vectors?",
+    "hint": "Three mutually perpendicular vectors can be related by a specific vector operation.",
+    "options": ["A) $\\vec{B} = \\vec{T} + \\vec{N}$", "B) $\\vec{B} = \\vec{N} \\times \\vec{T}$ (possibly with a sign flip)", "C) $\\vec{B} = \\vec{T} \\cdot \\vec{N}$", "D) $\\vec{B} = \\frac{\\vec{T} + \\vec{N}}{2}$"],
+    "answer_key": "B",
+    "explanation": "The bitangent is the cross product of the normal and tangent: $\\vec{B} = \\vec{N} \\times \\vec{T}$, possibly multiplied by a handedness sign stored in the tangent's $w$ component to handle mirrored UVs."
+  },
+  {
+    "id": 13,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "A model matrix scales $x$ by 2, $y$ by 1, and $z$ by 1. A surface normal is $(1, 0, 0)$. If you incorrectly use the model matrix to transform the normal, what direction does the result point?",
+    "hint": "Apply the scaling to the normal vector and see if it's still perpendicular to the transformed surface.",
+    "options": ["A) $(1, 0, 0)$ — unchanged", "B) $(2, 0, 0)$ — still along x but stretched", "C) $(0.5, 0, 0)$ — compressed along x", "D) $(0, 1, 0)$ — rotated to y"],
+    "answer_key": "B",
+    "explanation": "Applying scale $(2, 1, 1)$ to $(1, 0, 0)$ gives $(2, 0, 0)$. After normalizing it's still $(1, 0, 0)$, but for non-axis-aligned normals the error shows: a normal $(1, 1, 0)/\\sqrt{2}$ would become $(2, 1, 0)/\\sqrt{5}$, no longer perpendicular to the transformed surface."
+  },
+  {
+    "id": 14,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Why does the tangent vector's $w$ component store a handedness value of $+1$ or $-1$?",
+    "hint": "Consider what happens when UV coordinates are mirrored on a mesh.",
+    "answer_key": "to handle mirrored UV coordinates",
+    "explanation": "When UVs are mirrored (e.g., for symmetric models), the tangent-space handedness flips. Storing $w = \\pm 1$ allows the shader to compute $\\vec{B} = w \\cdot (\\vec{N} \\times \\vec{T})$, correctly handling both orientations without storing the full bitangent."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Compute the face normal of a triangle with vertices $A = (0, 0, 0)$, $B = (1, 0, 0)$, $C = (0, 1, 0)$.",
+    "hint": "Form two edge vectors, then take their cross product.",
+    "steps": [
+      {
+        "prompt": "Compute edge vectors $\\vec{e}_1 = B - A$ and $\\vec{e}_2 = C - A$.",
+        "answer_key": "e1 = (1, 0, 0), e2 = (0, 1, 0)",
+        "explanation": "$\\vec{e}_1 = (1,0,0) - (0,0,0) = (1, 0, 0)$. $\\vec{e}_2 = (0,1,0) - (0,0,0) = (0, 1, 0)$."
+      },
+      {
+        "prompt": "Compute $\\vec{N} = \\vec{e}_1 \\times \\vec{e}_2$.",
+        "answer_key": "(0, 0, 1)",
+        "explanation": "$\\vec{e}_1 \\times \\vec{e}_2 = (0 \\cdot 0 - 0 \\cdot 1, 0 \\cdot 0 - 1 \\cdot 0, 1 \\cdot 1 - 0 \\cdot 0) = (0, 0, 1)$."
+      },
+      {
+        "prompt": "Is normalization needed for this normal?",
+        "answer_key": "no",
+        "explanation": "The magnitude is $|(0, 0, 1)| = 1$, so the cross product is already a unit vector. In general, normalization is required."
+      }
+    ],
+    "explanation": "Face normals are computed by taking the cross product of two edge vectors of the triangle, then normalizing. The winding order determines whether the normal points 'outward' or 'inward'."
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Given a non-uniform scale matrix $S = \\text{diag}(2, 1, 3)$, compute the correct normal matrix and transform the normal $\\vec{N} = (0, 1, 1)/\\sqrt{2}$.",
+    "hint": "The normal matrix is $(S^{-1})^T$. For a diagonal matrix, the inverse transpose is also diagonal.",
+    "steps": [
+      {
+        "prompt": "Compute the normal matrix $(S^{-1})^T$.",
+        "answer_key": "diag(0.5, 1, 0.333)",
+        "explanation": "$S^{-1} = \\text{diag}(1/2, 1, 1/3)$. Since a diagonal matrix equals its own transpose, $(S^{-1})^T = \\text{diag}(0.5, 1, 1/3)$."
+      },
+      {
+        "prompt": "Apply the normal matrix to $\\vec{N} = (0, 1/\\sqrt{2}, 1/\\sqrt{2})$ and normalize the result.",
+        "answer_key": "(0, 0.949, 0.316)",
+        "explanation": "Transformed: $(0, 1 \\cdot 0.707, 0.333 \\cdot 0.707) = (0, 0.707, 0.236)$. Length $= \\sqrt{0 + 0.5 + 0.0556} = \\sqrt{0.5556} = 0.745$. Normalized: $(0, 0.707/0.745, 0.236/0.745) \\approx (0, 0.949, 0.316)$."
+      }
+    ],
+    "explanation": "Non-uniform scaling skews normals away from perpendicularity. The inverse transpose corrects for this by scaling the normal inversely to the surface stretch, then re-normalizing gives the correct direction."
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In a two-component normal map (RG only), how is the $z$ component reconstructed in the shader?",
+    "hint": "The tangent-space normal is a unit vector, so $x^2 + y^2 + z^2 = 1$.",
+    "answer_key": "z = sqrt(1 - x*x - y*y)",
+    "explanation": "Since the tangent-space normal is unit length, $z = \\sqrt{1 - x^2 - y^2}$. This saves texture memory by storing only two channels while reconstructing the third."
+  }
+]

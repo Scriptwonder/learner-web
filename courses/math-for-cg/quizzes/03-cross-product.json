@@ -1,0 +1,204 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What type of value does the cross product of two vectors produce?",
+    "hint": "Unlike the dot product, this operation returns something with direction.",
+    "options": ["A) A scalar", "B) A vector perpendicular to both inputs", "C) A matrix", "D) A scalar equal to the area of the triangle"],
+    "answer_key": "B",
+    "explanation": "The cross product $\\vec{a} \\times \\vec{b}$ produces a new vector that is perpendicular (orthogonal) to both input vectors."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What happens when you swap the operands of a cross product?",
+    "hint": "The cross product is not commutative. Think about direction.",
+    "options": ["A) The result is the same", "B) The result is doubled", "C) The result is negated (direction flips)", "D) The result becomes a scalar"],
+    "answer_key": "C",
+    "explanation": "The cross product is anti-commutative: $\\vec{a} \\times \\vec{b} = -(\\vec{b} \\times \\vec{a})$. Swapping the operands reverses the direction of the result."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "To compute the surface normal of a triangle with vertices $P_0$, $P_1$, $P_2$, which formula is correct?",
+    "hint": "You need two edge vectors and an operation that produces a perpendicular result.",
+    "options": ["A) $\\text{normalize}(P_0 + P_1 + P_2)$", "B) $\\text{normalize}((P_1 - P_0) \\cdot (P_2 - P_0))$", "C) $\\text{normalize}((P_1 - P_0) \\times (P_2 - P_0))$", "D) $(P_1 - P_0) + (P_2 - P_0)$"],
+    "answer_key": "C",
+    "explanation": "The cross product of two edge vectors $(P_1 - P_0)$ and $(P_2 - P_0)$ gives a vector perpendicular to the triangle. Normalizing it produces a unit-length surface normal."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In GLSL, which vector types does the `cross()` function accept?",
+    "hint": "The cross product is only defined in one specific dimensionality.",
+    "options": ["A) vec2 only", "B) vec3 only", "C) vec2 and vec3", "D) vec3 and vec4"],
+    "answer_key": "B",
+    "explanation": "The `cross()` function in GLSL is only defined for `vec3`. The cross product as a vector operation is specific to 3D space."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is $\\hat{x} \\times \\hat{y}$ using the right-hand rule?",
+    "hint": "Curl your right hand's fingers from $\\hat{x}$ toward $\\hat{y}$. Where does your thumb point?",
+    "answer_key": "(0, 0, 1)",
+    "explanation": "Using the right-hand rule, $\\hat{x} \\times \\hat{y} = \\hat{z} = (0, 0, 1)$."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "If two non-zero vectors are parallel, what is their cross product?",
+    "hint": "What is the sine of $0°$ or $180°$?",
+    "answer_key": "(0, 0, 0)",
+    "explanation": "When two vectors are parallel, $\\sin\\theta = 0$, so $|\\vec{a} \\times \\vec{b}| = |\\vec{a}||\\vec{b}|\\sin 0 = 0$. The cross product is the zero vector $(0, 0, 0)$."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is $\\hat{y} \\times \\hat{x}$?",
+    "hint": "Swapping operands in a cross product negates the result.",
+    "options": ["A) $(0, 0, 1)$", "B) $(0, 0, -1)$", "C) $(0, 0, 0)$", "D) $(1, 0, 0)$"],
+    "answer_key": "B",
+    "explanation": "$\\hat{y} \\times \\hat{x} = -(\\hat{x} \\times \\hat{y}) = -(0, 0, 1) = (0, 0, -1)$."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "The magnitude of the cross product $|\\vec{a} \\times \\vec{b}|$ equals the area of which geometric shape?",
+    "hint": "It is a quadrilateral formed by the two vectors.",
+    "options": ["A) A circle", "B) A triangle", "C) A parallelogram", "D) A square"],
+    "answer_key": "C",
+    "explanation": "$|\\vec{a} \\times \\vec{b}| = |\\vec{a}||\\vec{b}|\\sin\\theta$ gives the area of the parallelogram spanned by $\\vec{a}$ and $\\vec{b}$. Half this value is the area of the corresponding triangle."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Which hand rule does OpenGL use to determine the cross product direction?",
+    "hint": "OpenGL uses a right-handed coordinate system.",
+    "options": ["A) Left-hand rule", "B) Right-hand rule", "C) Either hand, depending on the shader", "D) No hand rule is needed"],
+    "answer_key": "B",
+    "explanation": "OpenGL uses a right-handed coordinate system, so the cross product direction follows the right-hand rule: curl your fingers from the first operand to the second, and your thumb points in the result direction."
+  },
+  {
+    "id": 10,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "When computing per-vertex normals from adjacent triangle face normals, which technique is commonly used?",
+    "hint": "You combine multiple face normals into one smooth normal.",
+    "options": ["A) Pick the largest face normal", "B) Average the adjacent face normals and normalize", "C) Use only the first triangle's normal", "D) Compute the dot product of all face normals"],
+    "answer_key": "B",
+    "explanation": "Per-vertex normals are computed by averaging the normals of all triangles sharing that vertex, then normalizing the result. This produces smooth shading across faces."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is $\\hat{z} \\times \\hat{x}$?",
+    "hint": "Use the cyclic pattern: $\\hat{x} \\times \\hat{y} = \\hat{z}$, $\\hat{y} \\times \\hat{z} = \\hat{x}$, ...",
+    "answer_key": "(0, 1, 0)",
+    "explanation": "Following the cyclic rule, $\\hat{z} \\times \\hat{x} = \\hat{y} = (0, 1, 0)$."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Compute $\\vec{a} \\times \\vec{b}$ where $\\vec{a} = (1, 0, 0)$ and $\\vec{b} = (0, 0, 1)$.",
+    "hint": "Use the formula: $(a_y b_z - a_z b_y,\\; a_z b_x - a_x b_z,\\; a_x b_y - a_y b_x)$.",
+    "answer_key": "(0, -1, 0)",
+    "explanation": "$\\vec{a} \\times \\vec{b} = (0 \\cdot 1 - 0 \\cdot 0,\\; 0 \\cdot 0 - 1 \\cdot 1,\\; 1 \\cdot 0 - 0 \\cdot 0) = (0, -1, 0)$."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Compute $\\vec{a} \\times \\vec{b}$ where $\\vec{a} = (2, 3, 4)$ and $\\vec{b} = (5, 6, 7)$.",
+    "hint": "Apply the determinant formula component by component: $(a_y b_z - a_z b_y, \\; a_z b_x - a_x b_z, \\; a_x b_y - a_y b_x)$.",
+    "answer_key": "(-3, 6, -3)",
+    "explanation": "$x = 3 \\cdot 7 - 4 \\cdot 6 = 21 - 24 = -3$. $y = 4 \\cdot 5 - 2 \\cdot 7 = 20 - 14 = 6$. $z = 2 \\cdot 6 - 3 \\cdot 5 = 12 - 15 = -3$. Result: $(-3, 6, -3)$."
+  },
+  {
+    "id": 14,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "What is $\\vec{a} \\times \\vec{a}$ for any vector $\\vec{a}$?",
+    "hint": "A vector is always parallel to itself.",
+    "options": ["A) $\\vec{a}$", "B) $2\\vec{a}$", "C) $|\\vec{a}|^2$", "D) The zero vector $(0, 0, 0)$"],
+    "answer_key": "D",
+    "explanation": "A vector is parallel to itself, so the angle between them is $0°$. Since $\\sin(0°) = 0$, the cross product magnitude is zero. $\\vec{a} \\times \\vec{a} = \\vec{0}$."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Find the surface normal of a triangle with vertices $P_0 = (0, 0, 0)$, $P_1 = (1, 0, 0)$, $P_2 = (0, 1, 0)$.",
+    "hint": "Compute two edge vectors, cross them, then normalize.",
+    "steps": [
+      {
+        "prompt": "What are the two edge vectors $\\vec{e_1} = P_1 - P_0$ and $\\vec{e_2} = P_2 - P_0$?",
+        "answer_key": "(1, 0, 0) and (0, 1, 0)",
+        "explanation": "$\\vec{e_1} = (1-0, 0-0, 0-0) = (1, 0, 0)$ and $\\vec{e_2} = (0-0, 1-0, 0-0) = (0, 1, 0)$."
+      },
+      {
+        "prompt": "What is $\\vec{e_1} \\times \\vec{e_2}$?",
+        "answer_key": "(0, 0, 1)",
+        "explanation": "$(0 \\cdot 0 - 0 \\cdot 1,\\; 0 \\cdot 0 - 1 \\cdot 0,\\; 1 \\cdot 1 - 0 \\cdot 0) = (0, 0, 1)$."
+      },
+      {
+        "prompt": "What is the unit normal?",
+        "answer_key": "(0, 0, 1)",
+        "explanation": "The magnitude of $(0, 0, 1)$ is already $1$, so the unit normal is $(0, 0, 1)$. This triangle lies in the XY plane, so its normal points along $+Z$."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Given $\\vec{a} = (1, 2, 3)$ and $\\vec{b} = (4, 5, 6)$, find the area of the triangle formed by these two vectors.",
+    "hint": "The triangle area is half the magnitude of the cross product.",
+    "steps": [
+      {
+        "prompt": "Compute $\\vec{a} \\times \\vec{b}$.",
+        "answer_key": "(-3, 6, -3)",
+        "explanation": "$x = 2 \\cdot 6 - 3 \\cdot 5 = -3$, $y = 3 \\cdot 4 - 1 \\cdot 6 = 6$, $z = 1 \\cdot 5 - 2 \\cdot 4 = -3$. Result: $(-3, 6, -3)$."
+      },
+      {
+        "prompt": "What is $|\\vec{a} \\times \\vec{b}|$, to two decimal places?",
+        "answer_key": "7.35",
+        "explanation": "$\\sqrt{9 + 36 + 9} = \\sqrt{54} = 3\\sqrt{6} \\approx 7.35$."
+      },
+      {
+        "prompt": "What is the triangle area, to two decimal places?",
+        "answer_key": "3.67",
+        "explanation": "Triangle area = $\\frac{1}{2}|\\vec{a} \\times \\vec{b}| = \\frac{7.35}{2} \\approx 3.67$."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why can't the cross product be defined for 2D vectors?",
+    "hint": "Think about the dimensionality of the result.",
+    "options": ["A) 2D vectors don't have magnitude", "B) There is no unique perpendicular direction in 2D — you need a third dimension for the result", "C) The sine function is not defined in 2D", "D) 2D vectors cannot be normalized"],
+    "answer_key": "B",
+    "explanation": "In 2D, the perpendicular to two vectors would need to point 'out of the plane,' which requires a third dimension. The cross product inherently produces a 3D result."
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is the magnitude of $(1, 0, 0) \\times (0, 1, 0)$?",
+    "hint": "These are perpendicular unit vectors. What is $\\sin(90°)$?",
+    "answer_key": "1",
+    "explanation": "$|\\hat{x} \\times \\hat{y}| = |\\hat{x}||\\hat{y}|\\sin(90°) = 1 \\cdot 1 \\cdot 1 = 1$. The result is $(0,0,1)$ which has magnitude $1$."
+  }
+]

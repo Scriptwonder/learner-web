@@ -1,0 +1,198 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the convergence rate of the standard Monte Carlo estimator with $N$ samples?",
+    "hint": "The standard error decreases with the square root of the sample count.",
+    "options": ["A) $O(1/N)$", "B) $O(1/N^2)$", "C) $O(1/\\sqrt{N})$", "D) $O(\\log N / N)$"],
+    "answer_key": "C",
+    "explanation": "The standard error of a Monte Carlo estimator decreases as $O(1/\\sqrt{N})$. This means to halve the noise, you need 4 times as many samples. This rate is independent of the dimensionality of the integral."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In cosine-weighted hemisphere sampling, what is the probability density function $p(\\omega)$?",
+    "hint": "The PDF must integrate to 1 over the hemisphere and be proportional to $\\cos\\theta$.",
+    "options": ["A) $p(\\omega) = \\frac{1}{2\\pi}$", "B) $p(\\omega) = \\frac{\\cos\\theta}{\\pi}$", "C) $p(\\omega) = \\frac{\\sin\\theta}{2\\pi}$", "D) $p(\\omega) = \\frac{1}{4\\pi}$"],
+    "answer_key": "B",
+    "explanation": "Cosine-weighted sampling uses $p(\\omega) = \\frac{\\cos\\theta}{\\pi}$, which is proportional to the $\\cos\\theta$ factor in the rendering equation. The $\\frac{1}{\\pi}$ normalization ensures the PDF integrates to 1 over the hemisphere."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the balance heuristic in Multiple Importance Sampling (Veach 1995) for combining two strategies with one sample each?",
+    "hint": "Each strategy's weight is its own PDF value relative to the sum of all PDFs.",
+    "options": ["A) $w_i(x) = \\frac{1}{2}$ (equal weights)", "B) $w_i(x) = \\frac{p_i(x)}{p_1(x) + p_2(x)}$", "C) $w_i(x) = \\frac{p_i(x)^2}{p_1(x)^2 + p_2(x)^2}$", "D) $w_i(x) = \\frac{\\max(p_i(x), 0)}{\\max(p_1(x), p_2(x))}$"],
+    "answer_key": "B",
+    "explanation": "The balance heuristic weights each sample by $w_i(x) = \\frac{p_i(x)}{\\sum_k p_k(x)}$. Veach proved this is provably good — within a constant factor of optimal. Option C describes the power heuristic with $\\beta=2$, which often performs slightly better in practice."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is Russian roulette in the context of path tracing?",
+    "hint": "It is a way to stop tracing a path probabilistically without introducing bias.",
+    "options": ["A) Randomly choosing between different BRDF models per bounce", "B) An unbiased technique that probabilistically terminates low-contribution paths, compensating by boosting surviving paths", "C) A biased optimization that clamps path throughput below a threshold to zero", "D) A method for randomly selecting which light source to sample"],
+    "answer_key": "B",
+    "explanation": "Russian roulette terminates a path with probability $1 - q$ and divides the throughput by $q$ when continuing. This compensates exactly: $E[X/q \\cdot \\mathbb{1}_{U < q}] = E[X]$, keeping the estimator unbiased while saving computation on low-contribution paths."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In importance sampling, what happens to the variance of the Monte Carlo estimator when the sampling PDF $p(x)$ is exactly proportional to the integrand $g(x)$?",
+    "hint": "If $p(x)$ matches $g(x)$ perfectly, the ratio $g(x)/p(x)$ becomes a constant for every sample.",
+    "answer_key": "zero",
+    "explanation": "When $p(x) = g(x) / \\int g$, the ratio $g(x)/p(x)$ becomes the constant $\\int g$ for every sample. Since all samples give the same value, the variance is exactly zero — every single sample produces the correct integral value."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is the name of the elegant cosine-weighted hemisphere sampling technique that works by generating a uniform random point on the unit disk and projecting it upward onto the hemisphere?",
+    "hint": "It is named after its inventor and is remarkably simple to implement.",
+    "answer_key": "Malley's method",
+    "explanation": "Malley's method generates a uniform point $(u, v)$ on the unit disk, then sets $z = \\sqrt{1 - u^2 - v^2}$. The resulting direction has a cosine-weighted distribution on the hemisphere because the projection naturally concentrates points near the pole."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the Monte Carlo estimator for the integral $I = \\int_a^b f(x)\\,dx$ using $N$ samples drawn uniformly from $[a, b]$?",
+    "hint": "The uniform PDF on $[a,b]$ is $p(x) = \\frac{1}{b-a}$, so dividing by the PDF multiplies by $(b-a)$.",
+    "options": ["A) $\\frac{1}{N} \\sum_{i=1}^N f(x_i)$", "B) $\\frac{b-a}{N} \\sum_{i=1}^N f(x_i)$", "C) $\\frac{1}{N(b-a)} \\sum_{i=1}^N f(x_i)$", "D) $\\sum_{i=1}^N f(x_i)$"],
+    "answer_key": "B",
+    "explanation": "The Monte Carlo estimator is $\\hat{I} = \\frac{1}{N} \\sum \\frac{f(x_i)}{p(x_i)} = \\frac{1}{N} \\sum \\frac{f(x_i)}{1/(b-a)} = \\frac{b-a}{N} \\sum f(x_i)$. The $(b-a)$ factor accounts for the domain size."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the inverse CDF (inverse transform) method used for in Monte Carlo sampling?",
+    "hint": "Given a uniform random number $u \\in [0, 1]$, how do you generate a sample from a non-uniform distribution?",
+    "options": ["A) Computing the variance of the estimator", "B) Transforming uniform random numbers into samples from a desired probability distribution", "C) Evaluating the integrand at deterministic points", "D) Computing the normalization constant of a PDF"],
+    "answer_key": "B",
+    "explanation": "The inverse CDF method takes a uniform random variable $U \\in [0, 1]$ and computes $X = F^{-1}(U)$ where $F$ is the CDF of the desired distribution. The resulting $X$ follows the desired distribution exactly. This works for any 1D distribution with an invertible CDF."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the PDF of uniform hemisphere sampling (sampling directions uniformly over the upper hemisphere)?",
+    "hint": "The solid angle of the upper hemisphere is $2\\pi$ steradians.",
+    "options": ["A) $p(\\omega) = \\frac{1}{\\pi}$", "B) $p(\\omega) = \\frac{1}{2\\pi}$", "C) $p(\\omega) = \\frac{1}{4\\pi}$", "D) $p(\\omega) = \\frac{\\cos\\theta}{\\pi}$"],
+    "answer_key": "B",
+    "explanation": "Uniform hemisphere sampling assigns equal probability to every direction on the upper hemisphere. Since the total solid angle is $2\\pi$ steradians, the constant PDF is $p(\\omega) = \\frac{1}{2\\pi}$."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "How many times more samples are needed to halve the noise (standard error) in a standard Monte Carlo estimator?",
+    "hint": "The convergence rate is $O(1/\\sqrt{N})$. To halve $1/\\sqrt{N}$, you need...",
+    "answer_key": "4",
+    "explanation": "Since standard error $\\propto 1/\\sqrt{N}$, halving the error requires $\\sqrt{N'} = 2\\sqrt{N}$, so $N' = 4N$. You need 4 times as many samples to reduce the noise by half."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is stratified sampling (jittering) and how does it reduce variance compared to pure random sampling?",
+    "hint": "Instead of placing all $N$ samples randomly, divide the domain into $N$ equal regions and place one random sample in each.",
+    "answer_key": "Divide the domain into N equal strata and place one random sample per stratum; this ensures better coverage and reduces variance by eliminating clumping",
+    "explanation": "Stratified sampling divides the integration domain into $N$ non-overlapping strata of equal size, then draws one random sample within each stratum. This prevents the clumping that can occur with pure random sampling and guarantees coverage of the entire domain. The variance is reduced because the between-stratum variance is eliminated, and only the within-stratum variance remains."
+  },
+  {
+    "id": 12,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In next event estimation (direct light sampling) for path tracing, what is being combined with the BRDF sampling?",
+    "hint": "Instead of waiting for a random BRDF bounce to accidentally hit a light, you explicitly...",
+    "options": ["A) Shadow map lookups to determine visibility", "B) Explicit samples directed toward light sources, combined with BRDF samples using MIS", "C) Photon map queries from a pre-pass", "D) Ambient occlusion samples to approximate global illumination"],
+    "answer_key": "B",
+    "explanation": "Next event estimation explicitly samples the light sources at each path vertex, evaluating the direct illumination contribution. This is combined with the standard BRDF sampling using Multiple Importance Sampling (MIS) to handle both diffuse surfaces (where light sampling is efficient) and specular surfaces (where BRDF sampling is efficient)."
+  },
+  {
+    "id": 13,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Why do low-discrepancy sequences (quasi-Monte Carlo) typically converge faster than standard Monte Carlo for rendering integrals?",
+    "hint": "Low-discrepancy sequences fill the sampling domain more evenly than random sequences. What theoretical bound governs their convergence?",
+    "options": ["A) They are biased estimators that trade correctness for speed", "B) They achieve $O((\\log N)^d / N)$ convergence (Koksma-Hlawka bound), which is faster than $O(1/\\sqrt{N})$ for moderate dimensions", "C) They reduce the dimensionality of the integral", "D) They eliminate the need for importance sampling"],
+    "answer_key": "B",
+    "explanation": "Low-discrepancy (quasi-random) sequences like Sobol and Halton fill the sampling space more evenly than pseudorandom numbers. The Koksma-Hlawka inequality bounds their error at $O((\\log N)^d / N)$, which is much better than $O(1/\\sqrt{N})$ for the moderate dimensions ($d \\leq 10$) typical in path tracing. In practice, this translates to faster convergence and less noise for the same sample count."
+  },
+  {
+    "id": 14,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "In path tracing, a Russian roulette survival probability of $q = 0.3$ is used for a path with throughput $T = 0.1$. If the path survives, what is its new throughput?",
+    "hint": "The surviving path's throughput is boosted to compensate for the killed paths.",
+    "answer_key": "0.333 (or 1/3)",
+    "explanation": "When the path survives (probability $q = 0.3$), the throughput is divided by $q$: $T' = T / q = 0.1 / 0.3 = 1/3 \\approx 0.333$. This boost ensures the expected value is preserved: $E[T'] = q \\cdot (T/q) = T = 0.1$."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "You want to estimate $\\int_0^1 x^2\\,dx$ using importance sampling with PDF $p(x) = 2x$ on $[0, 1]$.",
+    "hint": "The CDF of $p(x) = 2x$ is $F(x) = x^2$. Invert it to get the sampling formula.",
+    "steps": [
+      {
+        "prompt": "Derive the inverse CDF sampling formula: given a uniform random variable $u \\in [0, 1]$, express the sample $x$ in terms of $u$.",
+        "answer_key": "x = sqrt(u)",
+        "explanation": "The CDF is $F(x) = \\int_0^x 2t\\,dt = x^2$. Setting $u = x^2$ and inverting: $x = \\sqrt{u}$."
+      },
+      {
+        "prompt": "Write the importance sampling estimator $\\frac{f(x)}{p(x)}$ simplified for a single sample, where $f(x) = x^2$ and $p(x) = 2x$.",
+        "answer_key": "x/2",
+        "explanation": "$\\frac{f(x)}{p(x)} = \\frac{x^2}{2x} = \\frac{x}{2}$."
+      },
+      {
+        "prompt": "If you draw a sample $u = 0.64$, compute the sample point $x$ and the single-sample estimate of the integral.",
+        "answer_key": "x = 0.8, estimate = 0.4",
+        "explanation": "$x = \\sqrt{0.64} = 0.8$. Estimate $= x/2 = 0.8/2 = 0.4$. The true integral is $\\int_0^1 x^2\\,dx = 1/3 \\approx 0.333$, so this single sample overestimates, but the expected value over many samples will converge to $1/3$."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "You are computing a direct illumination integral using MIS with one BRDF sample and one light sample. The BRDF sample hits the light with $f_{\\text{BRDF}} = 2.0$ and the light sample contributes $f_{\\text{light}} = 1.5$. The respective PDFs are $p_{\\text{BRDF}} = 0.5$, $p_{\\text{light}}^{\\text{at BRDF sample}} = 0.1$ for the BRDF sample point, and $p_{\\text{light}} = 0.8$, $p_{\\text{BRDF}}^{\\text{at light sample}} = 0.2$ for the light sample point.",
+    "hint": "Apply the balance heuristic: $w_i = p_i / (p_{\\text{BRDF}} + p_{\\text{light}})$ at each sample point.",
+    "steps": [
+      {
+        "prompt": "Compute the MIS weight and weighted contribution for the BRDF sample.",
+        "answer_key": "weight = 0.833, contribution = 3.333",
+        "explanation": "$w_{\\text{BRDF}} = \\frac{p_{\\text{BRDF}}}{p_{\\text{BRDF}} + p_{\\text{light}}} = \\frac{0.5}{0.5 + 0.1} = \\frac{0.5}{0.6} \\approx 0.833$. Weighted contribution $= w_{\\text{BRDF}} \\cdot \\frac{f_{\\text{BRDF}}}{p_{\\text{BRDF}}} = 0.833 \\cdot \\frac{2.0}{0.5} = 0.833 \\cdot 4.0 = 3.333$."
+      },
+      {
+        "prompt": "Compute the MIS weight and weighted contribution for the light sample, then add both contributions for the final MIS estimate.",
+        "answer_key": "weight = 0.8, contribution = 1.5, total MIS estimate = 4.833",
+        "explanation": "$w_{\\text{light}} = \\frac{p_{\\text{light}}}{p_{\\text{BRDF}} + p_{\\text{light}}} = \\frac{0.8}{0.2 + 0.8} = 0.8$. Weighted contribution $= 0.8 \\cdot \\frac{1.5}{0.8} = 1.5$. Total MIS estimate $= 3.333 + 1.5 = 4.833$."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What key property of the Monte Carlo estimator makes it particularly useful for high-dimensional integrals in rendering?",
+    "hint": "Compare how Monte Carlo scales with dimension $d$ versus deterministic methods like the trapezoidal rule.",
+    "answer_key": "Its convergence rate O(1/sqrt(N)) is independent of the dimensionality of the integral",
+    "explanation": "The Monte Carlo convergence rate $O(1/\\sqrt{N})$ does not depend on the number of integration dimensions $d$. Deterministic methods like the trapezoidal rule converge at $O(N^{-2/d})$, which becomes extremely slow for high dimensions. Path tracing integrals can have 10+ dimensions (pixel, lens, time, bounce directions), making Monte Carlo the only practical choice."
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Explain why the power heuristic with $\\beta = 2$ (i.e., $w_i(x) = \\frac{p_i(x)^2}{\\sum_k p_k(x)^2}$) often outperforms the balance heuristic in practice for MIS in rendering.",
+    "hint": "Consider what happens when one PDF is much smaller than the other at a given sample point.",
+    "answer_key": "The squaring more aggressively suppresses the contribution from a strategy when its PDF is small relative to the other, reducing variance from mismatched samples",
+    "explanation": "The power heuristic with $\\beta = 2$ squares the PDFs before forming the ratio, which more aggressively down-weights a sampling strategy at points where its PDF is much smaller than the competing strategy's PDF. This reduces the variance caused by rare high-weight outlier samples that occur when a strategy happens to sample a point where the other strategy's PDF is much higher. Veach showed the power heuristic is never much worse than the balance heuristic and is often better in practice."
+  }
+]

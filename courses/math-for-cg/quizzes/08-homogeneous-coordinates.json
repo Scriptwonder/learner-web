@@ -1,0 +1,199 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In homogeneous coordinates, what $w$ value distinguishes a point from a direction?",
+    "hint": "One of them is affected by translation; the other is not.",
+    "options": ["A) Points use $w = 0$, directions use $w = 1$", "B) Points use $w = 1$, directions use $w = 0$", "C) Both use $w = 1$", "D) Both use $w = 0$"],
+    "answer_key": "B",
+    "explanation": "Points use $w = 1$ and are affected by translation. Directions use $w = 0$, which makes them immune to the translation component of a $4 \\times 4$ matrix."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What operation does the GPU perform after the vertex shader to convert clip space coordinates to NDC?",
+    "hint": "It involves the $w$ component.",
+    "options": ["A) Matrix multiplication by the viewport matrix", "B) Division of $x$, $y$, $z$ by $w$ (the perspective divide)", "C) Clamping all values to $[0, 1]$", "D) Subtracting the camera position"],
+    "answer_key": "B",
+    "explanation": "The GPU divides all clip-space coordinates by $w$ to produce NDC: $(x_{ndc}, y_{ndc}, z_{ndc}) = (x/w, y/w, z/w)$. This creates the perspective foreshortening effect."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the result of subtracting one point ($w = 1$) from another point ($w = 1$) in homogeneous coordinates?",
+    "hint": "Subtract the $w$ components too.",
+    "options": ["A) A point ($w = 1$)", "B) A direction ($w = 0$)", "C) An invalid result ($w = 2$)", "D) A scalar"],
+    "answer_key": "B",
+    "explanation": "Subtracting two points gives $w = 1 - 1 = 0$, which is a direction vector. This naturally makes sense: the difference between two positions is a displacement direction."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In the perspective projection matrix, $w_{clip}$ is set to $-z_{eye}$. What effect does this produce?",
+    "hint": "After dividing by $w$, farther objects are divided by a larger number.",
+    "options": ["A) Objects farther from the camera appear larger", "B) Objects farther from the camera appear smaller (foreshortening)", "C) All objects appear the same size regardless of distance", "D) The depth buffer is disabled"],
+    "answer_key": "B",
+    "explanation": "Distant objects have a larger $|w|$, so dividing by $w$ shrinks their screen-space coordinates more than close objects, creating the perspective foreshortening effect."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Convert the homogeneous coordinate $(6, 4, 10, 2)$ to a 3D Cartesian point.",
+    "hint": "Divide each of $x$, $y$, $z$ by $w$.",
+    "answer_key": "(3, 2, 5)",
+    "explanation": "Divide each component by $w$: $(6/2, 4/2, 10/2) = (3, 2, 5)$."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Should you manually divide `gl_Position` by $w$ in the vertex shader?",
+    "hint": "The GPU handles a specific step automatically after the vertex shader.",
+    "answer_key": "no",
+    "explanation": "The GPU performs the perspective divide automatically after the vertex shader. Doing it manually would cause double-division and incorrect results."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the homogeneous representation of the 3D point $(5, 3, -2)$?",
+    "hint": "Append the appropriate $w$ value for a point.",
+    "options": ["A) $(5, 3, -2, 0)$", "B) $(5, 3, -2, 1)$", "C) $(5, 3, -2, -2)$", "D) $(5, 3, -2, 5)$"],
+    "answer_key": "B",
+    "explanation": "A 3D point in homogeneous coordinates has $w = 1$: $(5, 3, -2, 1)$."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the homogeneous representation of the direction vector $(0, 1, 0)$?",
+    "hint": "Directions should not be affected by translation.",
+    "options": ["A) $(0, 1, 0, 1)$", "B) $(0, 1, 0, 0)$", "C) $(0, 1, 0, -1)$", "D) $(1, 0, 1, 0)$"],
+    "answer_key": "B",
+    "explanation": "Direction vectors use $w = 0$ so they are unaffected by the translation component of the transform matrix."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What happens if you add a point ($w = 1$) and a direction ($w = 0$) in homogeneous coordinates?",
+    "hint": "Add the $w$ components.",
+    "options": ["A) Invalid operation", "B) A direction ($w = 0$)", "C) A point ($w = 1$)", "D) A scalar ($w = 2$)"],
+    "answer_key": "C",
+    "explanation": "Point + direction: $w = 1 + 0 = 1$, which is a point. This makes geometric sense: displacing a position by a direction vector gives a new position."
+  },
+  {
+    "id": 10,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In GLSL, when you write `vec4(position, 1.0)` to transform a vertex, what does the $1.0$ accomplish?",
+    "hint": "It sets the $w$ component to indicate this is a position, not a direction.",
+    "options": ["A) It scales the position by 1", "B) It makes the vertex visible", "C) It marks this as a point so translation in the $4 \\times 4$ matrix applies", "D) It normalizes the vector"],
+    "answer_key": "C",
+    "explanation": "Setting $w = 1$ ensures the translation column of the $4 \\times 4$ matrix is added to the result. If $w = 0$ were used, the translation would be ignored."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the Cartesian 3D point for the homogeneous coordinate $(8, 12, 4, 4)$?",
+    "hint": "Divide $x$, $y$, $z$ each by $w$.",
+    "answer_key": "(2, 3, 1)",
+    "explanation": "$(8/4, 12/4, 4/4) = (2, 3, 1)$."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A translation matrix $T(5, 0, 0)$ is applied to the direction vector $(1, 0, 0, 0)$. What is the result?",
+    "hint": "Translation does not affect vectors with $w = 0$.",
+    "answer_key": "(1, 0, 0, 0)",
+    "explanation": "Since $w = 0$, the translation column contributes $0 \\cdot (5, 0, 0)$ to the result. The direction vector is unchanged: $(1, 0, 0, 0)$."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What does $(0, 0, 0, 0)$ represent in homogeneous coordinates?",
+    "hint": "It is neither a valid point nor a valid direction.",
+    "answer_key": "undefined",
+    "explanation": "$(0, 0, 0, 0)$ has no valid interpretation. With $w = 0$ it would be a zero direction (the zero vector), but in the projective sense, dividing by $w = 0$ to get a point is undefined. It represents no meaningful geometric entity."
+  },
+  {
+    "id": 14,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "The homogeneous coordinates $(2, 4, 6, 2)$ and $(1, 2, 3, 1)$ represent the same 3D point. What is this property called?",
+    "hint": "Scaling all four components by the same factor does not change the represented point.",
+    "options": ["A) Normalization", "B) Equivalence class (projective equivalence)", "C) Orthogonality", "D) Commutativity"],
+    "answer_key": "B",
+    "explanation": "In projective geometry, $(x, y, z, w)$ and $(kx, ky, kz, kw)$ for any non-zero $k$ represent the same point. These are called equivalence classes or projectively equivalent coordinates."
+  },
+  {
+    "id": 15,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Why does the perspective projection matrix produce non-linear depth values in NDC?",
+    "hint": "After dividing by $w = -z_{eye}$, the depth term involves a reciprocal of $z$.",
+    "options": ["A) Because the near and far planes are at different distances", "B) Because $z_{ndc} = z_{clip}/w_{clip}$ and $w_{clip} = -z_{eye}$, making depth proportional to $1/z$", "C) Because the GPU uses integer depth values", "D) Because the viewport transform adds a non-linear offset"],
+    "answer_key": "B",
+    "explanation": "The perspective divide computes $z_{ndc} = z_{clip}/w_{clip}$. Since $w_{clip} = -z_{eye}$, the final depth is proportional to $1/z$. This means more precision is concentrated near the camera and less far away, which can cause z-fighting at large distances."
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A vertex in eye space has position $(3, 2, -5, 1)$. The perspective projection sets $w_{clip} = -z_{eye}$. Compute the NDC $x$ coordinate, assuming $x_{clip} = 3$ after projection.",
+    "hint": "The perspective divide is $x_{ndc} = x_{clip} / w_{clip}$.",
+    "steps": [
+      {
+        "prompt": "What is $w_{clip}$?",
+        "answer_key": "5",
+        "explanation": "$w_{clip} = -z_{eye} = -(-5) = 5$."
+      },
+      {
+        "prompt": "What is $x_{ndc}$?",
+        "answer_key": "0.6",
+        "explanation": "$x_{ndc} = x_{clip} / w_{clip} = 3 / 5 = 0.6$."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A $4 \\times 4$ translation matrix $T(2, -3, 1)$ is applied to the point $(4, 5, 6, 1)$ and to the direction $(4, 5, 6, 0)$. Compare the results.",
+    "hint": "The $w$ component determines whether translation applies.",
+    "steps": [
+      {
+        "prompt": "What is the result for the point $(4, 5, 6, 1)$?",
+        "answer_key": "(6, 2, 7, 1)",
+        "explanation": "For a point ($w=1$): $(4+2, 5-3, 6+1, 1) = (6, 2, 7, 1)$."
+      },
+      {
+        "prompt": "What is the result for the direction $(4, 5, 6, 0)$?",
+        "answer_key": "(4, 5, 6, 0)",
+        "explanation": "For a direction ($w=0$): translation has no effect. The result is $(4, 5, 6, 0)$ unchanged."
+      },
+      {
+        "prompt": "Why does this difference matter for normals in a shader?",
+        "answer_key": "Normals are directions and should not be translated",
+        "explanation": "Normals represent directions, not positions. Using $w = 0$ ensures that the translation part of the model matrix does not incorrectly shift the normal vector."
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In orthographic projection, what is $w_{clip}$ set to?",
+    "hint": "Orthographic projection has no perspective foreshortening.",
+    "answer_key": "1",
+    "explanation": "In orthographic projection, $w_{clip} = 1$ for all vertices. The perspective divide ($x/w, y/w, z/w$) has no effect, so distant objects appear the same size as near ones."
+  }
+]

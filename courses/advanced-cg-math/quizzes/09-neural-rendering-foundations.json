@@ -1,0 +1,199 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the primary purpose of positional encoding (Fourier features) in neural rendering?",
+    "hint": "Think about what happens when you feed raw coordinates into an MLP with ReLU activations.",
+    "options": ["A) To reduce the number of network parameters", "B) To overcome the spectral bias of MLPs, enabling them to learn high-frequency functions", "C) To convert 3D coordinates into 2D screen space", "D) To compress the neural network for faster inference"],
+    "answer_key": "B",
+    "explanation": "MLPs with ReLU activations have a spectral bias toward low-frequency functions. Positional encoding maps inputs through sinusoidal functions at multiple frequencies, transforming the Neural Tangent Kernel to have uniform eigenvalues across the target frequency range, enabling the network to learn both low and high frequencies at similar rates (Tancik et al. 2020)."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In the volume rendering equation $C(\\mathbf{r}) = \\int_{t_n}^{t_f} T(t) \\, \\sigma(t) \\, \\mathbf{c}(t) \\, dt$, what does the transmittance $T(t) = \\exp(-\\int_{t_n}^{t} \\sigma(s) \\, ds)$ represent?",
+    "hint": "Transmittance relates to how much light can pass through the medium to reach a point.",
+    "options": ["A) The color of the ray at distance $t$", "B) The total density accumulated along the ray", "C) The probability that the ray travels from $t_n$ to $t$ without being absorbed", "D) The angle between the ray and the surface normal"],
+    "answer_key": "C",
+    "explanation": "Transmittance $T(t)$ is the probability that a ray reaches point $t$ without hitting any particles. It decreases exponentially as the ray passes through denser media. When $T(t) \\approx 0$, the ray has been fully absorbed and points beyond $t$ contribute nothing to the final color."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Which of the following is a key challenge that nvdiffrast (Laine et al. 2020) solves for differentiable rasterization?",
+    "hint": "Standard rasterization is a binary operation at triangle edges — think about what that means for gradient computation.",
+    "options": ["A) Computing ray-triangle intersections efficiently", "B) Providing gradients at silhouette edges where triangle coverage is discontinuous", "C) Converting meshes to signed distance functions", "D) Training generative adversarial networks for texture synthesis"],
+    "answer_key": "B",
+    "explanation": "Standard rasterization produces a binary coverage mask (pixel is either inside or outside a triangle), which has zero gradient almost everywhere. nvdiffrast uses an antialiasing layer that computes analytic edge integrals to provide correct gradients when silhouette edges move by sub-pixel amounts, enabling optimization of vertex positions via backpropagation."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In the discrete volume rendering approximation, the opacity $\\alpha_i$ of sample $i$ is computed as $\\alpha_i = 1 - \\exp(-\\sigma_i \\delta_i)$. What happens to $\\alpha_i$ as the volume density $\\sigma_i \\to \\infty$?",
+    "hint": "Consider the limit of the exponential function as its argument goes to negative infinity.",
+    "options": ["A) $\\alpha_i \\to 0$ (fully transparent)", "B) $\\alpha_i \\to 0.5$ (half transparent)", "C) $\\alpha_i \\to 1$ (fully opaque)", "D) $\\alpha_i$ oscillates between 0 and 1"],
+    "answer_key": "C",
+    "explanation": "As $\\sigma_i \\to \\infty$, $\\exp(-\\sigma_i \\delta_i) \\to 0$, so $\\alpha_i \\to 1 - 0 = 1$. Infinite density means the sample is fully opaque — all light is absorbed at that point. Conversely, $\\sigma_i = 0$ gives $\\alpha_i = 0$ (fully transparent). This maps the continuous density to a bounded opacity in $[0, 1]$."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In DeepSDF (Park et al. 2019), what does the zero level set $\\{ \\mathbf{x} : f_\\theta(\\mathbf{x}) = 0 \\}$ of the learned function represent?",
+    "hint": "Think about what the sign of the SDF value tells you about a point's position relative to the object.",
+    "answer_key": "the surface of the shape",
+    "explanation": "DeepSDF learns a signed distance function where $f_\\theta(\\mathbf{x}) > 0$ outside, $f_\\theta(\\mathbf{x}) < 0$ inside, and $f_\\theta(\\mathbf{x}) = 0$ exactly on the surface boundary. The surface is extracted via Marching Cubes on this zero level set."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A positional encoding with $L = 6$ frequency bands is applied to a single scalar input $p$, including the identity. How many output dimensions does this produce?",
+    "hint": "Each frequency band contributes a sine and a cosine value, and don't forget the raw input.",
+    "answer_key": "13",
+    "explanation": "Each frequency band produces 2 values ($\\sin$ and $\\cos$), so $L = 6$ bands give $2 \\times 6 = 12$ Fourier features. Including the identity (raw input $p$) adds 1, giving $12 + 1 = 13$ total dimensions."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does the term 'neural rendering' broadly refer to?",
+    "hint": "It combines two major fields.",
+    "options": ["A) Rendering images using traditional rasterization on neural processing units", "B) Using deep neural networks as components in the image synthesis (rendering) pipeline", "C) Training neural networks to classify rendered images", "D) Using neural networks to compress rendered video streams"],
+    "answer_key": "B",
+    "explanation": "Neural rendering refers to techniques that incorporate deep neural networks into the rendering pipeline — either replacing traditional components (e.g., using an MLP instead of a texture lookup) or learning entire scene representations that can be rendered from novel viewpoints. The key idea is that the network is trained to produce photorealistic images."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is a signed distance function (SDF)?",
+    "hint": "The 'signed' part means the value tells you which side of the surface you are on.",
+    "options": ["A) A function that returns the RGB color of the nearest surface point", "B) A function that returns the shortest distance to the surface, negative inside and positive outside (or vice versa)", "C) A function that returns 1 inside and 0 outside an object", "D) A function that returns the surface normal at any point"],
+    "answer_key": "B",
+    "explanation": "An SDF $f(\\mathbf{x})$ returns the shortest Euclidean distance from point $\\mathbf{x}$ to the nearest surface, with a sign convention: typically negative inside the object and positive outside (or vice versa). The surface is the zero level set where $f(\\mathbf{x}) = 0$. SDFs enable sphere tracing for efficient ray marching."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "In sphere tracing (ray marching with an SDF), how far can the ray safely advance at each step?",
+    "hint": "The SDF value at the current position gives you a guaranteed safe distance.",
+    "answer_key": "The SDF value at the current point (the distance to the nearest surface)",
+    "explanation": "At each step, the SDF value $f(\\mathbf{x})$ gives the distance to the nearest surface, which means no surface exists within that radius. The ray can safely advance by exactly $|f(\\mathbf{x})|$ without missing any intersection. This makes sphere tracing efficient — it takes large steps in open space and small steps near surfaces."
+  },
+  {
+    "id": 10,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the 'spectral bias' of neural networks?",
+    "hint": "It describes which frequency components an MLP learns first during training.",
+    "options": ["A) Neural networks prefer to output values in the visible light spectrum", "B) Neural networks tend to learn low-frequency functions first and struggle with high-frequency details", "C) Neural networks are biased toward spectral (frequency-domain) representations", "D) Neural networks learn high frequencies faster than low frequencies"],
+    "answer_key": "B",
+    "explanation": "Spectral bias (also called F-principle) refers to the tendency of neural networks with smooth activations to learn low-frequency components of the target function much faster than high-frequency components. This is why MLPs trained on raw coordinates produce blurry results — they converge to a smooth approximation and struggle to capture fine detail without positional encoding."
+  },
+  {
+    "id": 11,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In differentiable rendering, why is the rendering pipeline made differentiable?",
+    "hint": "Think about what you need to do to optimize scene parameters (geometry, materials, lighting) from images.",
+    "options": ["A) To enable real-time rendering on mobile GPUs", "B) To allow gradient-based optimization of scene parameters by backpropagating through the rendering process", "C) To convert between different 3D file formats", "D) To automatically generate mipmaps"],
+    "answer_key": "B",
+    "explanation": "Making the rendering pipeline differentiable allows computing gradients of a loss function (e.g., pixel error between rendered and target images) with respect to scene parameters (vertex positions, materials, lighting, camera). These gradients enable gradient-based optimization to reconstruct 3D scenes from 2D images — the foundation of inverse rendering."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "In the discrete volume rendering equation, what is the name of the compositing scheme used to accumulate color samples along a ray from front to back?",
+    "hint": "It is also used in traditional compositing of semi-transparent layers.",
+    "answer_key": "alpha compositing (front-to-back or over operator)",
+    "explanation": "The discrete volume rendering uses front-to-back alpha compositing (the 'over' operator): $C = \\sum_i T_i \\alpha_i \\mathbf{c}_i$ where $T_i = \\prod_{j<i}(1 - \\alpha_j)$. Each sample's color is weighted by its opacity $\\alpha_i$ and the accumulated transmittance $T_i$ from earlier samples. This is the same Porter-Duff 'over' operator used in traditional image compositing."
+  },
+  {
+    "id": 13,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "In neural implicit representations, what advantage does an occupancy network have over a signed distance function when representing shapes with complex topology (e.g., thin sheets, open surfaces)?",
+    "hint": "Consider what 'signed distance' requires about the definition of inside vs. outside.",
+    "options": ["A) Occupancy networks are faster to evaluate", "B) Occupancy networks do not require a well-defined inside/outside, so they can represent non-watertight surfaces", "C) Occupancy networks produce smoother surfaces", "D) Occupancy networks use less memory"],
+    "answer_key": "B",
+    "explanation": "An SDF requires a consistent notion of inside vs. outside to assign the sign, which fails for non-watertight meshes, open surfaces, or thin structures. Occupancy networks output a probability $o(\\mathbf{x}) \\in [0, 1]$ of being inside, which can handle arbitrary topology. However, SDFs provide richer gradient information (the distance value) which aids surface extraction quality."
+  },
+  {
+    "id": 14,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What algorithm is commonly used to extract a triangle mesh from a neural implicit surface (SDF or occupancy field) evaluated on a regular grid?",
+    "hint": "It processes the grid one cube at a time, looking at the sign of the function at each corner.",
+    "answer_key": "Marching Cubes",
+    "explanation": "Marching Cubes evaluates the implicit function on a regular 3D grid, then processes each cube by classifying its 8 corners as inside or outside. A lookup table (256 cases, reduced by symmetry to 15) determines how to place triangle faces within each cube to approximate the zero level set. This produces a watertight triangle mesh."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Compute the discrete volume rendering for a ray with 3 samples.",
+    "hint": "Apply the front-to-back compositing formula step by step.",
+    "steps": [
+      {
+        "prompt": "Step 1: Given samples with densities $\\sigma_1 = 0$, $\\sigma_2 = 2$, $\\sigma_3 = 5$ and uniform step size $\\delta = 0.5$, compute the opacities $\\alpha_1$, $\\alpha_2$, $\\alpha_3$.",
+        "answer_key": "alpha_1 = 0, alpha_2 ≈ 0.632, alpha_3 ≈ 0.918",
+        "explanation": "$\\alpha_i = 1 - \\exp(-\\sigma_i \\delta)$. $\\alpha_1 = 1 - \\exp(0) = 0$. $\\alpha_2 = 1 - \\exp(-2 \\cdot 0.5) = 1 - \\exp(-1) \\approx 1 - 0.368 = 0.632$. $\\alpha_3 = 1 - \\exp(-5 \\cdot 0.5) = 1 - \\exp(-2.5) \\approx 1 - 0.082 = 0.918$."
+      },
+      {
+        "prompt": "Step 2: Compute the transmittances $T_1$, $T_2$, $T_3$.",
+        "answer_key": "T_1 = 1, T_2 = 1, T_3 ≈ 0.368",
+        "explanation": "$T_1 = 1$ (nothing before it). $T_2 = (1 - \\alpha_1) = 1$. $T_3 = (1 - \\alpha_1)(1 - \\alpha_2) = 1 \\cdot (1 - 0.632) = 0.368$."
+      },
+      {
+        "prompt": "Step 3: If the colors are $\\mathbf{c}_1 = (1, 0, 0)$, $\\mathbf{c}_2 = (0, 1, 0)$, $\\mathbf{c}_3 = (0, 0, 1)$, what is the final composited color $C$?",
+        "answer_key": "C ≈ (0, 0.632, 0.338)",
+        "explanation": "$C = T_1 \\alpha_1 \\mathbf{c}_1 + T_2 \\alpha_2 \\mathbf{c}_2 + T_3 \\alpha_3 \\mathbf{c}_3 = 1 \\cdot 0 \\cdot (1,0,0) + 1 \\cdot 0.632 \\cdot (0,1,0) + 0.368 \\cdot 0.918 \\cdot (0,0,1) = (0, 0.632, 0) + (0, 0, 0.338) = (0, 0.632, 0.338)$. The first sample contributes nothing (transparent), the second contributes green, and the third contributes blue attenuated by the transmittance."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Apply positional encoding to the scalar value $p = 0.5$ with $L = 2$ frequency bands (no identity term).",
+    "hint": "The frequencies are $2^0 \\pi$ and $2^1 \\pi$ applied to $p$.",
+    "steps": [
+      {
+        "prompt": "Step 1: What are the encoding frequencies for $L = 2$?",
+        "answer_key": "2^0 pi = pi and 2^1 pi = 2 pi",
+        "explanation": "The standard positional encoding uses frequencies $\\omega_k = 2^k \\pi$ for $k = 0, 1, \\ldots, L-1$. With $L = 2$: $\\omega_0 = \\pi$ and $\\omega_1 = 2\\pi$."
+      },
+      {
+        "prompt": "Step 2: Compute the 4-dimensional encoding vector $\\gamma(0.5) = [\\sin(\\pi \\cdot 0.5), \\cos(\\pi \\cdot 0.5), \\sin(2\\pi \\cdot 0.5), \\cos(2\\pi \\cdot 0.5)]$.",
+        "answer_key": "[1, 0, 0, -1]",
+        "explanation": "$\\sin(\\pi/2) = 1$, $\\cos(\\pi/2) = 0$, $\\sin(\\pi) = 0$, $\\cos(\\pi) = -1$. So $\\gamma(0.5) = [1, 0, 0, -1]$."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What does 'novel view synthesis' mean in the context of neural rendering?",
+    "hint": "It is about generating images from viewpoints not present in the training data.",
+    "answer_key": "Generating images of a scene from new camera viewpoints not seen during training",
+    "explanation": "Novel view synthesis is the task of rendering photorealistic images of a scene from arbitrary camera positions and orientations, given a set of input images from known viewpoints. The system must infer the 3D structure and appearance of the scene well enough to extrapolate to unseen views."
+  },
+  {
+    "id": 18,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why is the eikonal loss $\\mathcal{L}_{\\text{eik}} = \\mathbb{E}[(\\|\\nabla f_\\theta(\\mathbf{x})\\| - 1)^2]$ important when training neural SDFs?",
+    "hint": "What property must the gradient of a valid signed distance function satisfy everywhere?",
+    "options": ["A) It forces the network output to be positive", "B) It encourages the learned function to have unit-norm gradients, which is the defining property of a true distance function", "C) It prevents the network from overfitting to training data", "D) It normalizes the network weights for stable training"],
+    "answer_key": "B",
+    "explanation": "A true signed distance function satisfies the eikonal equation $\\|\\nabla f(\\mathbf{x})\\| = 1$ everywhere — the gradient magnitude is always 1. Without this regularization, the network might learn a function whose zero level set matches the surface but whose values away from the surface are not valid distances, degrading sphere tracing and surface normal computation."
+  }
+]

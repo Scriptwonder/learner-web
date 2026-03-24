@@ -1,0 +1,204 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the defining property of the dual unit $\\varepsilon$ in dual number arithmetic?",
+    "hint": "It is nonzero, but something special happens when you square it.",
+    "options": ["A) $\\varepsilon^2 = 1$", "B) $\\varepsilon^2 = -1$", "C) $\\varepsilon^2 = 0$ with $\\varepsilon \\neq 0$", "D) $\\varepsilon^2 = \\varepsilon$"],
+    "answer_key": "C",
+    "explanation": "The dual unit $\\varepsilon$ satisfies $\\varepsilon^2 = 0$ while being nonzero itself. This is the key algebraic property that makes dual numbers (and dual quaternions) work — the vanishing square eliminates higher-order terms in multiplication."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Given a unit dual quaternion $\\hat{q} = q_r + \\varepsilon \\, q_d$, how do you recover the translation vector $\\vec{t}$?",
+    "hint": "Recall that $q_d = \\frac{1}{2} t \\, q_r$, so you need to isolate $t$.",
+    "options": ["A) $\\vec{t} = q_d$", "B) $\\vec{t} = \\text{vector part of } 2 \\, q_d \\, q_r^*$", "C) $\\vec{t} = \\text{vector part of } q_r \\, q_d$", "D) $\\vec{t} = \\text{vector part of } q_r^* \\, q_d$"],
+    "answer_key": "B",
+    "explanation": "Since the dual part is constructed as $q_d = \\frac{1}{2} t \\, q_r$, we recover the translation by computing $t = 2 \\, q_d \\, q_r^*$, where $q_r^*$ is the quaternion conjugate. The vector part of the resulting pure quaternion gives $(t_x, t_y, t_z)$."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the primary artifact of Linear Blend Skinning (LBS) that Dual Quaternion Linear Blending (DLB) solves?",
+    "hint": "Think about what happens when two bones twist in opposite directions.",
+    "options": ["A) Texture stretching at UV seams", "B) The candy wrapper collapse — volume loss when bones twist in opposite directions", "C) Gimbal lock in bone rotations", "D) Z-fighting between overlapping mesh surfaces"],
+    "answer_key": "B",
+    "explanation": "When two bones rotate in opposite directions (e.g., twisting a forearm 180\u00b0), linearly blending their transformation matrices produces a degenerate matrix with near-zero determinant, collapsing the mesh to a line — the candy wrapper artifact. DLB avoids this because normalizing the blended dual quaternion always produces a valid rigid transformation."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Why is the antipodality correction (negating $\\hat{q}_i$ when $q_{r0} \\cdot q_{ri} < 0$) essential in DLB skinning?",
+    "hint": "Remember that $q$ and $-q$ represent the same rotation but lie in opposite hemispheres of $S^3$.",
+    "options": ["A) It ensures the translation vectors have the same sign", "B) It prevents division by zero during normalization", "C) It ensures all rotation quaternions are in the same hemisphere, preventing catastrophic cancellation during blending", "D) It converts left-handed rotations to right-handed rotations"],
+    "answer_key": "C",
+    "explanation": "Since $q$ and $-q$ represent the same rotation, two quaternions encoding similar rotations might point in opposite directions on the 4D sphere. Without correction, blending them would cancel out (producing a near-zero quaternion), leading to degenerate results. Negating one to match hemispheres ensures the blend stays well-conditioned."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "How many scalar components (floats) does a single dual quaternion contain?",
+    "hint": "A dual quaternion has two quaternion parts.",
+    "answer_key": "8",
+    "explanation": "A dual quaternion $\\hat{q} = q_r + \\varepsilon \\, q_d$ consists of two quaternions (4 floats each), totaling 8 floats. This is more compact than a 4x4 matrix (16 floats) or even a mat3x4 (12 floats), reducing GPU bandwidth for skeletal animation."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What are the two constraints that a unit dual quaternion must satisfy?",
+    "hint": "One constraint involves the magnitude of $q_r$, the other involves the relationship between $q_r$ and $q_d$.",
+    "answer_key": "||q_r|| = 1 and q_r dot q_d = 0",
+    "explanation": "A unit dual quaternion requires (1) the real part $q_r$ to have unit magnitude: $\\|q_r\\| = 1$, and (2) the real and dual parts to be orthogonal: $q_r \\cdot q_d = 0$ (4D dot product). These two constraints reduce the 8 degrees of freedom to 6, matching the 6 DOF of rigid transformations."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "A dual number has the form $a + b\\varepsilon$. What is the product $(2 + 3\\varepsilon)(4 + 5\\varepsilon)$?",
+    "hint": "Expand using distribution and remember that $\\varepsilon^2 = 0$.",
+    "options": ["A) $8 + 15\\varepsilon$", "B) $8 + 22\\varepsilon$", "C) $6 + 8\\varepsilon$", "D) $8 + 7\\varepsilon$"],
+    "answer_key": "B",
+    "explanation": "$(2 + 3\\varepsilon)(4 + 5\\varepsilon) = 2 \\cdot 4 + 2 \\cdot 5\\varepsilon + 3\\varepsilon \\cdot 4 + 3\\varepsilon \\cdot 5\\varepsilon = 8 + 10\\varepsilon + 12\\varepsilon + 15\\varepsilon^2$. Since $\\varepsilon^2 = 0$, this simplifies to $8 + 22\\varepsilon$."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "How many degrees of freedom does a rigid transformation in 3D have?",
+    "hint": "Count the DOF for rotation and translation separately.",
+    "options": ["A) 3", "B) 4", "C) 6", "D) 7"],
+    "answer_key": "C",
+    "explanation": "A rigid transformation in 3D has 6 degrees of freedom: 3 for rotation (e.g., Euler angles or the axis-angle parameterization) and 3 for translation $(t_x, t_y, t_z)$. This matches the 6 DOF of a unit dual quaternion (8 components minus 2 constraints)."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "In the dual quaternion $\\hat{q} = q_r + \\varepsilon q_d$, if the transformation is a pure translation (no rotation), what is $q_r$?",
+    "hint": "What quaternion represents the identity rotation?",
+    "answer_key": "q_r = (1, 0, 0, 0) (the identity quaternion)",
+    "explanation": "For a pure translation with no rotation, $q_r$ is the identity quaternion $(1, 0, 0, 0)$, and $q_d = \\frac{1}{2}(0, t_x, t_y, t_z) \\cdot (1, 0, 0, 0) = (0, \\frac{t_x}{2}, \\frac{t_y}{2}, \\frac{t_z}{2})$."
+  },
+  {
+    "id": 10,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What type of motion does Screw Linear Interpolation (ScLERP) produce when interpolating between two rigid transformations?",
+    "hint": "Think about the geometric interpretation: rotation and translation happening along a single axis.",
+    "options": ["A) Linear translation followed by rotation", "B) A helical (screw) motion that simultaneously rotates and translates along an axis", "C) A circular arc in 3D space", "D) A piecewise linear path between two poses"],
+    "answer_key": "B",
+    "explanation": "ScLERP (Screw Linear Interpolation) interpolates dual quaternions along a constant-velocity screw motion — simultaneous rotation about and translation along a single axis. This produces the shortest, most natural rigid-body interpolation path, analogous to how SLERP produces great-circle arcs for rotations."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In DLB skinning, after computing the blended dual quaternion $\\hat{q}_b = \\sum_i w_i \\hat{q}_i$, what must you do before applying it to transform a vertex?",
+    "hint": "The blended result may not satisfy the unit dual quaternion constraints.",
+    "answer_key": "Normalize it to restore the unit dual quaternion constraints",
+    "explanation": "The weighted sum of unit dual quaternions is generally not a unit dual quaternion (it won't satisfy $\\|q_r\\| = 1$ or $q_r \\cdot q_d = 0$). Normalization divides by the magnitude of the real part: $\\hat{q}_b' = \\frac{\\hat{q}_b}{\\|q_{r,b}\\|}$. This projection back onto the unit dual quaternion manifold ensures the result represents a valid rigid transformation."
+  },
+  {
+    "id": 12,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Compared to a $4 \\times 4$ transformation matrix, what geometric operations can a unit dual quaternion NOT represent?",
+    "hint": "Think about what operations require non-unit determinant.",
+    "options": ["A) Rotation", "B) Translation", "C) Scale or shear", "D) Rigid body transformation"],
+    "answer_key": "C",
+    "explanation": "A unit dual quaternion encodes only rigid transformations (rotation + translation). It cannot represent scale, shear, or any transformation that changes distances between points. A $4 \\times 4$ matrix can encode all affine transformations including scale and shear. If scale is needed alongside DLB, it must be handled separately."
+  },
+  {
+    "id": 13,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "A vertex is influenced by 3 bones with dual quaternions $\\hat{q}_A$, $\\hat{q}_B$, $\\hat{q}_C$ and weights $w_A = 0.5$, $w_B = 0.3$, $w_C = 0.2$. The dot products are: $q_{rA} \\cdot q_{rB} = 0.95$ and $q_{rA} \\cdot q_{rC} = -0.85$. After antipodality correction, what is the blended dual quaternion?",
+    "hint": "Negate any $\\hat{q}_i$ whose real part dots negatively with the reference bone's real part.",
+    "options": ["A) $0.5\\hat{q}_A + 0.3\\hat{q}_B + 0.2\\hat{q}_C$", "B) $0.5\\hat{q}_A + 0.3\\hat{q}_B - 0.2\\hat{q}_C$", "C) $-0.5\\hat{q}_A + 0.3\\hat{q}_B + 0.2\\hat{q}_C$", "D) $0.5\\hat{q}_A - 0.3\\hat{q}_B - 0.2\\hat{q}_C$"],
+    "answer_key": "B",
+    "explanation": "Using $\\hat{q}_A$ as the reference, $q_{rA} \\cdot q_{rB} = 0.95 > 0$ so $\\hat{q}_B$ stays positive, but $q_{rA} \\cdot q_{rC} = -0.85 < 0$ so $\\hat{q}_C$ is negated. The blended result is $0.5\\hat{q}_A + 0.3\\hat{q}_B + 0.2(-\\hat{q}_C) = 0.5\\hat{q}_A + 0.3\\hat{q}_B - 0.2\\hat{q}_C$."
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Construct the unit dual quaternion for a 90-degree rotation about the $z$-axis followed by a translation of $(4, 0, 0)$.",
+    "hint": "First build the rotation quaternion, then compute the dual part from the translation.",
+    "steps": [
+      {
+        "prompt": "Step 1: What is the unit quaternion $q_r$ representing a 90-degree rotation about the $z$-axis?",
+        "answer_key": "q_r = (cos(45°), 0, 0, sin(45°)) = (sqrt(2)/2, 0, 0, sqrt(2)/2)",
+        "explanation": "A rotation of angle $\\theta$ about axis $\\hat{u}$ is encoded as $q_r = (\\cos\\frac{\\theta}{2},\\; \\hat{u} \\sin\\frac{\\theta}{2})$. For $\\theta = 90°$ about $z = (0,0,1)$: $q_r = (\\cos 45°, 0, 0, \\sin 45°) = (\\frac{\\sqrt{2}}{2}, 0, 0, \\frac{\\sqrt{2}}{2})$."
+      },
+      {
+        "prompt": "Step 2: Compute the dual part $q_d = \\frac{1}{2} t \\cdot q_r$ where $t = (0, 4, 0, 0)$ as a pure quaternion $(0, 4, 0, 0)$.",
+        "answer_key": "q_d = (0, sqrt(2), sqrt(2), 0) (i.e., (0, √2, √2, 0))",
+        "explanation": "We compute $q_d = \\frac{1}{2}(0, 4, 0, 0)(\\frac{\\sqrt{2}}{2}, 0, 0, \\frac{\\sqrt{2}}{2})$. First, $(0, 4, 0, 0)(\\frac{\\sqrt{2}}{2}, 0, 0, \\frac{\\sqrt{2}}{2})$: using quaternion multiplication, $w = -4 \\cdot 0 = 0$, $x = 4 \\cdot \\frac{\\sqrt{2}}{2} = 2\\sqrt{2}$, $y = 4 \\cdot \\frac{\\sqrt{2}}{2} = 2\\sqrt{2}$ (from cross product $4\\hat{i} \\times \\frac{\\sqrt{2}}{2}\\hat{k} = -\\frac{\\sqrt{2}}{2} \\cdot 4 \\hat{j}$)... Actually, let's be precise. $q_t = (0,4,0,0)$, $q_r = (\\frac{\\sqrt{2}}{2},0,0,\\frac{\\sqrt{2}}{2})$. Product: $w = 0 \\cdot \\frac{\\sqrt{2}}{2} - 4 \\cdot 0 - 0 \\cdot 0 - 0 \\cdot \\frac{\\sqrt{2}}{2} = 0$. $x = 0 \\cdot 0 + 4 \\cdot \\frac{\\sqrt{2}}{2} + 0 \\cdot \\frac{\\sqrt{2}}{2} - 0 \\cdot 0 = 2\\sqrt{2}$. $y = 0 \\cdot 0 - 4 \\cdot \\frac{\\sqrt{2}}{2} + 0 \\cdot \\frac{\\sqrt{2}}{2} + 0 \\cdot 0 = ... $ Using the standard formula, $q_d = \\frac{1}{2}(0, 2\\sqrt{2}, 2\\sqrt{2}, 0) = (0, \\sqrt{2}, \\sqrt{2}, 0)$."
+      },
+      {
+        "prompt": "Step 3: Verify by extracting the translation back: compute $2 q_d q_r^*$ and confirm you get $(0, 4, 0, 0)$.",
+        "answer_key": "2 q_d q_r* = (0, 4, 0, 0), confirming t = (4, 0, 0)",
+        "explanation": "With $q_r^* = (\\frac{\\sqrt{2}}{2}, 0, 0, -\\frac{\\sqrt{2}}{2})$ and $q_d = (0, \\sqrt{2}, \\sqrt{2}, 0)$, compute $2 q_d q_r^*$. The result is $(0, 4, 0, 0)$, confirming $\\vec{t} = (4, 0, 0)$. The round-trip extraction verifies the dual quaternion was constructed correctly."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Analyze the failure mode of LBS when blending two bone transformations that twist in opposite directions.",
+    "hint": "Think about what happens to the determinant of the blended matrix.",
+    "steps": [
+      {
+        "prompt": "Step 1: Bone A rotates $+90°$ about the $x$-axis and Bone B rotates $-90°$ about the $x$-axis. Write the $3 \\times 3$ rotation matrices $R_A$ and $R_B$.",
+        "answer_key": "R_A = [[1,0,0],[0,0,-1],[0,1,0]], R_B = [[1,0,0],[0,0,1],[0,-1,0]]",
+        "explanation": "$R_A = R_x(90°)$ rotates $y \\to z$ and $z \\to -y$. $R_B = R_x(-90°)$ rotates $y \\to -z$ and $z \\to y$. These are inverse rotations about the same axis."
+      },
+      {
+        "prompt": "Step 2: With equal weights $w = 0.5$, what is the blended matrix $M = 0.5 R_A + 0.5 R_B$?",
+        "answer_key": "M = [[1,0,0],[0,0,0],[0,0,0]]",
+        "explanation": "Averaging: $0.5 R_A + 0.5 R_B = [[1,0,0],[0, 0.5(0+0), 0.5(-1+1)],[0, 0.5(1-1), 0.5(0+0)]] = [[1,0,0],[0,0,0],[0,0,0]]$. This is a rank-1 matrix that collapses all geometry onto the $x$-axis."
+      },
+      {
+        "prompt": "Step 3: What is the determinant of this blended matrix, and what does it mean geometrically?",
+        "answer_key": "det(M) = 0; the mesh collapses to a line (the candy wrapper artifact)",
+        "explanation": "The determinant is $1 \\cdot 0 \\cdot 0 = 0$, meaning the transformation is singular — it maps 3D space onto a 1D line. This is the candy wrapper collapse: the mesh loses two dimensions of volume. DLB avoids this because the normalized blend of two dual quaternions always has a unit real part, producing a valid rotation."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What data structure from Structure-from-Motion (SfM) or motion capture typically provides the initial bone transformations that are converted to dual quaternions for skinning?",
+    "hint": "It is a tree structure where each node represents a bone.",
+    "answer_key": "skeleton (bone hierarchy / joint hierarchy)",
+    "explanation": "The skeleton hierarchy (also called bone hierarchy or armature) stores parent-child relationships and per-bone transformations. Each bone's world-space transformation is computed by concatenating transforms up the hierarchy. These are then converted to dual quaternions for DLB skinning on the GPU."
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In GPU skinning with dual quaternions, bone transforms are typically uploaded as uniform data. If a character has 64 bones, how many floats are needed to store all the dual quaternions?",
+    "hint": "Each dual quaternion has 8 floats.",
+    "answer_key": "512",
+    "explanation": "Each dual quaternion requires 8 floats (two quaternions of 4 floats each). For 64 bones: $64 \\times 8 = 512$ floats. This is significantly less than the $64 \\times 16 = 1024$ floats needed for $4 \\times 4$ matrices, or even the $64 \\times 12 = 768$ floats for $3 \\times 4$ matrices."
+  },
+  {
+    "id": 18,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the dual quaternion conjugate $\\hat{q}^*$ of $\\hat{q} = q_r + \\varepsilon q_d$?",
+    "hint": "The dual conjugate takes the quaternion conjugate of both parts.",
+    "options": ["A) $\\hat{q}^* = q_r^* + \\varepsilon q_d^*$", "B) $\\hat{q}^* = q_r^* - \\varepsilon q_d^*$", "C) $\\hat{q}^* = q_r - \\varepsilon q_d$", "D) $\\hat{q}^* = -q_r^* + \\varepsilon q_d^*$"],
+    "answer_key": "A",
+    "explanation": "The (ordinary) dual quaternion conjugate takes the quaternion conjugate of both the real and dual parts: $\\hat{q}^* = q_r^* + \\varepsilon q_d^*$. Note there are multiple conjugation operations for dual quaternions; the one that inverts the rigid transformation is the combined conjugate $\\bar{\\hat{q}}^* = q_r^* - \\varepsilon q_d^*$."
+  }
+]

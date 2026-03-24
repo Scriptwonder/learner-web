@@ -1,0 +1,204 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In a $4 \\times 4$ 3D transform matrix, where is the translation stored?",
+    "hint": "Look at the standard layout: rotation/scale in one block, translation in another.",
+    "options": ["A) The upper-left $3 \\times 3$ block", "B) The bottom row", "C) The rightmost column $(t_x, t_y, t_z)$", "D) The diagonal elements"],
+    "answer_key": "C",
+    "explanation": "In the standard $4 \\times 4$ matrix layout, the upper-left $3 \\times 3$ stores rotation and scale, and the rightmost column stores the translation vector $(t_x, t_y, t_z)$."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What problem occurs when Euler angle pitch reaches $\\pm 90°$?",
+    "hint": "One rotation axis aligns with another, reducing the system's freedom.",
+    "options": ["A) The object scales to zero", "B) Gimbal lock: two rotation axes align, losing one degree of freedom", "C) The rotation matrix becomes singular", "D) The translation is reset to zero"],
+    "answer_key": "B",
+    "explanation": "Gimbal lock occurs when one rotation aligns two axes, causing them to produce identical rotations. The system loses one independent degree of freedom."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Which rotation matrix has its $-\\sin\\theta$ term in a different position compared to $R_x$ and $R_z$?",
+    "hint": "Due to the cyclic order of axes, one rotation matrix has a flipped sign pattern.",
+    "options": ["A) $R_x$", "B) $R_y$", "C) $R_z$", "D) All three have the same layout"],
+    "answer_key": "B",
+    "explanation": "$R_y$ has the $-\\sin\\theta$ in the bottom-left of the XZ submatrix rather than the top-right, due to the cyclic order of axes $X \\to Y \\to Z \\to X$."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Rodrigues' rotation formula allows rotation around which kind of axis?",
+    "hint": "It is more general than the standard $R_x$, $R_y$, $R_z$ rotations.",
+    "options": ["A) Only the X, Y, or Z axis", "B) Only axes in the XY plane", "C) Any arbitrary unit axis", "D) Only axes through the origin parallel to a coordinate axis"],
+    "answer_key": "C",
+    "explanation": "Rodrigues' formula rotates a vector by angle $\\theta$ around any arbitrary unit axis $\\hat{n}$, without needing to decompose into separate X, Y, Z rotations."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What rotation representation do production game engines use to avoid gimbal lock?",
+    "hint": "It uses four components and supports smooth interpolation.",
+    "answer_key": "quaternions",
+    "explanation": "Production engines use quaternions for rotations because they do not suffer from gimbal lock and support smooth interpolation (SLERP)."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "After rotating the point $(1, 0, 0)$ by $90°$ around the Z axis, what is the resulting point?",
+    "hint": "Rotation around Z spins within the XY plane.",
+    "answer_key": "(0, 1, 0)",
+    "explanation": "A $90°$ rotation around Z spins in the XY plane: $(1, 0, 0)$ moves to the positive Y axis, giving $(0, 1, 0)$."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "How many degrees of freedom does a 3D rigid-body transform (rotation + translation, no scale) have?",
+    "hint": "Count 3 for position and 3 for orientation.",
+    "options": ["A) 3", "B) 6", "C) 9", "D) 12"],
+    "answer_key": "B",
+    "explanation": "A rigid body has 6 degrees of freedom: 3 for translation ($x, y, z$) and 3 for rotation (e.g., yaw, pitch, roll)."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does a 3D scale matrix $S(2, 2, 2)$ do?",
+    "hint": "All three scale factors are equal.",
+    "options": ["A) Scales the object to twice its size uniformly", "B) Translates by 2 units", "C) Rotates by 2 degrees", "D) Shears the object"],
+    "answer_key": "A",
+    "explanation": "A uniform scale of $(2, 2, 2)$ doubles the size of the object equally along all three axes."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Which of the following is true about the $R_x(\\theta)$ rotation matrix?",
+    "hint": "Rotation around $x$ leaves the $x$-component unchanged.",
+    "options": ["A) It modifies all three coordinates", "B) It leaves the $x$-component unchanged and rotates in the YZ plane", "C) It leaves the $y$-component unchanged", "D) It only affects the $z$-component"],
+    "answer_key": "B",
+    "explanation": "$R_x$ rotates around the $x$-axis, so the $x$-component stays fixed while $y$ and $z$ are rotated in the YZ plane."
+  },
+  {
+    "id": 10,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the main advantage of quaternions over Euler angles for representing rotations?",
+    "hint": "Euler angles have a well-known singularity problem.",
+    "options": ["A) Quaternions use fewer numbers (3 vs 3)", "B) Quaternions avoid gimbal lock and support smooth interpolation", "C) Quaternions are easier to visualize", "D) Quaternions are always faster to compute"],
+    "answer_key": "B",
+    "explanation": "Quaternions avoid gimbal lock entirely and support spherical linear interpolation (SLERP), which smoothly blends between rotations without artifacts."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "How many components does a quaternion have?",
+    "hint": "It has one real part and three imaginary parts.",
+    "answer_key": "4",
+    "explanation": "A quaternion has 4 components: $q = (w, x, y, z)$ or equivalently $q = w + xi + yj + zk$."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "After rotating $(0, 0, 1)$ by $90°$ around the X axis, what is the result?",
+    "hint": "Rotation around X spins in the YZ plane. The $x$-component stays the same.",
+    "answer_key": "(0, -1, 0)",
+    "explanation": "$R_x(90°)$ applied to $(0, 0, 1)$: $x$ stays $0$, $y' = \\cos 90° \\cdot 0 - \\sin 90° \\cdot 1 = -1$, $z' = \\sin 90° \\cdot 0 + \\cos 90° \\cdot 1 = 0$. Result: $(0, -1, 0)$."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is the result of applying $R_y(90°)$ to the point $(1, 0, 0)$?",
+    "hint": "Rotation around Y spins in the XZ plane. Remember $R_y$ has the sign flip on $\\sin$.",
+    "answer_key": "(0, 0, -1)",
+    "explanation": "$R_y(90°)$ applied to $(1, 0, 0)$: $x' = \\cos 90° \\cdot 1 + \\sin 90° \\cdot 0 = 0$, $y' = 0$, $z' = -\\sin 90° \\cdot 1 + \\cos 90° \\cdot 0 = -1$. Result: $(0, 0, -1)$."
+  },
+  {
+    "id": 14,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Given Euler angles (yaw $90°$, pitch $90°$, roll $0°$) applied in YXZ order, gimbal lock occurs. How many independent rotation axes remain?",
+    "hint": "Gimbal lock collapses two axes into one. How many independent axes are left from the original three?",
+    "options": ["A) 0", "B) 1", "C) 2", "D) 3"],
+    "answer_key": "C",
+    "explanation": "When pitch reaches $\\pm 90°$, the yaw and roll axes align, effectively becoming the same rotation. You go from 3 independent axes to only 2."
+  },
+  {
+    "id": 15,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Rodrigues' rotation formula is $\\vec{v}' = \\vec{v} \\cos\\theta + (\\hat{n} \\times \\vec{v}) \\sin\\theta + \\hat{n}(\\hat{n} \\cdot \\vec{v})(1 - \\cos\\theta)$. What does the third term represent?",
+    "hint": "Think about the component of $\\vec{v}$ that is parallel to the rotation axis.",
+    "options": ["A) The projection of $\\vec{v}$ onto the rotation plane", "B) The component of $\\vec{v}$ parallel to the rotation axis, which remains unchanged by rotation", "C) The cross product contribution", "D) A correction for non-unit axes"],
+    "answer_key": "B",
+    "explanation": "The term $\\hat{n}(\\hat{n} \\cdot \\vec{v})(1 - \\cos\\theta)$ accounts for the component of $\\vec{v}$ along the rotation axis $\\hat{n}$. This component is unchanged by rotation, and the formula reconstructs it properly."
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Construct the $4 \\times 4$ matrix that translates by $(3, 0, -1)$ and then uniformly scales by $2$. Give the combined matrix.",
+    "hint": "Remember: TRS order means the matrix is written $T \\cdot S$ (scale applied first). But here we want translate then scale, which is $S \\cdot T$.",
+    "steps": [
+      {
+        "prompt": "Write the translation matrix $T(3, 0, -1)$'s last column.",
+        "answer_key": "(3, 0, -1, 1)",
+        "explanation": "The translation matrix has the identity in the upper-left $3 \\times 3$ and $(3, 0, -1, 1)$ in the rightmost column."
+      },
+      {
+        "prompt": "If scale is applied AFTER translation, the combined matrix is $S \\cdot T$. What are the diagonal elements?",
+        "answer_key": "(2, 2, 2, 1)",
+        "explanation": "The scale matrix $S(2, 2, 2)$ has diagonal $(2, 2, 2, 1)$. When multiplied with $T$, the scale applies to both the rotation/scale block and the translation column."
+      },
+      {
+        "prompt": "What is the last column of $S \\cdot T$?",
+        "answer_key": "(6, 0, -2, 1)",
+        "explanation": "The scale multiplies the translation column: $2 \\cdot (3, 0, -1) = (6, 0, -2)$. So the last column is $(6, 0, -2, 1)$."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Extract the scale factors from the model matrix whose columns are: $c_0 = (2, 0, 0, 0)$, $c_1 = (0, 3, 0, 0)$, $c_2 = (0, 0, 4, 0)$, $c_3 = (5, 6, 7, 1)$.",
+    "hint": "The scale factor along each axis is the length of the corresponding column in the upper-left $3 \\times 3$.",
+    "steps": [
+      {
+        "prompt": "What is the scale along the $x$-axis (length of the first column's xyz)?",
+        "answer_key": "2",
+        "explanation": "$|c_0.xyz| = \\sqrt{2^2 + 0^2 + 0^2} = 2$."
+      },
+      {
+        "prompt": "What are the scale factors along $y$ and $z$?",
+        "answer_key": "3 and 4",
+        "explanation": "$|c_1.xyz| = 3$ and $|c_2.xyz| = 4$."
+      },
+      {
+        "prompt": "What is the translation vector?",
+        "answer_key": "(5, 6, 7)",
+        "explanation": "The translation is stored in the last column: $(5, 6, 7)$."
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What interpolation method is used to smoothly blend between two quaternion rotations?",
+    "hint": "Its name starts with 'S' and stands for Spherical Linear Interpolation.",
+    "answer_key": "SLERP",
+    "explanation": "SLERP (Spherical Linear Interpolation) interpolates along the surface of a 4D unit sphere, producing constant-speed rotation without distortion."
+  }
+]

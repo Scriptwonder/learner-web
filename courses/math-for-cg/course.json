@@ -1,0 +1,27 @@
+{
+  "id": "math-for-cg",
+  "title": "Math for Computer Graphics",
+  "description": "Vectors to ray intersections — the math behind 3D rendering.",
+  "modules": [
+    {
+      "title": "Vectors & Coordinate Systems",
+      "lessons": ["01-vectors", "02-dot-product", "03-cross-product", "04-coordinate-systems"]
+    },
+    {
+      "title": "Matrices & Transforms",
+      "lessons": ["05-matrix-fundamentals", "06-2d-transforms", "07-3d-transforms", "08-homogeneous-coordinates", "09-transform-pipeline"]
+    },
+    {
+      "title": "Viewing & Projection",
+      "lessons": ["10-camera-view-matrix", "11-projection-matrices", "12-clipping-ndc"]
+    },
+    {
+      "title": "Lighting & Shading Math",
+      "lessons": ["13-normals-tangent-space", "14-lighting-models", "15-color-math"]
+    },
+    {
+      "title": "Geometry & Intersections",
+      "lessons": ["16-quaternions", "17-curves-surfaces", "18-ray-intersections"]
+    }
+  ]
+}

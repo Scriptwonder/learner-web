@@ -1,0 +1,200 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does ambient lighting approximate in a scene?",
+    "hint": "Think about the constant low-level illumination that prevents completely black shadows.",
+    "options": ["A) Direct sunlight", "B) Specular reflections", "C) Indirect light bouncing from all surfaces (global illumination)", "D) Shadow mapping"],
+    "answer_key": "C",
+    "explanation": "Ambient lighting is a cheap constant approximation of indirect light (global illumination) that prevents fully unlit surfaces from going completely black."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In Blinn-Phong, the specular term uses the half-vector $\\vec{H}$. How is $\\vec{H}$ computed?",
+    "hint": "It lies halfway between two key direction vectors in the lighting equation.",
+    "options": ["A) $\\vec{H} = \\vec{N} \\times \\vec{L}$", "B) $\\vec{H} = \\text{normalize}(\\vec{L} + \\vec{V})$", "C) $\\vec{H} = 2(\\vec{N} \\cdot \\vec{L})\\vec{N} - \\vec{L}$", "D) $\\vec{H} = \\text{normalize}(\\vec{N} + \\vec{V})$"],
+    "answer_key": "B",
+    "explanation": "The half-vector is the normalized sum of the light direction and view direction: $\\vec{H} = \\text{normalize}(\\vec{L} + \\vec{V})$."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does the shininess exponent $n_s$ control in the specular term?",
+    "hint": "Higher values make the shiny spot smaller and sharper.",
+    "options": ["A) The color of the specular highlight", "B) The intensity of the ambient light", "C) How tight and focused the specular highlight is", "D) The direction of the reflected light"],
+    "answer_key": "C",
+    "explanation": "A higher shininess exponent produces a tighter, sharper highlight (like polished metal), while a lower value produces a broad, soft highlight (like clay or rubber)."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What advantage does Blinn-Phong have over Phong at grazing angles?",
+    "hint": "Consider what happens when $\\vec{R} \\cdot \\vec{V}$ goes negative in the original Phong model.",
+    "options": ["A) It uses fewer GPU cycles", "B) It avoids the abrupt specular cutoff when $\\vec{R} \\cdot \\vec{V}$ goes negative", "C) It does not require the normal vector", "D) It eliminates the need for ambient lighting"],
+    "answer_key": "B",
+    "explanation": "Phong's specular term cuts to zero when $\\vec{R} \\cdot \\vec{V} < 0$ at grazing angles, creating hard edges. Blinn-Phong uses $\\vec{N} \\cdot \\vec{H}$, which stays in $[0, 1]$ when light and viewer are on the same side."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "In Lambert's diffuse model, what trigonometric function relates the light angle to the surface illumination intensity?",
+    "hint": "It involves the angle between the surface normal and the light direction.",
+    "answer_key": "cosine",
+    "explanation": "Lambert's cosine law states that diffuse intensity is proportional to $\\cos\\theta = \\vec{N} \\cdot \\vec{L}$, the cosine of the angle between the surface normal and light direction."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What does the acronym BRDF stand for?",
+    "hint": "It describes a function that tells you how much light reflects in a given direction.",
+    "answer_key": "Bidirectional Reflectance Distribution Function",
+    "explanation": "A BRDF describes how a surface reflects light from any incoming direction to any outgoing direction, and is the core concept in the rendering equation."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "The Phong reflection model consists of three additive terms. Which are they?",
+    "hint": "One is constant, one depends on the light angle, one depends on the view angle.",
+    "options": ["A) Ambient, diffuse, specular", "B) Red, green, blue", "C) Direct, indirect, emissive", "D) Shadow, reflection, refraction"],
+    "answer_key": "A",
+    "explanation": "The Phong model sums ambient (constant), diffuse (Lambert's $\\vec{N} \\cdot \\vec{L}$), and specular ($\\vec{R} \\cdot \\vec{V}$ raised to a power) terms to compute the final color."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "How is the reflection vector $\\vec{R}$ computed in the original Phong model?",
+    "hint": "It reflects the light direction across the surface normal.",
+    "options": ["A) $\\vec{R} = \\vec{L} + \\vec{N}$", "B) $\\vec{R} = 2(\\vec{N} \\cdot \\vec{L})\\vec{N} - \\vec{L}$", "C) $\\vec{R} = \\vec{N} \\times \\vec{L}$", "D) $\\vec{R} = \\text{normalize}(\\vec{L} - \\vec{N})$"],
+    "answer_key": "B",
+    "explanation": "The reflection formula mirrors $\\vec{L}$ across $\\vec{N}$: $\\vec{R} = 2(\\vec{N} \\cdot \\vec{L})\\vec{N} - \\vec{L}$. GLSL provides this as `reflect(-L, N)`."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Point lights attenuate with distance. What is the standard attenuation formula?",
+    "hint": "It involves a quadratic relationship with distance.",
+    "options": ["A) $\\text{atten} = 1 / d$", "B) $\\text{atten} = 1 / (k_c + k_l d + k_q d^2)$", "C) $\\text{atten} = d^2$", "D) $\\text{atten} = \\max(1 - d, 0)$"],
+    "answer_key": "B",
+    "explanation": "The standard attenuation formula is $\\frac{1}{k_c + k_l d + k_q d^2}$, where $k_c$ is constant, $k_l$ is linear, and $k_q$ is quadratic attenuation. Physically, light intensity drops with $1/d^2$."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A surface has normal $\\vec{N} = (0, 1, 0)$ and the light direction is $\\vec{L} = (0, 0.707, 0.707)$. What is the diffuse intensity factor $\\vec{N} \\cdot \\vec{L}$?",
+    "hint": "Compute the dot product of the two vectors.",
+    "answer_key": "0.707",
+    "explanation": "$\\vec{N} \\cdot \\vec{L} = 0 \\cdot 0 + 1 \\cdot 0.707 + 0 \\cdot 0.707 = 0.707$. This corresponds to light hitting the surface at $45°$."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "When $\\vec{N} \\cdot \\vec{L} < 0$, what does the diffuse term become?",
+    "hint": "A surface facing away from the light should not receive illumination.",
+    "answer_key": "0",
+    "explanation": "The dot product is clamped to zero: $\\max(\\vec{N} \\cdot \\vec{L}, 0)$. Negative values mean the light is behind the surface, so no diffuse illumination reaches it."
+  },
+  {
+    "id": 12,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the difference between Gouraud shading and Phong shading?",
+    "hint": "One computes lighting per vertex, the other per fragment.",
+    "options": ["A) Gouraud uses normals; Phong does not", "B) Gouraud computes lighting per vertex and interpolates colors; Phong interpolates normals and computes lighting per fragment", "C) They are identical", "D) Phong is faster because it uses fewer calculations"],
+    "answer_key": "B",
+    "explanation": "Gouraud shading computes the full lighting equation at each vertex and interpolates the resulting colors across the triangle. Phong shading interpolates the normals and evaluates lighting at every fragment, producing more accurate specular highlights."
+  },
+  {
+    "id": 13,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "In physically-based rendering, what does the Fresnel effect describe?",
+    "hint": "Think about how a lake surface looks when viewed straight down versus at a shallow angle.",
+    "options": ["A) Light absorption by dark materials", "B) The increase in reflectivity at grazing angles", "C) Diffraction of light around edges", "D) Color shifting due to thin-film interference"],
+    "answer_key": "B",
+    "explanation": "The Fresnel effect states that surfaces become more reflective at grazing (shallow) angles. At normal incidence, the reflectance is $F_0$ (material-dependent); it increases toward 1.0 at $90°$."
+  },
+  {
+    "id": 14,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "In the Schlick approximation of Fresnel, the formula is $F = F_0 + (1 - F_0)(1 - \\cos\\theta)^n$. What is the exponent $n$?",
+    "hint": "The Schlick approximation uses a specific integer power.",
+    "answer_key": "5",
+    "explanation": "The Schlick approximation uses $F = F_0 + (1 - F_0)(1 - \\cos\\theta)^5$. The fifth power provides a good fit to the full Fresnel equations for most dielectric and metallic materials."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Compute the full Blinn-Phong lighting for a point on a surface.",
+    "hint": "Sum ambient, diffuse, and specular contributions.",
+    "steps": [
+      {
+        "prompt": "Given $\\vec{N} = (0, 1, 0)$, $\\vec{L} = (0, 1, 0)$, $\\vec{V} = (0, 1, 0)$, $k_a = 0.1$, $k_d = 0.7$, $k_s = 0.2$, $n_s = 32$, light color $= (1, 1, 1)$. Compute the diffuse factor $\\vec{N} \\cdot \\vec{L}$.",
+        "answer_key": "1.0",
+        "explanation": "$\\vec{N} \\cdot \\vec{L} = 0 \\cdot 0 + 1 \\cdot 1 + 0 \\cdot 0 = 1.0$. The light hits the surface head-on."
+      },
+      {
+        "prompt": "Compute $\\vec{H} = \\text{normalize}(\\vec{L} + \\vec{V})$ and the specular factor $(\\vec{N} \\cdot \\vec{H})^{n_s}$.",
+        "answer_key": "1.0",
+        "explanation": "$\\vec{H} = \\text{normalize}((0,1,0) + (0,1,0)) = \\text{normalize}(0, 2, 0) = (0, 1, 0)$. $\\vec{N} \\cdot \\vec{H} = 1.0$. $(1.0)^{32} = 1.0$."
+      },
+      {
+        "prompt": "Compute the total illumination: $I = k_a + k_d (\\vec{N} \\cdot \\vec{L}) + k_s (\\vec{N} \\cdot \\vec{H})^{n_s}$.",
+        "answer_key": "1.0",
+        "explanation": "$I = 0.1 + 0.7 \\times 1.0 + 0.2 \\times 1.0 = 0.1 + 0.7 + 0.2 = 1.0$."
+      }
+    ],
+    "explanation": "This is the ideal case where light, view, and normal all align perfectly, giving maximum illumination. In practice, the diffuse and specular factors are less than 1.0, reducing the total."
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A point light at position $(5, 5, 0)$ illuminates a surface point at $(2, 1, 0)$ with normal $(0, 1, 0)$. Compute the diffuse intensity.",
+    "hint": "First find the light direction vector, then compute the dot product with the normal.",
+    "steps": [
+      {
+        "prompt": "Compute the light direction vector $\\vec{L}$ from the surface point to the light and normalize it.",
+        "answer_key": "(0.6, 0.8, 0)",
+        "explanation": "$\\vec{L}_{raw} = (5-2, 5-1, 0-0) = (3, 4, 0)$. $|\\vec{L}_{raw}| = \\sqrt{9 + 16} = 5$. $\\vec{L} = (3/5, 4/5, 0) = (0.6, 0.8, 0)$."
+      },
+      {
+        "prompt": "Compute $\\vec{N} \\cdot \\vec{L}$ for $\\vec{N} = (0, 1, 0)$.",
+        "answer_key": "0.8",
+        "explanation": "$\\vec{N} \\cdot \\vec{L} = 0 \\times 0.6 + 1 \\times 0.8 + 0 \\times 0 = 0.8$. The surface receives 80% of the maximum diffuse illumination."
+      }
+    ],
+    "explanation": "For point lights, the light direction varies per surface point and must be computed, normalized, and then dotted with the normal to get the Lambertian diffuse factor."
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is the Phong specular term for a shininess exponent $n_s = 64$ when $\\vec{R} \\cdot \\vec{V} = 0.9$? Give the approximate value.",
+    "hint": "Compute $0.9^{64}$.",
+    "answer_key": "0.001",
+    "explanation": "$0.9^{64} = (0.9^{10})^{6.4} \\approx (0.349)^{6.4}$. More precisely, $\\ln(0.9^{64}) = 64 \\ln(0.9) = 64 \\times (-0.1054) = -6.74$, so $0.9^{64} \\approx e^{-6.74} \\approx 0.0012$, which rounds to approximately 0.001."
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Does a directional light have a position? Answer yes or no.",
+    "hint": "Think about how sunlight works - all rays are essentially parallel.",
+    "answer_key": "no",
+    "explanation": "A directional light (like the sun) has only a direction, not a position. All light rays are parallel, and there is no distance-based attenuation."
+  }
+]

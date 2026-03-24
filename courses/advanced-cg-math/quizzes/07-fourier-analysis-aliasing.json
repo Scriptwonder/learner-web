@@ -1,0 +1,204 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A signal contains a 15 Hz frequency component and is sampled at $f_s = 20$ Hz. What frequency does this component alias to?",
+    "hint": "Compute the Nyquist frequency first, then find $|f - f_s|$.",
+    "options": ["A) 15 Hz (no aliasing)", "B) 5 Hz", "C) 10 Hz", "D) 20 Hz"],
+    "answer_key": "B",
+    "explanation": "The Nyquist frequency is $\\frac{f_s}{2} = 10$ Hz. Since 15 Hz exceeds 10 Hz, aliasing occurs. The aliased frequency is $|15 - 20| = 5$ Hz. The 15 Hz component masquerades as a 5 Hz signal."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why do mipmaps prevent texture aliasing? Choose the best frequency-domain explanation.",
+    "hint": "Think about what averaging a $2 \\times 2$ block does to the frequency content.",
+    "options": ["A) Mipmaps increase the sampling rate of the pixel grid", "B) Each mip level is a low-pass filtered version that removes frequencies above the Nyquist limit for that sampling rate", "C) Mipmaps convert the texture from spatial domain to frequency domain", "D) Mipmaps apply a high-pass filter to remove low-frequency noise"],
+    "answer_key": "B",
+    "explanation": "Each mipmap level is produced by averaging $2 \\times 2$ blocks, which is a low-pass filter that halves the maximum frequency. When the GPU selects the mip level matching the pixel-to-texel ratio, the remaining frequencies are all below the Nyquist limit, preventing aliasing."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Which anti-aliasing technique increases the sampling rate for geometric edge coverage but does NOT increase the sampling rate for fragment shading?",
+    "hint": "One popular technique takes multiple coverage samples but runs the pixel shader only once.",
+    "options": ["A) SSAA (Supersampling)", "B) FXAA (Fast Approximate Anti-Aliasing)", "C) MSAA (Multisample Anti-Aliasing)", "D) TAA (Temporal Anti-Aliasing)"],
+    "answer_key": "C",
+    "explanation": "MSAA takes multiple coverage samples per pixel (testing inside/outside the triangle at sub-pixel locations) but evaluates the fragment shader only once per pixel. This raises the effective sampling rate for edges but not for shading, which is why MSAA does not help with shader-generated aliasing like procedural textures."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why does blue noise dithering produce more visually pleasing results than white noise at the same sample count?",
+    "hint": "Consider which frequencies the human visual system is most sensitive to.",
+    "options": ["A) Blue noise has more total energy than white noise", "B) Blue noise concentrates error at low frequencies where human vision is least sensitive", "C) Blue noise concentrates error at high frequencies where human vision is least sensitive", "D) Blue noise eliminates all sampling error entirely"],
+    "answer_key": "C",
+    "explanation": "Blue noise has no low-frequency content — its power spectrum is zero near the origin and rises toward higher frequencies. Human vision is most sensitive to low-frequency variations (blotchy patterns), so pushing all noise energy to high frequencies (perceived as uniform grain) dramatically improves perceptual quality."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "According to the Nyquist-Shannon sampling theorem, what is the minimum sampling rate required to faithfully capture a signal with a maximum frequency of 100 Hz?",
+    "hint": "The theorem requires sampling at more than twice the highest frequency.",
+    "answer_key": "greater than 200 Hz",
+    "explanation": "The Nyquist-Shannon theorem requires $f_s > 2 \\nu_{\\max}$. For $\\nu_{\\max} = 100$ Hz, we need $f_s > 200$ Hz. Sampling at exactly 200 Hz is insufficient — the inequality is strict."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the name of the theoretically ideal reconstruction filter (with infinite support) that has a perfect rectangular frequency response?",
+    "hint": "Its formula involves $\\sin(\\pi x)$ divided by $\\pi x$.",
+    "answer_key": "sinc",
+    "explanation": "The sinc function $\\text{sinc}(x) = \\frac{\\sin(\\pi x)}{\\pi x}$ is the ideal reconstruction filter. Its Fourier transform is a perfect rectangle (passband below Nyquist, zero above). It has infinite support, making it impractical, which is why finite approximations like Lanczos are used instead."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does the Fourier Transform decompose a signal into?",
+    "options": ["A) A set of polynomial basis functions", "B) A sum of sinusoidal components at different frequencies, amplitudes, and phases", "C) A set of wavelets at different scales", "D) A histogram of pixel intensities"],
+    "answer_key": "B",
+    "hint": "Think about sine and cosine waves of varying frequencies.",
+    "explanation": "The Fourier Transform represents any signal as a sum (or integral, for continuous signals) of sinusoids $A \\sin(2\\pi f t + \\phi)$ at different frequencies $f$, amplitudes $A$, and phases $\\phi$. This frequency-domain representation reveals the signal's spectral content."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In the frequency domain, what does a convolution in the spatial domain correspond to?",
+    "options": ["A) Addition in frequency domain", "B) Subtraction in frequency domain", "C) Pointwise multiplication in frequency domain", "D) Division in frequency domain"],
+    "answer_key": "C",
+    "hint": "This is known as the convolution theorem.",
+    "explanation": "The convolution theorem states that convolution in the spatial (time) domain corresponds to pointwise multiplication in the frequency domain: $\\mathcal{F}\\{f * g\\} = \\mathcal{F}\\{f\\} \\cdot \\mathcal{F}\\{g\\}$. This is why filtering is often performed in the frequency domain for efficiency."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the Nyquist frequency for a system that samples at $f_s = 48000$ Hz (standard audio)?",
+    "hint": "The Nyquist frequency is half the sampling rate.",
+    "answer_key": "24000 Hz",
+    "explanation": "The Nyquist frequency is $\\frac{f_s}{2} = \\frac{48000}{2} = 24000$ Hz. Frequencies above 24000 Hz cannot be faithfully captured and will alias. This is why audio systems include an anti-aliasing low-pass filter before the ADC."
+  },
+  {
+    "id": 10,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What visual artifact does temporal aliasing cause in film when a wagon wheel appears to spin backwards?",
+    "options": ["A) Motion blur", "B) The wagon wheel effect (stroboscopic aliasing)", "C) Moire patterns", "D) Chromatic aberration"],
+    "answer_key": "B",
+    "hint": "This happens because the frame rate is below twice the wheel's rotation frequency.",
+    "explanation": "When the camera's frame rate is less than twice the spoke frequency, the wheel appears to rotate backwards or at the wrong speed. This is temporal aliasing — the discrete sampling (frames per second) cannot capture the true rotation rate, causing the perceived frequency to fold below the Nyquist frequency."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "The Lanczos filter is defined as a windowed sinc function using what window shape?",
+    "hint": "The window itself is also based on the sinc function, but with a different parameter.",
+    "answer_key": "sinc window (Lanczos window)",
+    "explanation": "The Lanczos filter uses a sinc-windowed sinc: $L(x) = \\text{sinc}(x) \\cdot \\text{sinc}(x/a)$ for $|x| < a$, and $0$ otherwise. The outer sinc acts as the window, providing a smooth taper to zero. The parameter $a$ (typically 2 or 3) controls the support width."
+  },
+  {
+    "id": 12,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "A texture contains a regular grid pattern with fundamental frequency 50 cycles/texel-width. The texture is viewed at a distance where each pixel covers 4 texels. What is the effective sampling rate in cycles/texel-width, and will aliasing occur?",
+    "options": ["A) Sampling rate = 0.25 cycles/texel-width; aliasing occurs", "B) Sampling rate = 1 cycle/texel-width; no aliasing", "C) Sampling rate = 0.25 cycles/texel-width; no aliasing", "D) Sampling rate = 1 cycle/texel-width; aliasing occurs because Nyquist = 0.5 < 50"],
+    "answer_key": "A",
+    "hint": "If each pixel covers 4 texels, there is 1 sample per 4 texels — convert that to a sampling rate and compare against the Nyquist criterion.",
+    "explanation": "With 1 pixel per 4 texels, the spatial sampling rate is $\\frac{1}{4} = 0.25$ cycles/texel-width. The Nyquist frequency is $\\frac{0.25}{2} = 0.125$ cycles/texel-width. Since the texture frequency (50 cycles/texel-width) vastly exceeds 0.125, severe aliasing occurs. This is exactly the scenario mipmaps address."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In a 2D Discrete Fourier Transform of an $N \\times N$ image, how many complex coefficients does the result contain?",
+    "hint": "The DFT maps an $N \\times N$ grid to a same-sized frequency grid.",
+    "answer_key": "N x N (or N^2)",
+    "explanation": "The 2D DFT of an $N \\times N$ image produces $N \\times N = N^2$ complex coefficients. Each coefficient $F(u,v)$ for $u,v \\in \\{0, 1, \\ldots, N-1\\}$ encodes the amplitude and phase of the corresponding 2D sinusoidal basis function. For real-valued images, conjugate symmetry $F(u,v) = F^*(N-u, N-v)$ means roughly half the coefficients are redundant."
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A 1D signal $x(t) = \\cos(2\\pi \\cdot 30 t) + \\cos(2\\pi \\cdot 70 t)$ is sampled at $f_s = 80$ Hz.",
+    "hint": "Handle each frequency component separately and check against the Nyquist frequency.",
+    "steps": [
+      {
+        "prompt": "Step 1: What is the Nyquist frequency of this system?",
+        "answer_key": "40 Hz",
+        "explanation": "The Nyquist frequency is $\\frac{f_s}{2} = \\frac{80}{2} = 40$ Hz."
+      },
+      {
+        "prompt": "Step 2: Which frequency component(s) will alias, and what apparent frequency will each alias to?",
+        "answer_key": "The 70 Hz component aliases to 10 Hz; the 30 Hz component does not alias.",
+        "explanation": "The 30 Hz component is below the 40 Hz Nyquist frequency, so it is captured faithfully. The 70 Hz component exceeds 40 Hz, so it aliases to $|70 - 80| = 10$ Hz."
+      },
+      {
+        "prompt": "Step 3: Write the reconstructed (aliased) signal that would be perceived after sampling.",
+        "answer_key": "x_reconstructed(t) = cos(2 pi 30 t) + cos(2 pi 10 t)",
+        "explanation": "The 30 Hz component passes through unchanged. The 70 Hz component appears as 10 Hz after aliasing. The reconstructed signal is $x_r(t) = \\cos(2\\pi \\cdot 30\\,t) + \\cos(2\\pi \\cdot 10\\,t)$, which has different frequency content from the original."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "You are designing a procedural checkerboard texture shader and need to determine the correct mip level.",
+    "hint": "Think about the relationship between screen-space derivatives and the texture frequency content.",
+    "steps": [
+      {
+        "prompt": "Step 1: If the screen-space derivatives $\\frac{\\partial u}{\\partial x}$ and $\\frac{\\partial v}{\\partial y}$ indicate that one pixel covers approximately $8 \\times 8$ texels, what mip level should be selected (assuming level 0 is the full-resolution texture)?",
+        "answer_key": "Mip level 3",
+        "explanation": "Each mip level halves the resolution. To go from 1:1 texel coverage to 8:1 coverage requires $\\log_2(8) = 3$ halvings. Therefore mip level 3 is selected, where each texel in the mip corresponds to an $8 \\times 8$ block of the original."
+      },
+      {
+        "prompt": "Step 2: If the original texture is $1024 \\times 1024$, what is the resolution at mip level 3?",
+        "answer_key": "128 x 128",
+        "explanation": "At mip level 3, the resolution is $\\frac{1024}{2^3} = \\frac{1024}{8} = 128$ in each dimension, giving a $128 \\times 128$ mip level."
+      },
+      {
+        "prompt": "Step 3: Why might a checkerboard pattern specifically cause problems even with mipmapping, and what technique addresses this?",
+        "answer_key": "Because the checkerboard has energy at the Nyquist frequency of each mip level, causing it to average to a uniform gray. Anisotropic filtering helps by sampling non-square footprints.",
+        "explanation": "A checkerboard alternates black and white every texel, placing its fundamental frequency exactly at the highest frequency each mip level can represent. Averaging a $2 \\times 2$ block of alternating values yields 0.5 (gray) at every mip level above 0. Anisotropic filtering uses non-square filter kernels to sample along the direction of greatest compression, preserving detail along the less-compressed axis."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is SSAA (Supersampling Anti-Aliasing)?",
+    "options": ["A) A post-processing blur filter applied to the final image", "B) Rendering the scene at a higher resolution and then downsampling to the target resolution", "C) Using stochastic ray jittering to approximate motion blur", "D) Computing edge detection and blending only edge pixels"],
+    "answer_key": "B",
+    "hint": "It is the brute-force approach that increases the sampling rate everywhere.",
+    "explanation": "SSAA renders the entire scene at a multiple of the display resolution (e.g., $4\\times$), then downsamples (box-filters) to the target resolution. This increases the sampling rate for both geometry edges and shading, providing the highest quality but at a very high cost (e.g., $4\\times$ the fragment shader invocations for $4\\times$ SSAA)."
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In stratified sampling, a pixel is divided into a regular $n \\times n$ sub-pixel grid and one sample is placed randomly within each cell. Compared to pure random sampling with $n^2$ samples, what is the benefit?",
+    "hint": "Think about what stratification prevents in terms of sample placement.",
+    "answer_key": "It prevents sample clumping, reducing variance",
+    "explanation": "Stratified sampling guarantees that every sub-region of the pixel receives at least one sample, preventing the clumps and gaps that pure random sampling can produce. Mathematically, stratification reduces variance: the variance of a stratified estimator is at most that of the unstratified estimator, and often significantly lower, especially when the integrand varies smoothly within each stratum."
+  },
+  {
+    "id": 18,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "FXAA operates as a post-processing pass on the final rendered image. From a signal-processing perspective, why is this fundamentally limited compared to MSAA?",
+    "options": ["A) FXAA cannot detect edges", "B) FXAA operates after the signal has already been sampled (aliased), so it can only blur existing aliases rather than prevent them", "C) FXAA requires more GPU memory than MSAA", "D) FXAA changes the scene geometry to smooth edges"],
+    "answer_key": "B",
+    "hint": "Consider at which stage in the pipeline each technique operates relative to the sampling step.",
+    "explanation": "FXAA is applied to the already-rasterized image, meaning aliasing has already occurred during the sampling (rasterization) step. FXAA detects high-contrast edges and blurs them, which can reduce jaggies but also blurs legitimate detail. MSAA, by contrast, takes multiple coverage samples during rasterization, effectively increasing the sampling rate before the signal is collapsed to pixel values, which is a more principled anti-aliasing approach."
+  }
+]

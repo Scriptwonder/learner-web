@@ -1,0 +1,191 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "When you 'move the camera to the right' in a 3D scene, what actually happens mathematically?",
+    "hint": "Think about whether a 'camera' object really exists in the GPU pipeline.",
+    "options": ["A) The camera object moves right in the GPU", "B) The entire world is shifted to the left via the view matrix", "C) The projection matrix is adjusted", "D) Only the near objects move"],
+    "answer_key": "B",
+    "explanation": "There is no actual camera object in the pipeline. The view matrix transforms the entire world inversely, so moving the camera right shifts all geometry to the left."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "The LookAt function constructs the view matrix from which three inputs?",
+    "hint": "Consider what minimum information defines where a camera is and what it sees.",
+    "options": ["A) Position, scale, rotation", "B) Eye position, target point, up vector", "C) Near plane, far plane, FOV", "D) Forward, right, world origin"],
+    "answer_key": "B",
+    "explanation": "The LookAt function takes the camera's eye position, the target point it looks at, and a reference up direction to construct an orthonormal basis for the view matrix."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "How is the camera's right vector computed in the LookAt derivation?",
+    "hint": "Which vector operation produces a vector perpendicular to two input vectors?",
+    "options": ["A) $\\hat{r} = \\text{normalize}(\\hat{f} + \\vec{up})$", "B) $\\hat{r} = \\text{normalize}(\\hat{f} \\times \\vec{up})$", "C) $\\hat{r} = \\hat{f} \\cdot \\vec{up}$", "D) $\\hat{r} = \\vec{up} - \\hat{f}$"],
+    "answer_key": "B",
+    "explanation": "The right vector is computed as the cross product of the forward direction and the world up vector, then normalized: $\\hat{r} = \\text{normalize}(\\hat{f} \\times \\vec{up})$."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why should FPS camera pitch be clamped to the range $(-89°, 89°)$?",
+    "hint": "What happens to the cross product when two vectors become parallel?",
+    "options": ["A) To prevent the camera from moving too fast", "B) To avoid gimbal lock where the forward vector aligns with the up vector", "C) To keep the camera above the ground plane", "D) To reduce GPU workload"],
+    "answer_key": "B",
+    "explanation": "At exactly $\\pm 90°$ pitch, the forward vector becomes parallel to the up vector, causing the cross product in LookAt to produce a zero-length right vector. This is related to gimbal lock."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A camera is at $(0, 0, 5)$ looking at the origin. A vertex is at world position $(2, 1, 0)$. What is the vertex's z-coordinate in view space?",
+    "hint": "The view matrix translates the world so the camera ends up at the origin. Which direction does the world shift?",
+    "answer_key": "-5",
+    "explanation": "The view matrix translates the world by $(0, 0, -5)$, so the vertex moves from $(2, 1, 0)$ to $(2, 1, -5)$ in view space. The vertex is 5 units in front of the camera."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "In the FPS camera model, which two Euler angles control the camera direction?",
+    "hint": "One rotates left/right, the other rotates up/down.",
+    "answer_key": "yaw and pitch",
+    "explanation": "Yaw (rotation around Y) controls looking left/right, and pitch (rotation around X) controls looking up/down. Together they reconstruct the forward direction vector."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does the view matrix conceptually represent?",
+    "hint": "Think of it as a change of coordinate system.",
+    "options": ["A) A mapping from screen space to world space", "B) A transformation from world space to camera (eye) space", "C) A projection from 3D to 2D", "D) A rotation of the model around its own center"],
+    "answer_key": "B",
+    "explanation": "The view matrix transforms vertices from world space into camera (eye) space, where the camera sits at the origin looking down the negative z-axis (in OpenGL convention)."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In OpenGL convention, which direction does the camera look in view space?",
+    "hint": "OpenGL uses a right-handed coordinate system in view space.",
+    "options": ["A) Positive x-axis", "B) Positive z-axis", "C) Negative z-axis", "D) Negative y-axis"],
+    "answer_key": "C",
+    "explanation": "In OpenGL's right-handed view space, the camera looks down the negative z-axis. Objects in front of the camera have negative z values in view space."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "The view matrix $V$ can be decomposed as $V = R \\cdot T$. What do $R$ and $T$ represent?",
+    "hint": "One undoes the camera's orientation, the other undoes its position.",
+    "options": ["A) $R$ is a reflection and $T$ is a twist", "B) $R$ is the inverse rotation of the camera and $T$ is the inverse translation", "C) $R$ is a random rotation and $T$ is the target position", "D) $R$ is the camera's rotation and $T$ is the camera's translation"],
+    "answer_key": "B",
+    "explanation": "The view matrix first applies the inverse translation (moving the world so the camera is at the origin) then applies the inverse rotation (aligning the camera's axes with the coordinate axes). $V = R^{-1} \\cdot T^{-1}$."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "If the camera's forward vector is $\\hat{f} = (0, 0, -1)$ and the world up is $(0, 1, 0)$, what is the right vector $\\hat{r}$?",
+    "hint": "Compute the cross product $\\hat{f} \\times \\vec{up}$ and normalize.",
+    "answer_key": "(1, 0, 0)",
+    "explanation": "$\\hat{r} = \\hat{f} \\times \\vec{up} = (0, 0, -1) \\times (0, 1, 0) = (0 \\cdot 0 - (-1) \\cdot 1, (-1) \\cdot 0 - 0 \\cdot 0, 0 \\cdot 1 - 0 \\cdot 0) = (1, 0, 0)$. Already unit length."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "True or false: the view matrix is the inverse of the camera's model (world) matrix.",
+    "hint": "If the camera's model matrix places it in the world, the view matrix must undo that.",
+    "answer_key": "true",
+    "explanation": "The camera's model matrix $M_{cam}$ positions and orients the camera in world space. The view matrix $V = M_{cam}^{-1}$ undoes that transform to bring everything into the camera's local frame."
+  },
+  {
+    "id": 12,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "A camera is at eye $= (3, 4, 0)$ looking at target $= (0, 0, 0)$ with world up $= (0, 1, 0)$. What is the normalized forward vector $\\hat{f}$?",
+    "hint": "Forward points from the eye toward the target. Don't forget to normalize.",
+    "options": ["A) $(0.6, 0.8, 0)$", "B) $(-0.6, -0.8, 0)$", "C) $(3, 4, 0)$", "D) $(0, 0, -1)$"],
+    "answer_key": "B",
+    "explanation": "$\\vec{f} = \\text{target} - \\text{eye} = (-3, -4, 0)$, $|\\vec{f}| = 5$. So $\\hat{f} = (-3/5, -4/5, 0) = (-0.6, -0.8, 0)$."
+  },
+  {
+    "id": 13,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "In an orbit camera, the camera position is computed from spherical coordinates $(r, \\theta, \\phi)$ around a target. Which parameter controls the distance from the target?",
+    "hint": "Spherical coordinates have a radial component and two angular components.",
+    "options": ["A) $\\theta$ (polar angle)", "B) $\\phi$ (azimuthal angle)", "C) $r$ (radius)", "D) The aspect ratio"],
+    "answer_key": "C",
+    "explanation": "In the orbit camera, $r$ is the radial distance from the target point. $\\theta$ and $\\phi$ control the angular position on a sphere of radius $r$ centered on the target."
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Construct the LookAt view matrix for a camera at $(0, 0, 3)$ looking at $(0, 0, 0)$ with world up $(0, 1, 0)$.",
+    "hint": "Start by computing the forward, right, and true-up vectors, then assemble the rotation and translation.",
+    "steps": [
+      {
+        "prompt": "Compute the normalized forward vector $\\hat{f}$ (from eye toward target).",
+        "answer_key": "(0, 0, -1)",
+        "explanation": "$\\vec{f} = (0,0,0) - (0,0,3) = (0,0,-3)$. Normalized: $\\hat{f} = (0, 0, -1)$."
+      },
+      {
+        "prompt": "Compute the right vector $\\hat{r} = \\text{normalize}(\\hat{f} \\times \\vec{up})$ and the true up $\\hat{u} = \\hat{r} \\times \\hat{f}$.",
+        "answer_key": "r = (1, 0, 0), u = (0, 1, 0)",
+        "explanation": "$\\hat{r} = (0,0,-1) \\times (0,1,0) = (0 \\cdot 0 - (-1) \\cdot 1, (-1) \\cdot 0 - 0 \\cdot 0, 0 \\cdot 1 - 0 \\cdot 0) = (1, 0, 0)$. $\\hat{u} = (1,0,0) \\times (0,0,-1) = (0, 1, 0)$."
+      },
+      {
+        "prompt": "What is the translation component of the view matrix (the dot products $-\\hat{r} \\cdot \\text{eye}$, $-\\hat{u} \\cdot \\text{eye}$, $\\hat{f} \\cdot \\text{eye}$)?",
+        "answer_key": "(0, 0, -3)",
+        "explanation": "$t_x = -\\hat{r} \\cdot (0,0,3) = 0$, $t_y = -\\hat{u} \\cdot (0,0,3) = 0$, $t_z = \\hat{f} \\cdot (0,0,3) = (0)(0)+(0)(0)+(-1)(3) = -3$. Translation column: $(0, 0, -3)$."
+      }
+    ],
+    "explanation": "The view matrix rotates so that right/up/forward align with x/y/-z axes and translates the camera to the origin. The final translation column encodes the dot products of the basis vectors with the negated eye position."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "An FPS camera starts facing $-Z$ (yaw $= -90°$, pitch $= 0°$). The player looks $30°$ to the right and $45°$ up. Compute the new forward vector.",
+    "hint": "Yaw increases when looking right. Use the parametric formulas for forward from yaw and pitch.",
+    "steps": [
+      {
+        "prompt": "What are the new yaw and pitch values?",
+        "answer_key": "yaw = -60, pitch = 45",
+        "explanation": "Starting yaw $= -90°$. Looking $30°$ right adds $30°$: new yaw $= -60°$. Pitch goes from $0°$ to $45°$."
+      },
+      {
+        "prompt": "Compute the forward vector using $f_x = \\cos(\\text{pitch}) \\cos(\\text{yaw})$, $f_y = \\sin(\\text{pitch})$, $f_z = \\cos(\\text{pitch}) \\sin(\\text{yaw})$. Give approximate values.",
+        "answer_key": "(0.354, 0.707, -0.612)",
+        "explanation": "$f_x = \\cos 45° \\cos(-60°) = 0.707 \\times 0.5 = 0.354$. $f_y = \\sin 45° = 0.707$. $f_z = \\cos 45° \\sin(-60°) = 0.707 \\times (-0.866) = -0.612$. So $\\hat{f} \\approx (0.354, 0.707, -0.612)$."
+      }
+    ],
+    "explanation": "The FPS camera computes its forward vector from yaw and pitch using trigonometric formulas. The vector is already normalized because $\\cos^2(\\text{pitch})(\\cos^2(\\text{yaw}) + \\sin^2(\\text{yaw})) + \\sin^2(\\text{pitch}) = 1$."
+  },
+  {
+    "id": 16,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "If the view matrix has an orthonormal $3 \\times 3$ rotation sub-matrix $R$, what shortcut can you use to invert it instead of computing a full matrix inverse?",
+    "hint": "Orthonormal matrices have a special property relating their inverse to another common matrix operation.",
+    "answer_key": "transpose",
+    "explanation": "For orthonormal matrices, the inverse equals the transpose: $R^{-1} = R^T$. This avoids the expensive general matrix inversion and is exact (no numerical error from cofactor expansion)."
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A camera at $(5, 0, 0)$ looks at the origin. The world up is $(0, 1, 0)$. What is the camera's forward vector $\\hat{f}$?",
+    "hint": "Forward points from the eye toward the target.",
+    "answer_key": "(-1, 0, 0)",
+    "explanation": "$\\vec{f} = (0,0,0) - (5,0,0) = (-5, 0, 0)$. Normalized: $\\hat{f} = (-1, 0, 0)$."
+  }
+]

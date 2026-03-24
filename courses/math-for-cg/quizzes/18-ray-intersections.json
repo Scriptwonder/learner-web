@@ -1,0 +1,205 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "A ray is defined by $\\vec{R}(t) = \\vec{O} + t\\vec{D}$. What does the parameter $t$ represent when $\\vec{D}$ is normalized?",
+    "hint": "When the direction has unit length, $t$ scales directly to a physical quantity.",
+    "options": ["A) The angle of the ray", "B) The distance along the ray from the origin", "C) The color of the intersection", "D) The surface normal at the hit point"],
+    "answer_key": "B",
+    "explanation": "When $\\vec{D}$ is a unit vector, $t$ equals the actual distance from the ray origin $\\vec{O}$ to the point $\\vec{R}(t)$ along the ray direction."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In the ray-sphere intersection test, the discriminant $\\Delta = b^2 - 4ac$ determines what?",
+    "hint": "Think about how many times a line can cross a sphere.",
+    "options": ["A) The color of the sphere", "B) The number of intersection points (0, 1, or 2)", "C) The radius of the sphere", "D) The surface normal direction"],
+    "answer_key": "B",
+    "explanation": "The discriminant determines: $\\Delta < 0$ means no intersection (ray misses), $\\Delta = 0$ means one intersection (tangent), and $\\Delta > 0$ means two intersections (ray passes through)."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What useful byproduct does the Moller-Trumbore ray-triangle algorithm provide?",
+    "hint": "These coordinates are essential for interpolating vertex attributes across the triangle.",
+    "options": ["A) The surface color", "B) Barycentric coordinates for attribute interpolation", "C) The triangle's area", "D) The reflection vector"],
+    "answer_key": "B",
+    "explanation": "Moller-Trumbore computes barycentric coordinates $(u, v)$ as a byproduct, which can be used to interpolate vertex attributes (normals, UVs, colors) across the triangle."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In BVH traversal, ray-AABB intersection tests serve what purpose?",
+    "hint": "Testing against a box is much cheaper than testing against many triangles.",
+    "options": ["A) They compute the final pixel color", "B) They reduce the number of triangle tests from $O(n)$ to $O(\\log n)$ by quickly rejecting large groups of geometry", "C) They replace triangle intersection entirely", "D) They compute shadow maps"],
+    "answer_key": "B",
+    "explanation": "AABB tests let the BVH quickly reject entire subtrees of geometry that the ray misses, reducing the average number of triangle intersection tests from $O(n)$ to $O(\\log n)$."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A ray has origin $(0, 1, 0)$ and direction $(0, -1, 0)$. The ground plane has normal $(0, 1, 0)$ and passes through the origin ($d = 0$). At what $t$ value does the ray intersect the plane?",
+    "hint": "Use $t = \\frac{d - \\vec{N} \\cdot \\vec{O}}{\\vec{N} \\cdot \\vec{D}}$.",
+    "answer_key": "1",
+    "explanation": "$t = \\frac{d - \\vec{N} \\cdot \\vec{O}}{\\vec{N} \\cdot \\vec{D}} = \\frac{0 - 1}{-1} = 1$. The ray hits the ground plane at distance 1, at point $(0, 0, 0)$."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In the Moller-Trumbore algorithm, what condition on barycentric coordinates $u$ and $v$ must hold for a valid hit inside the triangle?",
+    "hint": "The three barycentric coordinates must sum to 1 and all be non-negative.",
+    "answer_key": "u >= 0, v >= 0, u + v <= 1",
+    "explanation": "The barycentric coordinates must satisfy $u \\geq 0$, $v \\geq 0$, and $u + v \\leq 1$ for the intersection point to lie inside the triangle."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does AABB stand for in the context of ray tracing?",
+    "hint": "It's a box whose edges are aligned with the coordinate axes.",
+    "options": ["A) Approximate Angular Bounding Box", "B) Axis-Aligned Bounding Box", "C) Adaptive Acceleration Bounding Buffer", "D) Automatic Anti-aliased Bounding Boundary"],
+    "answer_key": "B",
+    "explanation": "AABB stands for Axis-Aligned Bounding Box. It is a box with faces parallel to the coordinate planes, defined by minimum and maximum corners. AABBs are fast to test against rays because each axis can be checked independently."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "For the ray equation $\\vec{R}(t) = \\vec{O} + t\\vec{D}$, what constraint on $t$ ensures we only consider hits in front of the ray origin?",
+    "hint": "Negative $t$ values represent points behind the origin.",
+    "options": ["A) $t < 0$", "B) $t = 0$", "C) $t > 0$", "D) $|t| > 1$"],
+    "answer_key": "C",
+    "explanation": "Only $t > 0$ gives points in front of the ray origin. $t < 0$ corresponds to the opposite direction, and $t = 0$ is the origin itself."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In the slab method for ray-AABB intersection, what determines whether the ray hits the box?",
+    "hint": "Each axis defines an interval of valid $t$ values. Think about whether these intervals overlap.",
+    "options": ["A) The ray must hit all six faces of the box", "B) The intersection of the $t$-intervals from all three axis slabs must be non-empty", "C) The ray origin must be inside the box", "D) The dot product of the ray direction with each face normal must be positive"],
+    "answer_key": "B",
+    "explanation": "Each axis pair of planes defines a slab with a $t$-interval $[t_{min}, t_{max}]$. The ray hits the AABB if and only if the intersection of all three slab intervals is non-empty: $t_{enter} \\leq t_{exit}$ where $t_{enter} = \\max(t_{min}^x, t_{min}^y, t_{min}^z)$ and $t_{exit} = \\min(t_{max}^x, t_{max}^y, t_{max}^z)$."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "A ray-plane intersection gives $t = -3$. Does this represent a valid hit in front of the ray? Answer yes or no.",
+    "hint": "Negative $t$ means the intersection is behind the ray origin.",
+    "answer_key": "no",
+    "explanation": "$t = -3 < 0$, so the intersection point is behind the ray origin. Only $t > 0$ intersections are valid hits in front of the camera."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the normal vector at any point on a sphere centered at $\\vec{C}$ with a hit point $\\vec{P}$?",
+    "hint": "The normal on a sphere always points radially outward from the center.",
+    "answer_key": "normalize(P - C)",
+    "explanation": "The outward normal at any point on a sphere is $\\hat{N} = \\text{normalize}(\\vec{P} - \\vec{C})$, pointing radially away from the center."
+  },
+  {
+    "id": 12,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "When a ray intersects a sphere and $\\Delta > 0$, which of the two $t$ values is the visible hit point (assuming the ray is outside the sphere)?",
+    "hint": "The first intersection the ray encounters is the closest one.",
+    "options": ["A) The larger $t$ value", "B) The smaller positive $t$ value", "C) Their average", "D) Neither; both are needed"],
+    "answer_key": "B",
+    "explanation": "The smaller positive $t$ gives the nearest intersection (entry point). The larger $t$ is the exit point on the far side of the sphere. For ray tracing, we want the closest visible hit."
+  },
+  {
+    "id": 13,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Why does the ray-plane intersection formula fail when $\\vec{N} \\cdot \\vec{D} = 0$?",
+    "hint": "Think about the geometric relationship between the ray and the plane in this case.",
+    "options": ["A) The plane is invisible", "B) The ray is parallel to the plane, so it either misses entirely or lies within the plane", "C) The normal is undefined", "D) The $t$ value overflows floating point"],
+    "answer_key": "B",
+    "explanation": "When $\\vec{N} \\cdot \\vec{D} = 0$, the ray direction is perpendicular to the plane normal, meaning the ray is parallel to the plane. It either never intersects (miss) or lies entirely in the plane (degenerate case). Division by zero in the formula reflects this."
+  },
+  {
+    "id": 14,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "In a BVH, what is the typical strategy for choosing where to split a set of triangles into two child nodes?",
+    "hint": "Common approaches use the spatial midpoint, median object count, or a cost-based heuristic.",
+    "answer_key": "Surface Area Heuristic (SAH)",
+    "explanation": "The Surface Area Heuristic (SAH) estimates the expected cost of ray traversal for each candidate split position and chooses the split that minimizes this cost. It weighs the surface area of each child's bounding box against the number of triangles, producing well-balanced BVH trees."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Compute the ray-sphere intersection for a ray with origin $\\vec{O} = (0, 0, 0)$, direction $\\vec{D} = (0, 0, 1)$, and a sphere centered at $\\vec{C} = (0, 0, 5)$ with radius $r = 2$.",
+    "hint": "Substitute the ray equation into the sphere equation and solve the quadratic.",
+    "steps": [
+      {
+        "prompt": "Set up the quadratic. Let $\\vec{L} = \\vec{O} - \\vec{C} = (0, 0, -5)$. Compute $a = \\vec{D} \\cdot \\vec{D}$, $b = 2(\\vec{L} \\cdot \\vec{D})$, $c = \\vec{L} \\cdot \\vec{L} - r^2$.",
+        "answer_key": "a = 1, b = -10, c = 21",
+        "explanation": "$a = (0,0,1) \\cdot (0,0,1) = 1$. $b = 2 \\cdot ((0,0,-5) \\cdot (0,0,1)) = 2 \\times (-5) = -10$. $c = (0,0,-5) \\cdot (0,0,-5) - 4 = 25 - 4 = 21$."
+      },
+      {
+        "prompt": "Compute the discriminant $\\Delta = b^2 - 4ac$ and determine if there is an intersection.",
+        "answer_key": "Delta = 16, two intersections",
+        "explanation": "$\\Delta = (-10)^2 - 4(1)(21) = 100 - 84 = 16 > 0$. Positive discriminant means two intersection points."
+      },
+      {
+        "prompt": "Compute the two $t$ values: $t = \\frac{-b \\pm \\sqrt{\\Delta}}{2a}$. Which is the nearest visible hit?",
+        "answer_key": "t = 3",
+        "explanation": "$t = \\frac{10 \\pm 4}{2}$. $t_1 = \\frac{10 - 4}{2} = 3$, $t_2 = \\frac{10 + 4}{2} = 7$. The nearest hit is $t = 3$ at point $(0, 0, 3)$."
+      }
+    ],
+    "explanation": "The ray enters the sphere at $t = 3$ (point $(0,0,3)$) and exits at $t = 7$ (point $(0,0,7)$). The sphere is centered at $(0,0,5)$ with radius 2, so the entry/exit points are at $z = 5 \\pm 2 = 3$ and $7$."
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Compute a ray-plane intersection and determine if the hit point is inside a given rectangle on that plane.",
+    "hint": "First find $t$, then check if the hit point satisfies the rectangle bounds.",
+    "steps": [
+      {
+        "prompt": "Ray: $\\vec{O} = (1, 3, 0)$, $\\vec{D} = (0, -1, 0)$. Plane: $y = 0$ (normal $\\vec{N} = (0, 1, 0)$, $d = 0$). Compute $t$.",
+        "answer_key": "3",
+        "explanation": "$t = \\frac{d - \\vec{N} \\cdot \\vec{O}}{\\vec{N} \\cdot \\vec{D}} = \\frac{0 - 3}{-1} = 3$."
+      },
+      {
+        "prompt": "Compute the hit point $\\vec{P} = \\vec{O} + t\\vec{D}$.",
+        "answer_key": "(1, 0, 0)",
+        "explanation": "$\\vec{P} = (1, 3, 0) + 3(0, -1, 0) = (1, 0, 0)$."
+      },
+      {
+        "prompt": "A rectangle on the $y = 0$ plane spans $x \\in [-2, 2]$, $z \\in [-2, 2]$. Is the hit point inside?",
+        "answer_key": "yes",
+        "explanation": "$x = 1 \\in [-2, 2]$ and $z = 0 \\in [-2, 2]$, so the hit point $(1, 0, 0)$ is inside the rectangle."
+      }
+    ],
+    "explanation": "Ray-rectangle intersection is a two-step process: first intersect with the containing plane, then test if the hit point's coordinates fall within the rectangle's bounds in the plane's local coordinate system."
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In ray tracing, what is the shadow ray test?",
+    "hint": "After finding a hit point, you need to determine if it is in shadow.",
+    "answer_key": "a ray cast from the hit point toward the light to check for occluding geometry",
+    "explanation": "A shadow ray is cast from the intersection point toward each light source. If any geometry is found between the point and the light (i.e., $t \\in (\\epsilon, t_{light})$), the point is in shadow for that light. A small offset $\\epsilon$ prevents self-intersection."
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Why is a small epsilon offset needed when spawning secondary rays (reflection, shadow) from a surface hit point?",
+    "hint": "Consider floating-point precision at the intersection point.",
+    "answer_key": "to prevent self-intersection due to floating-point imprecision",
+    "explanation": "Due to floating-point rounding, the computed hit point may lie slightly below the surface. Without an epsilon offset along the normal, secondary rays would immediately re-intersect the same surface, causing shadow acne or spurious reflections."
+  }
+]

@@ -1,0 +1,204 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What type of value does the dot product of two vectors produce?",
+    "hint": "It is not a vector or a matrix.",
+    "options": ["A) A vector", "B) A matrix", "C) A scalar", "D) A quaternion"],
+    "answer_key": "C",
+    "explanation": "The dot product produces a scalar (a single number), which is why it is also called the scalar product."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "If $\\hat{a} \\cdot \\hat{b} = 0$ for two unit vectors, what is the angle between them?",
+    "hint": "Consider what happens to cosine at a right angle.",
+    "options": ["A) $0°$", "B) $45°$", "C) $90°$", "D) $180°$"],
+    "answer_key": "C",
+    "explanation": "For unit vectors, $\\hat{a} \\cdot \\hat{b} = \\cos\\theta$. When the dot product is 0, $\\cos\\theta = 0$, meaning $\\theta = 90°$ (the vectors are perpendicular)."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In the Lambert diffuse lighting model, why is the $\\max(\\vec{N} \\cdot \\vec{L}, 0)$ clamp used?",
+    "hint": "Think about surfaces that face away from the light source.",
+    "options": ["A) To normalize the result to [0, 1]", "B) To prevent negative lighting when the surface faces away from the light", "C) To simulate specular highlights", "D) To correct for gamma encoding"],
+    "answer_key": "B",
+    "explanation": "When the surface normal and light direction form an angle greater than 90 degrees, the dot product is negative. Clamping to 0 prevents negative (unphysical) lighting contributions."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What does $\\text{dot}(\\vec{v}, \\vec{v})$ compute?",
+    "hint": "Think about the relationship between a vector's length and its components.",
+    "options": ["A) The unit vector of $\\vec{v}$", "B) The squared magnitude of $\\vec{v}$", "C) The inverse of $\\vec{v}$", "D) The direction of $\\vec{v}$"],
+    "answer_key": "B",
+    "explanation": "The self-dot product $\\vec{v} \\cdot \\vec{v} = |\\vec{v}|^2$ gives the squared magnitude, which is useful because it avoids the expensive square root operation in `length()`."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Compute $\\vec{a} \\cdot \\vec{b}$ where $\\vec{a} = (2, 3, 1)$ and $\\vec{b} = (4, -1, 2)$.",
+    "hint": "Multiply corresponding components and add the results.",
+    "answer_key": "7",
+    "explanation": "$\\vec{a} \\cdot \\vec{b} = (2)(4) + (3)(-1) + (1)(2) = 8 - 3 + 2 = 7$."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "If two unit vectors have a dot product of $-1$, what word describes their directional relationship?",
+    "hint": "Consider the angle whose cosine is $-1$.",
+    "answer_key": "opposite",
+    "explanation": "A dot product of $-1$ between unit vectors means $\\cos\\theta = -1$, so $\\theta = 180°$. The vectors point in exactly opposite directions."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the dot product formula in terms of angle?",
+    "hint": "It involves the magnitudes of both vectors and a trigonometric function.",
+    "options": ["A) $|\\vec{a}||\\vec{b}|\\sin\\theta$", "B) $|\\vec{a}||\\vec{b}|\\cos\\theta$", "C) $|\\vec{a}| + |\\vec{b}|\\cos\\theta$", "D) $|\\vec{a}||\\vec{b}|\\tan\\theta$"],
+    "answer_key": "B",
+    "explanation": "The geometric definition of the dot product is $\\vec{a} \\cdot \\vec{b} = |\\vec{a}||\\vec{b}|\\cos\\theta$, where $\\theta$ is the angle between the two vectors."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the dot product of $(1, 0, 0)$ and $(0, 1, 0)$?",
+    "hint": "These are two of the standard basis vectors.",
+    "options": ["A) 1", "B) 0", "C) -1", "D) 2"],
+    "answer_key": "B",
+    "explanation": "$(1)(0) + (0)(1) + (0)(0) = 0$. Perpendicular vectors always have a dot product of zero."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "If a dot product between two unit vectors yields $0.5$, what is the angle between them?",
+    "hint": "Recall which common angle has a cosine of $0.5$.",
+    "options": ["A) $30°$", "B) $45°$", "C) $60°$", "D) $90°$"],
+    "answer_key": "C",
+    "explanation": "For unit vectors, $\\hat{a} \\cdot \\hat{b} = \\cos\\theta = 0.5$. Since $\\cos(60°) = 0.5$, the angle is $60°$."
+  },
+  {
+    "id": 10,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In a shader, you want to check if a surface is facing toward or away from the camera. Which expression gives you this information?",
+    "hint": "Consider the sign of the dot product between the surface normal and the view direction.",
+    "options": ["A) cross(normal, viewDir)", "B) dot(normal, viewDir)", "C) length(normal - viewDir)", "D) normalize(normal + viewDir)"],
+    "answer_key": "B",
+    "explanation": "The sign of `dot(normal, viewDir)` tells you whether the surface faces the camera (positive) or away from it (negative). This is the basis for back-face detection."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Compute $\\vec{a} \\cdot \\vec{b}$ where $\\vec{a} = (1, 0)$ and $\\vec{b} = (0, -3)$.",
+    "hint": "Multiply corresponding components and sum.",
+    "answer_key": "0",
+    "explanation": "$(1)(0) + (0)(-3) = 0$. These vectors are perpendicular."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is the scalar projection of $\\vec{a} = (3, 4)$ onto $\\hat{b} = (1, 0)$?",
+    "hint": "The scalar projection onto a unit vector is simply the dot product with that unit vector.",
+    "answer_key": "3",
+    "explanation": "The scalar projection is $\\vec{a} \\cdot \\hat{b} = (3)(1) + (4)(0) = 3$. It gives the component of $\\vec{a}$ along $\\hat{b}$."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Compute the angle in degrees between $\\vec{a} = (1, 0, 0)$ and $\\vec{b} = (1, 1, 0)$, to the nearest integer.",
+    "hint": "Use the formula $\\cos\\theta = \\frac{\\vec{a} \\cdot \\vec{b}}{|\\vec{a}||\\vec{b}|}$ and note that $|\\vec{b}| = \\sqrt{2}$.",
+    "answer_key": "45",
+    "explanation": "$\\vec{a} \\cdot \\vec{b} = 1$. $|\\vec{a}| = 1$, $|\\vec{b}| = \\sqrt{2}$. So $\\cos\\theta = \\frac{1}{\\sqrt{2}}$, giving $\\theta = 45°$."
+  },
+  {
+    "id": 14,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "You have a surface normal $\\vec{N} = (0, 1, 0)$ and light direction $\\vec{L} = (0.5, 0.5, 0)$. The light direction is NOT normalized. What is the correct Lambert diffuse intensity?",
+    "hint": "You must normalize $\\vec{L}$ before computing $\\max(\\vec{N} \\cdot \\vec{L}_{norm}, 0)$.",
+    "options": ["A) $0.5$", "B) $\\frac{\\sqrt{2}}{2} \\approx 0.707$", "C) $1.0$", "D) $0.25$"],
+    "answer_key": "B",
+    "explanation": "$|\\vec{L}| = \\sqrt{0.25 + 0.25} = \\frac{\\sqrt{2}}{2}$. Normalized: $\\hat{L} = (\\frac{1}{\\sqrt{2}}, \\frac{1}{\\sqrt{2}}, 0)$. $\\vec{N} \\cdot \\hat{L} = \\frac{1}{\\sqrt{2}} \\approx 0.707$."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Project the vector $\\vec{a} = (3, 4)$ onto the vector $\\vec{b} = (1, 0)$.",
+    "hint": "The vector projection formula is $\\text{proj}_{\\vec{b}} \\vec{a} = \\frac{\\vec{a} \\cdot \\vec{b}}{\\vec{b} \\cdot \\vec{b}} \\vec{b}$.",
+    "steps": [
+      {
+        "prompt": "What is $\\vec{a} \\cdot \\vec{b}$?",
+        "answer_key": "3",
+        "explanation": "$(3)(1) + (4)(0) = 3$."
+      },
+      {
+        "prompt": "What is $\\vec{b} \\cdot \\vec{b}$?",
+        "answer_key": "1",
+        "explanation": "$(1)(1) + (0)(0) = 1$."
+      },
+      {
+        "prompt": "What is the vector projection $\\text{proj}_{\\vec{b}} \\vec{a}$?",
+        "answer_key": "(3, 0)",
+        "explanation": "$\\frac{3}{1} \\cdot (1, 0) = (3, 0)$. The projection drops the y-component entirely."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A point light is at position $L = (0, 10, 0)$ and a surface point is at $P = (3, 0, 4)$ with normal $\\vec{N} = (0, 1, 0)$. Compute the Lambert diffuse intensity.",
+    "hint": "First find the direction from the surface to the light, normalize it, then dot with the normal.",
+    "steps": [
+      {
+        "prompt": "What is the (unnormalized) light direction vector from $P$ to $L$?",
+        "answer_key": "(-3, 10, -4)",
+        "explanation": "$L - P = (0-3, 10-0, 0-4) = (-3, 10, -4)$."
+      },
+      {
+        "prompt": "What is the magnitude of $(-3, 10, -4)$, to two decimal places?",
+        "answer_key": "11.18",
+        "explanation": "$\\sqrt{9 + 100 + 16} = \\sqrt{125} = 5\\sqrt{5} \\approx 11.18$."
+      },
+      {
+        "prompt": "What is $\\max(\\vec{N} \\cdot \\hat{L}, 0)$, to two decimal places?",
+        "answer_key": "0.89",
+        "explanation": "$\\hat{L} \\approx (-0.268, 0.894, -0.358)$. $\\vec{N} \\cdot \\hat{L} = 0.894 \\approx 0.89$. Since it is positive, the clamp leaves it unchanged."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why is `dot(v, v)` often preferred over `length(v) * length(v)` in shaders?",
+    "hint": "Think about what `length()` does internally.",
+    "options": ["A) `dot(v, v)` gives a different result", "B) `dot(v, v)` avoids the expensive square root inside `length()`", "C) `length()` returns a vector, not a scalar", "D) `dot(v, v)` handles negative values better"],
+    "answer_key": "B",
+    "explanation": "`length(v)` computes $\\sqrt{x^2+y^2+z^2}$, which includes a square root. Squaring it cancels the root. `dot(v,v)` gives $x^2+y^2+z^2$ directly, skipping the unnecessary square root."
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is $\\vec{a} \\cdot \\vec{b}$ where $\\vec{a} = (2, -1, 3)$ and $\\vec{b} = (1, 4, -2)$?",
+    "hint": "Multiply corresponding components and add.",
+    "answer_key": "-8",
+    "explanation": "$(2)(1) + (-1)(4) + (3)(-2) = 2 - 4 - 6 = -8$."
+  }
+]

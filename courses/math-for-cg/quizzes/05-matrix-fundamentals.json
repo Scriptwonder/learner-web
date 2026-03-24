@@ -1,0 +1,204 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the result of multiplying any matrix $A$ by the identity matrix $I$?",
+    "hint": "The identity matrix is the matrix equivalent of multiplying by 1.",
+    "options": ["A) The zero matrix", "B) The transpose of $A$", "C) $A$ itself", "D) The inverse of $A$"],
+    "answer_key": "C",
+    "explanation": "The identity matrix is the 'do nothing' transform. For any matrix $A$: $AI = IA = A$."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Is matrix multiplication commutative?",
+    "hint": "Think about whether the order of transforms matters.",
+    "options": ["A) Yes, always", "B) No, $AB \\neq BA$ in general", "C) Only for square matrices", "D) Only for identity matrices"],
+    "answer_key": "B",
+    "explanation": "Matrix multiplication is not commutative: $AB \\neq BA$ in general. This directly matters in CG because rotating then translating differs from translating then rotating."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In OpenGL/GLSL (column-major), `mat4[i]` accesses which part of the matrix?",
+    "hint": "GLSL stores matrices column by column, not row by row.",
+    "options": ["A) Row $i$", "B) Column $i$", "C) The diagonal element at $i$", "D) The $i$-th scalar"],
+    "answer_key": "B",
+    "explanation": "GLSL uses column-major layout, so `mat4[i]` accesses column $i$, not row $i$. This is a common source of confusion for newcomers from row-major backgrounds."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "For a rotation matrix $R$, what is the relationship between $R^T$ and $R^{-1}$?",
+    "hint": "Rotation matrices have a special property related to their columns being orthonormal.",
+    "options": ["A) $R^T = 2R^{-1}$", "B) $R^T = R^{-1}$", "C) $R^T = -R^{-1}$", "D) There is no general relationship"],
+    "answer_key": "B",
+    "explanation": "Rotation matrices are orthogonal, meaning the transpose equals the inverse: $R^T = R^{-1}$. This makes inverting rotations computationally cheap."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the size of the standard transform matrix used in 3D computer graphics?",
+    "hint": "It needs to handle 3D rotation, scale, AND translation.",
+    "answer_key": "4x4",
+    "explanation": "3D transforms use $4 \\times 4$ matrices, which can encode rotation, scale, translation, and projection in a single matrix using homogeneous coordinates."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In the GLSL expression `projection * view * model * vec4(position, 1.0)`, which matrix is applied to the vertex first?",
+    "hint": "Matrix multiplication applies right to left.",
+    "answer_key": "model",
+    "explanation": "In column-major convention (OpenGL/GLSL), transforms compose right to left. The model matrix is closest to the vertex and is applied first, then view, then projection."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does the diagonal of the identity matrix look like?",
+    "hint": "The identity matrix has a very simple pattern.",
+    "options": ["A) All zeros", "B) All ones on the diagonal, zeros elsewhere", "C) All ones everywhere", "D) Alternating ones and zeros"],
+    "answer_key": "B",
+    "explanation": "The identity matrix has $1$s on the main diagonal and $0$s everywhere else. Multiplying by it leaves any vector or matrix unchanged."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does it mean for a matrix to be 'singular'?",
+    "hint": "Think about what happens when a transform collapses a dimension.",
+    "options": ["A) It has only one column", "B) It has no inverse (determinant is zero)", "C) It is the identity matrix", "D) It is a $1 \\times 1$ matrix"],
+    "answer_key": "B",
+    "explanation": "A singular matrix has a determinant of zero and no inverse. It 'collapses' at least one dimension of space, losing information irreversibly."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "If you multiply a $4 \\times 4$ matrix by a $4 \\times 1$ column vector, what is the size of the result?",
+    "hint": "In matrix multiplication, the result rows match the left operand and columns match the right.",
+    "options": ["A) $4 \\times 4$", "B) $4 \\times 1$", "C) $1 \\times 4$", "D) $1 \\times 1$"],
+    "answer_key": "B",
+    "explanation": "A $(4 \\times 4) \\cdot (4 \\times 1)$ multiplication yields a $4 \\times 1$ column vector. This is how we transform a single vertex by a matrix."
+  },
+  {
+    "id": 10,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is $(AB)^{-1}$ in terms of $A^{-1}$ and $B^{-1}$?",
+    "hint": "The order reverses, similar to taking off shoes and socks.",
+    "options": ["A) $A^{-1}B^{-1}$", "B) $B^{-1}A^{-1}$", "C) $(A^{-1})(B^{-1})^T$", "D) $AB$"],
+    "answer_key": "B",
+    "explanation": "The inverse of a product reverses the order: $(AB)^{-1} = B^{-1}A^{-1}$. If you put on socks then shoes, you must remove shoes first, then socks."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "How many scalar values are stored in a $4 \\times 4$ matrix?",
+    "hint": "Multiply rows by columns.",
+    "answer_key": "16",
+    "explanation": "A $4 \\times 4$ matrix contains $4 \\times 4 = 16$ scalar values."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is the transpose of the matrix $\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix}$? Write as (row1; row2).",
+    "hint": "Rows become columns and columns become rows.",
+    "answer_key": "(1, 3; 2, 4)",
+    "explanation": "The transpose swaps rows and columns: row 1 becomes column 1. So $\\begin{pmatrix} 1 & 3 \\\\ 2 & 4 \\end{pmatrix}$."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In a column-major $4 \\times 4$ matrix stored as a 16-element array, which element index holds $m[1][0]$ (column 1, row 0)?",
+    "hint": "Column-major stores each column contiguously: elements 0-3 are column 0, elements 4-7 are column 1, etc.",
+    "answer_key": "4",
+    "explanation": "In column-major layout: column 0 occupies indices 0-3, column 1 occupies 4-7. Row 0 of column 1 is at index $4 + 0 = 4$."
+  },
+  {
+    "id": 14,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "You compose three transforms: $M = T \\cdot R \\cdot S$. Which property of matrix multiplication guarantees you can pre-compute $M$ once and apply it to many vertices?",
+    "hint": "This property means grouping does not change the result.",
+    "options": ["A) Commutativity", "B) Associativity", "C) Distributivity", "D) Idempotency"],
+    "answer_key": "B",
+    "explanation": "Associativity: $(AB)C = A(BC)$. This means we can multiply the transform matrices together first to get one combined matrix $M$, then apply $M$ to each vertex. The result is identical to applying each transform separately."
+  },
+  {
+    "id": 15,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "A $3 \\times 3$ matrix has columns $\\vec{c_0}$, $\\vec{c_1}$, $\\vec{c_2}$. When you multiply this matrix by the basis vector $\\hat{e_1} = (0, 1, 0)$, what is the result?",
+    "hint": "Multiplying by a basis vector selects one column of the matrix.",
+    "options": ["A) $\\vec{c_0}$", "B) $\\vec{c_1}$", "C) $\\vec{c_2}$", "D) $\\vec{c_0} + \\vec{c_1} + \\vec{c_2}$"],
+    "answer_key": "B",
+    "explanation": "Multiplying a matrix by a standard basis vector extracts the corresponding column. $M \\cdot \\hat{e_1}$ extracts column 1 ($\\vec{c_1}$). This shows that each column of a transform matrix tells you where a basis vector maps to."
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Multiply the matrices $A = \\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix}$ and $B = \\begin{pmatrix} 5 & 6 \\\\ 7 & 8 \\end{pmatrix}$.",
+    "hint": "Each element of the result is the dot product of a row of $A$ with a column of $B$.",
+    "steps": [
+      {
+        "prompt": "What is the top-left element of $AB$ (row 0, col 0)?",
+        "answer_key": "19",
+        "explanation": "$1 \\cdot 5 + 2 \\cdot 7 = 5 + 14 = 19$."
+      },
+      {
+        "prompt": "What is the top-right element (row 0, col 1)?",
+        "answer_key": "22",
+        "explanation": "$1 \\cdot 6 + 2 \\cdot 8 = 6 + 16 = 22$."
+      },
+      {
+        "prompt": "What is the full result matrix $AB$? Write as (row1; row2).",
+        "answer_key": "(19, 22; 43, 50)",
+        "explanation": "Bottom-left: $3 \\cdot 5 + 4 \\cdot 7 = 15 + 28 = 43$. Bottom-right: $3 \\cdot 6 + 4 \\cdot 8 = 18 + 32 = 50$. Full result: $\\begin{pmatrix} 19 & 22 \\\\ 43 & 50 \\end{pmatrix}$."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Verify that $R^T R = I$ for the 2D rotation matrix $R(30°) = \\begin{pmatrix} \\cos 30° & -\\sin 30° \\\\ \\sin 30° & \\cos 30° \\end{pmatrix}$.",
+    "hint": "Compute $R^T$ first, then multiply $R^T \\cdot R$ and check if you get the identity.",
+    "steps": [
+      {
+        "prompt": "What is $R^T$ for this rotation? Write as (row1; row2) using cos/sin.",
+        "answer_key": "(cos30, sin30; -sin30, cos30)",
+        "explanation": "The transpose swaps rows and columns: $R^T = \\begin{pmatrix} \\cos 30° & \\sin 30° \\\\ -\\sin 30° & \\cos 30° \\end{pmatrix}$."
+      },
+      {
+        "prompt": "What is the top-left element of $R^T R$?",
+        "answer_key": "1",
+        "explanation": "$\\cos^2 30° + \\sin^2 30° = 1$ by the Pythagorean identity."
+      },
+      {
+        "prompt": "What is the top-right element of $R^T R$?",
+        "answer_key": "0",
+        "explanation": "$\\cos 30° \\cdot (-\\sin 30°) + \\sin 30° \\cdot \\cos 30° = -\\cos 30° \\sin 30° + \\sin 30° \\cos 30° = 0$. This confirms $R^T R = I$."
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is the determinant of the $2 \\times 2$ matrix $\\begin{pmatrix} 3 & 1 \\\\ 2 & 4 \\end{pmatrix}$?",
+    "hint": "For a $2 \\times 2$ matrix $\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}$, the determinant is $ad - bc$.",
+    "answer_key": "10",
+    "explanation": "$\\det = (3)(4) - (1)(2) = 12 - 2 = 10$."
+  }
+]

@@ -1,0 +1,199 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why can't translation be represented as a $2 \\times 2$ matrix operation?",
+    "hint": "Think about what happens when you multiply the zero vector by any $2 \\times 2$ matrix.",
+    "options": ["A) Translation requires a determinant of zero", "B) Any $2 \\times 2$ matrix maps the origin to itself, but translation moves the origin", "C) $2 \\times 2$ matrices can only represent rotation", "D) Translation is a non-linear function that requires floating point"],
+    "answer_key": "B",
+    "explanation": "Multiplying the zero vector by any $2 \\times 2$ matrix always produces the zero vector. Since translation moves the origin, it is not a linear transform and cannot be done with a $2 \\times 2$ matrix."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the standard composition order for transforms in CG (applied right to left)?",
+    "hint": "Scale happens in local space, translation in world space.",
+    "options": ["A) SRT (scale, rotate, translate)", "B) TRS (translate, rotate, scale)", "C) RST (rotate, scale, translate)", "D) STR (scale, translate, rotate)"],
+    "answer_key": "B",
+    "explanation": "The standard order is TRS: written left to right as $T \\cdot R \\cdot S$, but applied right to left (scale first, then rotate, then translate). This keeps scaling in local space and translation in world space."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In 2D, what does the rotation matrix $R(90°)$ do to the point $(1, 0)$?",
+    "hint": "A $90°$ counter-clockwise rotation moves the positive $x$-axis to the positive $y$-axis.",
+    "options": ["A) Maps it to $(0, -1)$", "B) Maps it to $(-1, 0)$", "C) Maps it to $(0, 1)$", "D) Maps it to $(1, 1)$"],
+    "answer_key": "C",
+    "explanation": "The $90°$ rotation matrix is $\\begin{pmatrix} 0 & -1 \\\\ 1 & 0 \\end{pmatrix}$. Applied to $(1, 0)$: $(0 \\cdot 1 + (-1) \\cdot 0, 1 \\cdot 1 + 0 \\cdot 0) = (0, 1)$."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In homogeneous coordinates for 2D, what is the matrix size used to represent translation?",
+    "hint": "Homogeneous coordinates add one extra dimension.",
+    "options": ["A) $2 \\times 2$", "B) $3 \\times 3$", "C) $4 \\times 4$", "D) $2 \\times 3$"],
+    "answer_key": "B",
+    "explanation": "Homogeneous coordinates add a third component $w = 1$ to 2D points, enabling translation to be represented as a $3 \\times 3$ matrix multiply."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the determinant of a 2D rotation matrix?",
+    "hint": "Rotation preserves area. What determinant value corresponds to no area change?",
+    "answer_key": "1",
+    "explanation": "For any rotation matrix $R(\\theta)$, $\\det(R) = \\cos^2\\theta + \\sin^2\\theta = 1$, which means rotation preserves area."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "If you translate an object to $(5, 0)$ first, then rotate $90°$ around the origin, the object will orbit the origin rather than rotate in place. What should you do instead to rotate the object in place and then position it?",
+    "hint": "The order in which you apply transforms matters.",
+    "answer_key": "rotate first",
+    "explanation": "Rotation always happens around the origin. To rotate in place and then position the object, you should rotate first (while the object is at the origin), then translate it to the desired position."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does a 2D scale matrix $S(2, 3)$ do to a point $(1, 1)$?",
+    "hint": "Scaling multiplies each component independently.",
+    "options": ["A) $(2, 3)$", "B) $(3, 2)$", "C) $(2, 2)$", "D) $(3, 3)$"],
+    "answer_key": "A",
+    "explanation": "The scale matrix multiplies $x$ by $2$ and $y$ by $3$: $(2 \\cdot 1, 3 \\cdot 1) = (2, 3)$."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does the 2D rotation matrix look like for angle $\\theta$?",
+    "hint": "It uses sine and cosine of $\\theta$.",
+    "options": ["A) $\\begin{pmatrix} \\cos\\theta & \\sin\\theta \\\\ -\\sin\\theta & \\cos\\theta \\end{pmatrix}$", "B) $\\begin{pmatrix} \\cos\\theta & -\\sin\\theta \\\\ \\sin\\theta & \\cos\\theta \\end{pmatrix}$", "C) $\\begin{pmatrix} \\sin\\theta & \\cos\\theta \\\\ \\cos\\theta & -\\sin\\theta \\end{pmatrix}$", "D) $\\begin{pmatrix} 1 & \\theta \\\\ -\\theta & 1 \\end{pmatrix}$"],
+    "answer_key": "B",
+    "explanation": "The standard 2D counter-clockwise rotation matrix is $\\begin{pmatrix} \\cos\\theta & -\\sin\\theta \\\\ \\sin\\theta & \\cos\\theta \\end{pmatrix}$."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A 2D reflection across the $x$-axis is represented by which matrix?",
+    "hint": "Reflecting across the $x$-axis negates the $y$-component.",
+    "options": ["A) $\\begin{pmatrix} -1 & 0 \\\\ 0 & 1 \\end{pmatrix}$", "B) $\\begin{pmatrix} 1 & 0 \\\\ 0 & -1 \\end{pmatrix}$", "C) $\\begin{pmatrix} 0 & 1 \\\\ 1 & 0 \\end{pmatrix}$", "D) $\\begin{pmatrix} -1 & 0 \\\\ 0 & -1 \\end{pmatrix}$"],
+    "answer_key": "B",
+    "explanation": "Reflection across the $x$-axis keeps $x$ the same and flips $y$: $\\begin{pmatrix} 1 & 0 \\\\ 0 & -1 \\end{pmatrix}$."
+  },
+  {
+    "id": 10,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the determinant of a 2D reflection matrix?",
+    "hint": "Reflection reverses the orientation (handedness) of the coordinate system.",
+    "options": ["A) $0$", "B) $1$", "C) $-1$", "D) $2$"],
+    "answer_key": "C",
+    "explanation": "A reflection matrix has determinant $-1$. The negative sign indicates that orientation is reversed (a clockwise triangle becomes counter-clockwise, or vice versa)."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is $(0, 1)$ rotated by $180°$ around the origin in 2D?",
+    "hint": "$180°$ rotation negates both components.",
+    "answer_key": "(0, -1)",
+    "explanation": "$R(180°) = \\begin{pmatrix} -1 & 0 \\\\ 0 & -1 \\end{pmatrix}$. Applied to $(0, 1)$: $(0, -1)$."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is the 2D translation matrix (in $3 \\times 3$ homogeneous form) that moves a point by $(3, -2)$? Write the third column.",
+    "hint": "Translation goes in the last column of the homogeneous matrix.",
+    "answer_key": "(3, -2, 1)",
+    "explanation": "The $3 \\times 3$ translation matrix has $\\begin{pmatrix} 1 & 0 & 3 \\\\ 0 & 1 & -2 \\\\ 0 & 0 & 1 \\end{pmatrix}$, so the third column is $(3, -2, 1)$."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "A 2D shear matrix $\\begin{pmatrix} 1 & k \\\\ 0 & 1 \\end{pmatrix}$ with $k = 2$ is applied to $(1, 3)$. What is the result?",
+    "hint": "Shearing adds a multiple of one coordinate to the other.",
+    "answer_key": "(7, 3)",
+    "explanation": "$\\begin{pmatrix} 1 & 2 \\\\ 0 & 1 \\end{pmatrix} \\begin{pmatrix} 1 \\\\ 3 \\end{pmatrix} = \\begin{pmatrix} 1 + 6 \\\\ 3 \\end{pmatrix} = (7, 3)$."
+  },
+  {
+    "id": 14,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "To rotate a 2D object around a pivot point $P$ (not the origin), what is the correct sequence of transforms?",
+    "hint": "You need to move the pivot to the origin, rotate, then move back.",
+    "options": ["A) $R \\cdot T(P)$", "B) $T(P) \\cdot R \\cdot T(-P)$", "C) $T(-P) \\cdot R \\cdot T(P)$", "D) $R \\cdot T(-P) \\cdot T(P)$"],
+    "answer_key": "B",
+    "explanation": "Applied right to left: first translate by $-P$ to move the pivot to the origin, then rotate $R$, then translate back by $+P$. Written as a matrix product: $T(P) \\cdot R \\cdot T(-P)$."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Apply the 2D rotation $R(45°)$ to the point $(\\sqrt{2}, 0)$. Use $\\cos 45° = \\sin 45° = \\frac{\\sqrt{2}}{2}$.",
+    "hint": "Multiply the rotation matrix by the point vector.",
+    "steps": [
+      {
+        "prompt": "What is $x' = \\cos 45° \\cdot \\sqrt{2} + (-\\sin 45°) \\cdot 0$?",
+        "answer_key": "1",
+        "explanation": "$x' = \\frac{\\sqrt{2}}{2} \\cdot \\sqrt{2} + 0 = \\frac{2}{2} = 1$."
+      },
+      {
+        "prompt": "What is $y' = \\sin 45° \\cdot \\sqrt{2} + \\cos 45° \\cdot 0$?",
+        "answer_key": "1",
+        "explanation": "$y' = \\frac{\\sqrt{2}}{2} \\cdot \\sqrt{2} + 0 = \\frac{2}{2} = 1$."
+      },
+      {
+        "prompt": "What is the rotated point?",
+        "answer_key": "(1, 1)",
+        "explanation": "The point $(\\sqrt{2}, 0)$ rotated $45°$ becomes $(1, 1)$. Both points are at distance $\\sqrt{2}$ from the origin, confirming rotation preserves length."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Scale the point $(2, 1)$ by $(3, 2)$, then rotate $90°$. What is the final point?",
+    "hint": "Apply scale first, then rotation. Order matters.",
+    "steps": [
+      {
+        "prompt": "What is the point after scaling by $(3, 2)$?",
+        "answer_key": "(6, 2)",
+        "explanation": "$(2 \\cdot 3, 1 \\cdot 2) = (6, 2)$."
+      },
+      {
+        "prompt": "What is $(6, 2)$ after a $90°$ rotation?",
+        "answer_key": "(-2, 6)",
+        "explanation": "$R(90°) \\cdot (6, 2) = (0 \\cdot 6 + (-1) \\cdot 2, 1 \\cdot 6 + 0 \\cdot 2) = (-2, 6)$."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the inverse of a 2D rotation by angle $\\theta$?",
+    "hint": "To undo a rotation, you rotate in the opposite direction.",
+    "options": ["A) A rotation by $\\theta$", "B) A rotation by $-\\theta$", "C) A scale by $1/\\theta$", "D) A translation by $-\\theta$"],
+    "answer_key": "B",
+    "explanation": "The inverse of a rotation by $\\theta$ is a rotation by $-\\theta$. Equivalently, $R(\\theta)^{-1} = R(-\\theta) = R(\\theta)^T$."
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A uniform scale of $S(0.5, 0.5)$ is applied to a square with area $4$. What is the new area?",
+    "hint": "Area scales by the determinant of the transformation matrix.",
+    "answer_key": "1",
+    "explanation": "The determinant of $S(0.5, 0.5)$ is $0.5 \\times 0.5 = 0.25$. The new area is $4 \\times 0.25 = 1$. Alternatively, each side is halved, so the area is quartered."
+  }
+]

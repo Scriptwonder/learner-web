@@ -1,0 +1,23 @@
+{
+  "id": "advanced-cg-math",
+  "title": "Advanced Math for Computer Graphics",
+  "description": "PBR, neural rendering, and the math powering modern real-time and offline graphics.",
+  "modules": [
+    {
+      "title": "Advanced Geometry & Spatial Methods",
+      "lessons": ["01-barycentric-coordinates", "02-signed-distance-functions", "03-spatial-acceleration-structures"]
+    },
+    {
+      "title": "Physically-Based Rendering",
+      "lessons": ["04-pbr-microfacet-theory", "05-sampling-monte-carlo", "06-spherical-harmonics"]
+    },
+    {
+      "title": "Advanced Transforms & Signals",
+      "lessons": ["07-fourier-analysis-aliasing", "08-dual-quaternions"]
+    },
+    {
+      "title": "Neural Rendering",
+      "lessons": ["09-neural-rendering-foundations", "10-neural-radiance-fields", "11-3d-gaussian-splatting"]
+    }
+  ]
+}

@@ -1,0 +1,198 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "How many spherical harmonics coefficients are needed through band $L=2$ (order 2) to represent diffuse irradiance?",
+    "hint": "The formula for total coefficients through band $L$ is $(L+1)^2$.",
+    "options": ["A) 3", "B) 4", "C) 9", "D) 16"],
+    "answer_key": "C",
+    "explanation": "The total number of SH coefficients through band $L$ is $(L+1)^2$. For $L=2$: $(2+1)^2 = 9$ coefficients. Band 0 has 1, band 1 has 3, and band 2 has 5, totaling 9. Ramamoorthi & Hanrahan (2001) showed that these 9 coefficients capture over 99% of diffuse irradiance energy."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why do only 9 SH coefficients (L2) suffice for diffuse irradiance from arbitrarily complex environment maps?",
+    "hint": "The cosine lobe that multiplies the environment acts as a filter. What kind of filter is it?",
+    "options": ["A) Environment maps never contain frequencies above band 2", "B) The clamped cosine kernel acts as a low-pass filter, and its SH expansion has negligible energy beyond band 2", "C) The human eye cannot perceive lighting variations beyond 9 basis functions", "D) Higher bands are always zero for outdoor lighting"],
+    "answer_key": "B",
+    "explanation": "The clamped cosine lobe $\\max(\\cos\\theta, 0)$ that multiplies the environment in the irradiance integral has rapidly decaying SH coefficients. Bands 0+1+2 contain over 99% of its energy, so convolving any environment with this kernel produces a result that is nearly band-limited to L2."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is a key advantage of representing lighting in spherical harmonics for real-time rendering?",
+    "hint": "Think about what happens mathematically to SH coefficients when you rotate the coordinate frame.",
+    "options": ["A) SH can represent arbitrarily sharp shadows without artifacts", "B) Rotating the lighting environment is a linear operation on the SH coefficients within each band", "C) SH requires no precomputation at all", "D) SH coefficients are always integers, making GPU computation faster"],
+    "answer_key": "B",
+    "explanation": "Rotation of an SH-encoded function is performed by multiplying the coefficient vector within each band by a rotation matrix (Wigner D-matrix). For band 1, this is simply the 3D rotation matrix itself. This allows efficient relighting without re-projecting the entire environment."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In 3D Gaussian Splatting (Kerbl et al. 2023), what role do spherical harmonics play?",
+    "hint": "Each Gaussian stores per-direction appearance information. What does SH encode?",
+    "options": ["A) They define the shape (covariance) of each Gaussian primitive", "B) They encode view-dependent color for each Gaussian, enabling specular and directional appearance effects", "C) They compress the depth buffer for alpha compositing", "D) They control the learning rate during optimization"],
+    "answer_key": "B",
+    "explanation": "Each 3D Gaussian stores SH coefficients (typically degree 3 / 16 coefficients per color channel) that represent how the Gaussian's color varies with viewing direction. This enables view-dependent effects like specular highlights without explicit material models."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is the value of the band-0 (constant) real spherical harmonic basis function $Y_0^0$? Give the exact expression.",
+    "hint": "It is a constant determined by the normalization condition $\\int_{S^2} (Y_0^0)^2\\,d\\omega = 1$.",
+    "answer_key": "1/(2*sqrt(pi))",
+    "explanation": "$Y_0^0 = \\frac{1}{2\\sqrt{\\pi}} \\approx 0.2821$. This is the DC (constant) term — it represents the average value of the function over the sphere. Its value is determined by the normalization condition $\\int_{S^2} (Y_0^0)^2\\,d\\omega = 1$, giving $Y_0^0 = 1/\\sqrt{4\\pi}$."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In Precomputed Radiance Transfer (PRT), what quantity is precomputed and stored per vertex to enable real-time relighting?",
+    "hint": "The precomputation bakes visibility, geometry, and the cosine term into a set of per-vertex SH coefficients.",
+    "answer_key": "transfer coefficients",
+    "explanation": "PRT precomputes transfer coefficients $T_l^m$ per vertex by integrating the product of visibility, the cosine term, and SH basis functions over the hemisphere via ray casting. At runtime, the irradiance is computed as a dot product of these transfer coefficients with the SH lighting coefficients, enabling real-time evaluation under changing lighting."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the orthogonality property of spherical harmonics?",
+    "hint": "Orthogonal basis functions have a specific integral property when multiplied together over the sphere.",
+    "options": ["A) All SH basis functions are positive everywhere on the sphere", "B) $\\int_{S^2} Y_l^m(\\omega) Y_{l'}^{m'}(\\omega)\\,d\\omega = \\delta_{ll'} \\delta_{mm'}$ (Kronecker delta)", "C) Each SH basis function is zero at the poles", "D) SH basis functions at different bands have the same amplitude"],
+    "answer_key": "B",
+    "explanation": "Spherical harmonics form an orthonormal basis on the sphere: the integral of the product of any two distinct basis functions is zero, and the integral of a basis function with itself is 1. This orthonormality makes it straightforward to compute coefficients via projection (inner product) and is the foundation for efficient convolution in SH space."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "How many coefficients does band $l$ of the spherical harmonics have?",
+    "hint": "Band $l$ includes orders $m$ from $-l$ to $+l$.",
+    "options": ["A) $l$", "B) $l + 1$", "C) $2l + 1$", "D) $l^2$"],
+    "answer_key": "C",
+    "explanation": "Band $l$ has $2l + 1$ coefficients, corresponding to orders $m = -l, -l+1, \\ldots, l-1, l$. For example, band 0 has 1 coefficient, band 1 has 3, band 2 has 5, band 3 has 7."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What type of functions are spherical harmonics designed to represent?",
+    "hint": "They are the spherical analog of Fourier series. What domain do they live on?",
+    "options": ["A) Functions defined on the 2D plane $\\mathbb{R}^2$", "B) Functions defined on the unit sphere $S^2$", "C) Functions defined on the 3D volume $\\mathbb{R}^3$", "D) Functions defined on a triangle mesh"],
+    "answer_key": "B",
+    "explanation": "Spherical harmonics are an orthonormal basis for functions defined on the unit sphere $S^2$. They are parameterized by angles $(\\theta, \\phi)$ and are the spherical analog of the Fourier basis on the circle. Any square-integrable function on the sphere can be expanded into an SH series."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "How many total SH coefficients are needed for a degree-3 (band 3) representation?",
+    "hint": "Use the formula $(L+1)^2$ where $L$ is the maximum band.",
+    "answer_key": "16",
+    "explanation": "Total coefficients through band $L = 3$: $(3+1)^2 = 16$. This includes 1 from band 0, 3 from band 1, 5 from band 2, and 7 from band 3: $1 + 3 + 5 + 7 = 16$."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "How is the convolution of two spherical functions computed in SH space?",
+    "hint": "Think about the Fourier convolution theorem — convolution in the spatial domain becomes what in the frequency domain?",
+    "answer_key": "Pointwise multiplication of the SH coefficients (per band, scaled by the zonal harmonic kernel coefficients)",
+    "explanation": "When one of the functions is zonal (rotationally symmetric, like the cosine lobe), convolution in SH space reduces to a per-coefficient multiplication: $c_l^m = \\sqrt{\\frac{4\\pi}{2l+1}} \\cdot a_l^m \\cdot k_l$, where $k_l$ are the SH coefficients of the zonal kernel. This is analogous to the Fourier convolution theorem and is what makes SH irradiance computation so efficient."
+  },
+  {
+    "id": 12,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the main limitation of representing lighting with low-order spherical harmonics (e.g., L2)?",
+    "hint": "Low-order SH is essentially a low-pass filter. What lighting features require high frequencies?",
+    "options": ["A) SH cannot represent colored lighting", "B) SH cannot represent directional lights", "C) Low-order SH produces soft, blurry lighting — it cannot represent sharp shadows or narrow specular highlights", "D) SH requires too much memory per probe"],
+    "answer_key": "C",
+    "explanation": "Low-order SH acts as a low-pass filter on the lighting function. Features requiring high spatial frequencies — such as hard shadow boundaries, small bright light sources, or narrow specular reflections — are smoothed out. This is why SH probes are primarily used for diffuse or low-frequency specular lighting, while other techniques (reflection probes, screen-space reflections) handle high-frequency specular."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "In the context of SH light probes, explain ringing (Gibbs phenomenon) and name one common technique to mitigate it.",
+    "hint": "What happens when you truncate a Fourier series of a function with sharp discontinuities?",
+    "answer_key": "Ringing is oscillatory artifacts from truncating the SH series at a finite band, especially near sharp transitions; it can be mitigated by windowing (e.g., Hanning window) or by clamping negative values",
+    "explanation": "When a function with sharp features (e.g., a bright directional light against a dark sky) is represented with finite SH bands, the truncation causes oscillatory overshoots and undershoots near the discontinuity — the Gibbs phenomenon. This can produce negative irradiance values or visible banding. Common mitigations include applying a windowing function (Hanning, Lanczos) that smoothly attenuates higher bands, or simply clamping negative values to zero."
+  },
+  {
+    "id": 14,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "In 3D Gaussian Splatting, why are degree-3 SH (16 coefficients per channel) typically used instead of degree-2 SH (9 coefficients)?",
+    "hint": "Gaussian splatting needs to capture view-dependent effects. How sharp can these effects be?",
+    "options": ["A) Degree 2 cannot represent any view-dependent effects", "B) Degree 3 provides sufficient frequency resolution to capture moderate specular reflections and view-dependent color shifts that degree 2 would over-smooth", "C) Degree 3 uses exactly the same memory as degree 2 due to GPU alignment", "D) Degree 2 is numerically unstable during optimization"],
+    "answer_key": "B",
+    "explanation": "Degree-2 SH (9 coefficients) can only represent low-frequency angular variation — essentially diffuse-like appearance. Degree-3 SH (16 coefficients) adds 7 more basis functions that capture moderate angular frequencies, enabling visible specular highlights, glossy reflections, and color shifts with viewing direction. This is a good balance between quality and memory/compute cost per Gaussian."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "You want to compute the SH projection coefficient $c_0^0$ (band 0) of a constant function $f(\\omega) = 5$ defined on the entire sphere.",
+    "hint": "The projection is an inner product: $c_l^m = \\int_{S^2} f(\\omega) Y_l^m(\\omega)\\,d\\omega$.",
+    "steps": [
+      {
+        "prompt": "Write the projection integral for $c_0^0$ and substitute $f(\\omega) = 5$ and $Y_0^0 = \\frac{1}{2\\sqrt{\\pi}}$.",
+        "answer_key": "c_0^0 = integral over S^2 of 5 * (1/(2*sqrt(pi))) dw",
+        "explanation": "$c_0^0 = \\int_{S^2} f(\\omega) Y_0^0\\,d\\omega = \\int_{S^2} 5 \\cdot \\frac{1}{2\\sqrt{\\pi}}\\,d\\omega = \\frac{5}{2\\sqrt{\\pi}} \\int_{S^2} d\\omega$."
+      },
+      {
+        "prompt": "The total solid angle of the sphere is $4\\pi$. Evaluate $c_0^0$.",
+        "answer_key": "10*sqrt(pi) or approximately 17.72",
+        "explanation": "$c_0^0 = \\frac{5}{2\\sqrt{\\pi}} \\cdot 4\\pi = \\frac{20\\pi}{2\\sqrt{\\pi}} = 10\\sqrt{\\pi} \\approx 17.72$."
+      },
+      {
+        "prompt": "Verify: reconstruct the function value from $c_0^0$ using $\\hat{f}(\\omega) = c_0^0 \\cdot Y_0^0$. What do you get?",
+        "answer_key": "5",
+        "explanation": "$\\hat{f}(\\omega) = c_0^0 \\cdot Y_0^0 = 10\\sqrt{\\pi} \\cdot \\frac{1}{2\\sqrt{\\pi}} = 5$. The constant function is perfectly represented by band 0 alone, as expected — a constant function has zero energy in all higher bands."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "A light probe stores L2 SH coefficients for RGB irradiance. You need to compute the total memory and the irradiance at a surface point.",
+    "hint": "Each color channel has its own set of SH coefficients.",
+    "steps": [
+      {
+        "prompt": "How many floating-point values are stored per light probe for L2 RGB irradiance?",
+        "answer_key": "27",
+        "explanation": "L2 requires $(2+1)^2 = 9$ coefficients per channel. With 3 color channels (RGB): $9 \\times 3 = 27$ floats. At 4 bytes per float, that is 108 bytes per probe."
+      },
+      {
+        "prompt": "Given the SH lighting coefficients $L_l^m$ and the surface normal $\\hat{n}$, write the formula for computing the irradiance $E(\\hat{n})$.",
+        "answer_key": "E(n) = sum over l,m of L_l^m * Y_l^m(n)",
+        "explanation": "The irradiance at a surface point with normal $\\hat{n}$ is $E(\\hat{n}) = \\sum_{l=0}^{2} \\sum_{m=-l}^{l} L_l^m \\cdot Y_l^m(\\hat{n})$, which is a dot product of the 9 SH lighting coefficients with the 9 SH basis functions evaluated at the normal direction. This computation is extremely cheap — just 9 multiply-adds per color channel."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What are the three band-1 real spherical harmonics basis functions (in Cartesian coordinates, up to a normalization constant)?",
+    "hint": "Band 1 has 3 basis functions corresponding to the three coordinate axes.",
+    "answer_key": "y, z, x (proportional to the Cartesian components of the unit direction vector)",
+    "explanation": "The three band-1 real SH basis functions are proportional to the Cartesian coordinates of the unit direction vector: $Y_1^{-1} \\propto y$, $Y_1^0 \\propto z$, $Y_1^1 \\propto x$. With normalization: $Y_1^{-1} = \\frac{\\sqrt{3}}{2\\sqrt{\\pi}} y$, $Y_1^0 = \\frac{\\sqrt{3}}{2\\sqrt{\\pi}} z$, $Y_1^1 = \\frac{\\sqrt{3}}{2\\sqrt{\\pi}} x$. These represent linear directional variation."
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Explain why the SH triple product $\\int_{S^2} Y_a(\\omega) Y_b(\\omega) Y_c(\\omega)\\,d\\omega$ is important for PRT with glossy materials, and why it makes the computation more expensive than diffuse PRT.",
+    "hint": "Diffuse PRT uses a dot product of lighting and transfer vectors. Glossy PRT involves the product of three SH-encoded functions.",
+    "answer_key": "Glossy PRT requires the triple product integral because the BRDF varies with direction (not just a cosine lobe). This means the runtime computation involves a matrix-vector product (transfer matrix times lighting vector) instead of a simple dot product, making it O(n^2) per vertex instead of O(n)",
+    "explanation": "For diffuse PRT, the cosine lobe is baked into the transfer coefficients, so the runtime computation is a simple dot product of the lighting vector and transfer vector — $O(n)$ per vertex. For glossy materials, the BRDF varies with the view-dependent reflection direction, requiring a transfer matrix $M_{l'm'}^{lm}$ that encodes the triple product of the visibility, BRDF, and SH basis. The runtime computation becomes a matrix-vector multiply $E_{l'm'} = \\sum M_{l'm'}^{lm} L_{lm}$, which is $O(n^2)$ where $n$ is the number of SH coefficients."
+  }
+]

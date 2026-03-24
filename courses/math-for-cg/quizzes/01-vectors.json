@@ -1,0 +1,199 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What two properties define a vector?",
+    "hint": "Think about what makes a vector different from a plain number.",
+    "options": ["A) Position and color", "B) Magnitude and direction", "C) Speed and acceleration", "D) Origin and endpoint"],
+    "answer_key": "B",
+    "explanation": "A vector is a quantity with both magnitude (length) and direction, distinguishing it from a scalar which has only magnitude."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the magnitude of the vector $\\vec{v} = (3, 4, 0)$?",
+    "hint": "Use the Pythagorean theorem extended to 3D.",
+    "options": ["A) 7", "B) 25", "C) 5", "D) 12"],
+    "answer_key": "C",
+    "explanation": "The magnitude is $|\\vec{v}| = \\sqrt{3^2 + 4^2 + 0^2} = \\sqrt{9 + 16} = \\sqrt{25} = 5$."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is a unit vector?",
+    "hint": "Focus on what specific length property it must have.",
+    "options": ["A) A vector with all components equal to 1", "B) A vector with magnitude 1", "C) A vector aligned to a coordinate axis", "D) A vector with only one non-zero component"],
+    "answer_key": "B",
+    "explanation": "A unit vector has magnitude 1. It is obtained by dividing a vector by its magnitude: $\\hat{v} = \\vec{v} / |\\vec{v}|$."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Which GLSL function computes the direction from a current position to a target position?",
+    "hint": "You need a subtraction and then a way to make the result length 1.",
+    "options": ["A) distance(targetPos, currentPos)", "B) normalize(targetPos - currentPos)", "C) length(targetPos - currentPos)", "D) cross(targetPos, currentPos)"],
+    "answer_key": "B",
+    "explanation": "The direction from currentPos to targetPos is the normalized difference: `normalize(targetPos - currentPos)`, which gives a unit vector pointing from the current position to the target."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the magnitude of the vector $(0, 0, 7)$?",
+    "hint": "Only one component is non-zero.",
+    "answer_key": "7",
+    "explanation": "The magnitude is $\\sqrt{0^2 + 0^2 + 7^2} = \\sqrt{49} = 7$."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "After normalizing the vector $(3, 4, 0)$, what is the x-component of the resulting unit vector?",
+    "hint": "First find the magnitude, then divide the x-component by it.",
+    "answer_key": "0.6",
+    "explanation": "The magnitude is 5, so the normalized vector is $(3/5, 4/5, 0) = (0.6, 0.8, 0)$. The x-component is $0.6$."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the result of adding vectors $\\vec{a} = (1, 2, 3)$ and $\\vec{b} = (4, 5, 6)$?",
+    "hint": "Vector addition works component by component.",
+    "options": ["A) $(5, 7, 9)$", "B) $(4, 10, 18)$", "C) $(3, 3, 3)$", "D) $(5, 5, 5)$"],
+    "answer_key": "A",
+    "explanation": "Vector addition is component-wise: $(1+4, 2+5, 3+6) = (5, 7, 9)$."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the result of scaling the vector $(2, -3, 1)$ by $-2$?",
+    "hint": "Multiply each component by the scalar. A negative scalar reverses direction.",
+    "options": ["A) $(4, -6, 2)$", "B) $(-4, 6, -2)$", "C) $(-4, -6, -2)$", "D) $(0, -5, -1)$"],
+    "answer_key": "B",
+    "explanation": "Scalar multiplication: $-2 \\cdot (2, -3, 1) = (-4, 6, -2)$. The negative scalar reverses the direction of the vector."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Which of the following is NOT true about vector subtraction $\\vec{a} - \\vec{b}$?",
+    "hint": "Think about what subtraction really means geometrically.",
+    "options": ["A) It gives a vector pointing from $\\vec{b}$'s tip to $\\vec{a}$'s tip", "B) It is equivalent to $\\vec{a} + (-\\vec{b})$", "C) Its magnitude always equals $|\\vec{a}| - |\\vec{b}|$", "D) The result is also a vector"],
+    "answer_key": "C",
+    "explanation": "The magnitude of $\\vec{a} - \\vec{b}$ is generally NOT $|\\vec{a}| - |\\vec{b}|$. The triangle inequality tells us that $|\\vec{a} - \\vec{b}|$ depends on the angle between the vectors, not just their individual lengths."
+  },
+  {
+    "id": 10,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In GLSL, what does the `length()` function return for a `vec3` input?",
+    "hint": "It computes the Euclidean distance from the origin.",
+    "options": ["A) The number of components (3)", "B) The sum of all components", "C) The magnitude (Euclidean length) of the vector", "D) The largest component"],
+    "answer_key": "C",
+    "explanation": "The `length()` function computes the Euclidean magnitude: $\\sqrt{x^2 + y^2 + z^2}$."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the magnitude of the 2D vector $(0, -5)$?",
+    "hint": "Magnitude is always non-negative, regardless of component signs.",
+    "answer_key": "5",
+    "explanation": "The magnitude is $\\sqrt{0^2 + (-5)^2} = \\sqrt{25} = 5$. Magnitude is always positive."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is the magnitude of the vector $(1, 2, 2)$?",
+    "hint": "Compute the sum of squares: $1 + 4 + 4$.",
+    "answer_key": "3",
+    "explanation": "The magnitude is $\\sqrt{1^2 + 2^2 + 2^2} = \\sqrt{1 + 4 + 4} = \\sqrt{9} = 3$."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "You have two points $A = (2, 1, 0)$ and $B = (5, 5, 0)$. What is the distance between them?",
+    "hint": "Distance between two points equals the magnitude of the vector from one to the other.",
+    "answer_key": "5",
+    "explanation": "The vector from $A$ to $B$ is $(5-2, 5-1, 0-0) = (3, 4, 0)$. The distance is $\\sqrt{3^2 + 4^2} = \\sqrt{25} = 5$."
+  },
+  {
+    "id": 14,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "An enemy is at position $(10, 0, 0)$ and the player is at $(4, 0, 8)$. The enemy moves at speed $5$ toward the player. What is the enemy's velocity vector?",
+    "hint": "Find the direction from the enemy to the player, then scale by speed.",
+    "options": ["A) $(-3, 0, 4)$", "B) $(3, 0, -4)$", "C) $(-30, 0, 40)$", "D) $(-0.6, 0, 0.8)$"],
+    "answer_key": "A",
+    "explanation": "Direction: $(4-10, 0, 8-0) = (-6, 0, 8)$. Magnitude: $\\sqrt{36+64} = 10$. Unit direction: $(-0.6, 0, 0.8)$. Velocity = speed $\\times$ direction: $5 \\times (-0.6, 0, 0.8) = (-3, 0, 4)$."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A spaceship at position $(0, 0, 0)$ wants to fly toward a star at $(6, 2, 3)$ at speed $7$. Compute the velocity vector.",
+    "hint": "Break this into steps: find the direction vector, normalize it, then scale by speed.",
+    "steps": [
+      {
+        "prompt": "What is the magnitude of the direction vector $(6, 2, 3)$?",
+        "answer_key": "7",
+        "explanation": "$\\sqrt{6^2 + 2^2 + 3^2} = \\sqrt{36 + 4 + 9} = \\sqrt{49} = 7$."
+      },
+      {
+        "prompt": "What is the unit vector in the direction of the star?",
+        "answer_key": "(6/7, 2/7, 3/7)",
+        "explanation": "Divide each component by the magnitude: $(6/7, 2/7, 3/7)$."
+      },
+      {
+        "prompt": "What is the final velocity vector at speed $7$?",
+        "answer_key": "(6, 2, 3)",
+        "explanation": "Velocity = speed $\\times$ unit direction = $7 \\times (6/7, 2/7, 3/7) = (6, 2, 3)$. Since the magnitude already equals the speed, the velocity equals the direction vector."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Linearly interpolate between points $A = (0, 0)$ and $B = (10, 6)$ at $t = 0.3$.",
+    "hint": "The lerp formula is $A + t \\cdot (B - A)$.",
+    "steps": [
+      {
+        "prompt": "What is the vector from $A$ to $B$?",
+        "answer_key": "(10, 6)",
+        "explanation": "$B - A = (10 - 0, 6 - 0) = (10, 6)$."
+      },
+      {
+        "prompt": "What is the interpolated point at $t = 0.3$?",
+        "answer_key": "(3, 1.8)",
+        "explanation": "$A + 0.3 \\cdot (10, 6) = (0 + 3, 0 + 1.8) = (3, 1.8)$."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What happens if you try to normalize the zero vector $(0, 0, 0)$?",
+    "hint": "What would you divide by?",
+    "options": ["A) You get $(1, 1, 1)$", "B) You get $(0, 0, 0)$", "C) It is undefined (division by zero)", "D) You get $(1, 0, 0)$"],
+    "answer_key": "C",
+    "explanation": "Normalization divides by the magnitude, which is $0$ for the zero vector. Division by zero is undefined. In practice, GLSL may return NaN or infinity."
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is the y-component of the vector from point $P_1 = (3, 7)$ to point $P_2 = (3, 2)$?",
+    "hint": "Subtract the start point from the end point.",
+    "answer_key": "-5",
+    "explanation": "The vector from $P_1$ to $P_2$ is $(3-3, 2-7) = (0, -5)$. The y-component is $-5$."
+  }
+]

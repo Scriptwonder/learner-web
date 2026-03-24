@@ -1,0 +1,199 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which three things define a coordinate system?",
+    "hint": "Think about the fundamental building blocks of any space.",
+    "options": ["A) Origin, basis vectors, and handedness convention", "B) Scale, rotation, and translation", "C) Width, height, and depth", "D) Near plane, far plane, and field of view"],
+    "answer_key": "A",
+    "explanation": "A coordinate system (space) is defined by an origin (the zero point), basis vectors (axis directions), and a handedness convention (the relationship between the axes)."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In a right-handed coordinate system (OpenGL), which direction does $+z$ point?",
+    "hint": "Use the right-hand rule: fingers curl from $+x$ to $+y$, thumb points along...",
+    "options": ["A) Into the screen", "B) Out of the screen", "C) To the right", "D) Upward"],
+    "answer_key": "B",
+    "explanation": "In OpenGL's right-handed system, $+z$ points out of the screen toward the viewer, while the camera looks along $-z$."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which matrix transforms vertices from object space to world space?",
+    "hint": "This matrix encodes the object's position, rotation, and scale in the scene.",
+    "options": ["A) View matrix", "B) Projection matrix", "C) Model matrix", "D) Viewport matrix"],
+    "answer_key": "C",
+    "explanation": "The model matrix encodes an object's translation, rotation, and scale, transforming its vertices from local object space into the shared world space."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Why must normals be transformed by the inverse transpose $(M^{-1})^T$ instead of the model matrix $M$?",
+    "hint": "Consider what non-uniform scaling does to perpendicularity.",
+    "options": ["A) Normals are stored in clip space", "B) Non-uniform scaling in $M$ would skew normals so they are no longer perpendicular to the surface", "C) Normals need to be translated differently than positions", "D) The model matrix does not contain rotation information"],
+    "answer_key": "B",
+    "explanation": "When a model matrix includes non-uniform scaling, transforming normals by $M$ directly breaks their perpendicularity to the surface. The inverse transpose $(M^{-1})^T$ preserves the correct geometric relationship."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "How many coordinate spaces does a vertex pass through from object space to screen space?",
+    "hint": "Count each named space in the pipeline: Object, World, ..., Screen.",
+    "answer_key": "6",
+    "explanation": "A vertex passes through six spaces: Object, World, Camera (Eye), Clip, NDC, and Screen."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Which coordinate space is best suited for computing distance-based fog relative to the camera?",
+    "hint": "In this space the camera sits at the origin.",
+    "answer_key": "camera space",
+    "explanation": "In camera space (also called view or eye space), the camera is at the origin, so the distance from the camera is simply the length of the position vector or the $z$ coordinate."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the difference between a left-handed and right-handed coordinate system?",
+    "hint": "It has to do with the direction of the third axis relative to the other two.",
+    "options": ["A) The scale of the axes", "B) The direction of the $z$-axis relative to $x$ and $y$", "C) The number of dimensions", "D) Whether the origin is at the top or bottom"],
+    "answer_key": "B",
+    "explanation": "In a right-handed system, $+z$ points out of the screen (OpenGL). In a left-handed system, $+z$ points into the screen (DirectX). The $x$ and $y$ axes are the same; only $z$ flips."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Which coordinate space do most lighting calculations take place in?",
+    "hint": "Lighting needs world-space positions or camera-space positions, but one is more common.",
+    "options": ["A) Object space", "B) World space", "C) Clip space", "D) Screen space"],
+    "answer_key": "B",
+    "explanation": "Most lighting calculations are performed in world space because light positions and surface positions share a common frame of reference there."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What does the view matrix conceptually do to the entire scene?",
+    "hint": "Instead of moving the camera, we move everything else.",
+    "options": ["A) Projects 3D points onto 2D", "B) Moves the entire world so the camera is at the origin looking along $-z$", "C) Scales all objects uniformly", "D) Converts screen coordinates to pixels"],
+    "answer_key": "B",
+    "explanation": "The view matrix is the inverse of the camera's model matrix. It repositions the entire world so that the camera sits at the origin, looking down the $-z$ axis."
+  },
+  {
+    "id": 10,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In NDC (Normalized Device Coordinates) for OpenGL, what is the range of $x$, $y$, and $z$?",
+    "hint": "After the perspective divide, everything visible maps to a standardized cube.",
+    "options": ["A) $[0, 1]$ for all axes", "B) $[-1, 1]$ for all axes", "C) $[-1, 1]$ for $x$ and $y$, $[0, 1]$ for $z$", "D) $[0, width]$ for $x$, $[0, height]$ for $y$"],
+    "answer_key": "B",
+    "explanation": "In OpenGL, NDC ranges from $-1$ to $1$ on all three axes. Anything outside this cube is clipped. (Vulkan and DirectX use $[0, 1]$ for depth.)"
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Which API uses a left-handed coordinate system: OpenGL or DirectX?",
+    "hint": "One uses right-handed (with $+z$ out of the screen) and the other uses left-handed.",
+    "answer_key": "DirectX",
+    "explanation": "DirectX uses a left-handed coordinate system where $+z$ goes into the screen. OpenGL uses a right-handed system where $+z$ comes out of the screen."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "If a vertex is at $(2, 3, -5)$ in camera space, is it in front of or behind the camera (in OpenGL)?",
+    "hint": "In OpenGL camera space, the camera looks along $-z$.",
+    "answer_key": "in front of",
+    "explanation": "In OpenGL, the camera looks along $-z$. Objects in front of the camera have negative $z$ values in camera space. Since $z = -5$ is negative, the vertex is in front of the camera."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "A uniform-scaled model matrix has scale $(s, s, s)$ for all axes. Do you still need the inverse transpose to transform normals correctly?",
+    "hint": "The inverse transpose fix is needed for non-uniform scaling. What about uniform scaling?",
+    "answer_key": "no",
+    "explanation": "When scaling is uniform, $M$ preserves angles between vectors, so normals remain perpendicular. The inverse transpose is only needed when scaling differs across axes (non-uniform scaling). With uniform scale, the upper-left $3 \\times 3$ of $M$ works directly (though you may want to renormalize)."
+  },
+  {
+    "id": 14,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Why is clip space useful even though NDC seems sufficient for determining visibility?",
+    "hint": "Think about what information is available in clip space that gets lost after the perspective divide.",
+    "options": ["A) Clip space coordinates are always integers", "B) The GPU can clip triangles against the frustum using $w$ before dividing, avoiding division by zero for vertices behind the camera", "C) Clip space is 2D, which simplifies rasterization", "D) Clip space stores color information"],
+    "answer_key": "B",
+    "explanation": "Clip space retains the $w$ component, allowing the GPU to test and clip geometry against the view frustum before performing the perspective divide. Dividing by $w$ when $w \\leq 0$ (behind the camera) would produce invalid results."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A game object is at world position $(10, 0, 5)$. The camera is at world position $(10, 0, 10)$ looking along $-z$. Determine the object's camera-space position.",
+    "hint": "The view matrix translates everything so the camera is at the origin.",
+    "steps": [
+      {
+        "prompt": "What translation does the view matrix apply (assuming no rotation, just the camera's position)?",
+        "answer_key": "(-10, 0, -10)",
+        "explanation": "The view matrix undoes the camera's world-space position, translating by $(-10, 0, -10)$."
+      },
+      {
+        "prompt": "What is the object's position in camera space?",
+        "answer_key": "(0, 0, -5)",
+        "explanation": "$(10, 0, 5) + (-10, 0, -10) = (0, 0, -5)$. The object is at the center of the screen, $5$ units in front of the camera (negative $z$ in OpenGL)."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "An object in world space has vertex $P = (1, 2, 3)$ and normal $\\vec{N} = (0, 1, 0)$. The model matrix $M$ scales by $(1, 2, 1)$. What is the correctly transformed normal?",
+    "hint": "Non-uniform scaling requires the inverse transpose. The inverse of a diagonal scale matrix inverts each component.",
+    "steps": [
+      {
+        "prompt": "What is the inverse of the scaling $(1, 2, 1)$?",
+        "answer_key": "(1, 0.5, 1)",
+        "explanation": "The inverse scale is $(1/1, 1/2, 1/1) = (1, 0.5, 1)$."
+      },
+      {
+        "prompt": "What is the normal after applying the inverse transpose? (For a diagonal matrix, the inverse transpose is the same as the inverse.)",
+        "answer_key": "(0, 0.5, 0)",
+        "explanation": "Applying inverse scale to $\\vec{N} = (0, 1, 0)$: $(0 \\cdot 1, 1 \\cdot 0.5, 0 \\cdot 1) = (0, 0.5, 0)$."
+      },
+      {
+        "prompt": "What is the final unit normal after normalizing?",
+        "answer_key": "(0, 1, 0)",
+        "explanation": "$(0, 0.5, 0)$ normalized is $(0, 1, 0)$. In this case the direction is preserved, but the important point is that the process ensures correctness for any normal direction."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Which space is shared by all objects in a scene?",
+    "hint": "Each object has its own local space, but they all share one common space.",
+    "options": ["A) Object space", "B) Tangent space", "C) World space", "D) Clip space"],
+    "answer_key": "C",
+    "explanation": "World space is the common coordinate system shared by all objects in a scene. Each object's model matrix transforms its local vertices into this shared space."
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is the name of the coordinate space used for normal mapping, defined per-vertex by the normal, tangent, and bitangent?",
+    "hint": "This per-vertex space allows you to store normals in a texture that adapts to any surface orientation.",
+    "answer_key": "tangent space",
+    "explanation": "Tangent space is a per-vertex coordinate system defined by the tangent, bitangent, and normal vectors. Normal maps store perturbations in this space so they work regardless of the surface's world orientation."
+  }
+]

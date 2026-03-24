@@ -1,0 +1,191 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "How is a rotation of angle $\\theta$ around unit axis $\\hat{n}$ encoded as a quaternion?",
+    "hint": "The quaternion uses a half-angle, not the full angle.",
+    "options": ["A) $q = (\\theta, \\hat{n})$", "B) $q = (\\cos\\theta, \\sin\\theta \\cdot \\hat{n})$", "C) $q = (\\cos\\frac{\\theta}{2}, \\sin\\frac{\\theta}{2} \\cdot \\hat{n})$", "D) $q = (\\sin\\frac{\\theta}{2}, \\cos\\frac{\\theta}{2} \\cdot \\hat{n})$"],
+    "answer_key": "C",
+    "explanation": "A unit quaternion encodes a rotation using the half-angle: $q = (\\cos\\frac{\\theta}{2}, \\sin\\frac{\\theta}{2} \\cdot \\hat{n})$. The half-angle is fundamental to why quaternion algebra correctly represents rotations."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "For a unit quaternion, what is the inverse $q^{-1}$ equal to?",
+    "hint": "Unit quaternions have a shortcut that avoids computing a full inverse.",
+    "options": ["A) The quaternion divided by its magnitude", "B) The negation of all four components", "C) The conjugate $q^* = (w, -\\vec{v})$", "D) The transpose of the quaternion"],
+    "answer_key": "C",
+    "explanation": "For unit quaternions ($|q| = 1$), the inverse equals the conjugate: $q^{-1} = q^* = (w, -x, -y, -z)$. This makes inverting rotations computationally trivial."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "How do you rotate a 3D point $\\vec{p}$ by a unit quaternion $q$?",
+    "hint": "It requires applying the quaternion from both sides (a sandwich product).",
+    "options": ["A) $p' = q \\cdot p$", "B) $p' = q \\cdot p \\cdot q^*$ (conjugate sandwich)", "C) $p' = q + p$", "D) $p' = p \\cdot q^{-1}$"],
+    "answer_key": "B",
+    "explanation": "To rotate a point, encode it as a pure quaternion $p = (0, \\vec{p})$ and compute $p' = q \\cdot p \\cdot q^*$. The double multiplication ensures a proper rotation without scaling."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What key property makes SLERP superior to linear interpolation for quaternion rotations?",
+    "hint": "Think about the speed of rotation during the interpolation.",
+    "options": ["A) SLERP is faster to compute", "B) SLERP maintains constant angular velocity along the shortest arc", "C) SLERP avoids using trigonometric functions", "D) SLERP produces integer results"],
+    "answer_key": "B",
+    "explanation": "SLERP interpolates along the shortest arc on the 4D unit sphere with constant angular velocity, producing uniform rotation speed. Linear interpolation would cause non-uniform speed and require re-normalization."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "How many floats does a quaternion require to store a 3D rotation?",
+    "hint": "A quaternion has components $w$, $x$, $y$, and $z$.",
+    "answer_key": "4",
+    "explanation": "A quaternion uses 4 floats $(w, x, y, z)$, which is more compact than a $3 \\times 3$ rotation matrix (9 floats) and more robust than Euler angles (3 floats but with gimbal lock)."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is the quaternion for a $180°$ rotation around the Z-axis?",
+    "hint": "Use $q = (\\cos(90°), \\sin(90°) \\cdot \\hat{z})$.",
+    "answer_key": "(0, 0, 0, 1)",
+    "explanation": "Using $q = (\\cos\\frac{180°}{2}, \\sin\\frac{180°}{2} \\cdot \\hat{z}) = (\\cos 90°, \\sin 90° \\cdot (0, 0, 1)) = (0, 0, 0, 1)$."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the identity quaternion (no rotation)?",
+    "hint": "It corresponds to a rotation of $0°$ around any axis.",
+    "options": ["A) $(0, 0, 0, 0)$", "B) $(1, 0, 0, 0)$", "C) $(0, 1, 0, 0)$", "D) $(1, 1, 1, 1)$"],
+    "answer_key": "B",
+    "explanation": "The identity quaternion is $(1, 0, 0, 0)$: $w = \\cos(0/2) = 1$ and the vector part is $\\sin(0/2) \\cdot \\hat{n} = \\vec{0}$. It leaves any point unchanged under the sandwich product."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Quaternions $q$ and $-q$ represent which rotations?",
+    "hint": "Consider the double-cover property of quaternions.",
+    "options": ["A) Opposite rotations (one clockwise, one counterclockwise)", "B) The same rotation (double cover of SO(3))", "C) Rotations that differ by $90°$", "D) Rotations around perpendicular axes"],
+    "answer_key": "B",
+    "explanation": "Quaternions provide a double cover of the rotation group: $q$ and $-q$ produce the same rotation because in $p' = q p q^*$, negating $q$ negates both factors, and the two negations cancel."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "To combine rotation $q_1$ followed by rotation $q_2$, what is the resulting quaternion?",
+    "hint": "Quaternion multiplication order matters, similar to matrix multiplication.",
+    "options": ["A) $q_1 + q_2$", "B) $q_1 \\cdot q_2$", "C) $q_2 \\cdot q_1$", "D) $q_1 \\times q_2$ (cross product)"],
+    "answer_key": "C",
+    "explanation": "To apply $q_1$ first, then $q_2$, the combined quaternion is $q_{total} = q_2 \\cdot q_1$ (right-to-left, like matrices). The point is rotated as $p' = q_2 q_1 p q_1^* q_2^*$."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is the quaternion for a $90°$ rotation around the Y-axis? Give in $(w, x, y, z)$ format.",
+    "hint": "Compute $\\cos(45°)$ and $\\sin(45°)$, and the axis is $\\hat{y} = (0, 1, 0)$.",
+    "answer_key": "(0.707, 0, 0.707, 0)",
+    "explanation": "$q = (\\cos 45°, \\sin 45° \\cdot (0, 1, 0)) = (\\frac{\\sqrt{2}}{2}, 0, \\frac{\\sqrt{2}}{2}, 0) \\approx (0.707, 0, 0.707, 0)$."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What constraint must a rotation quaternion satisfy?",
+    "hint": "It must lie on the unit hypersphere in 4D.",
+    "answer_key": "unit length (w^2 + x^2 + y^2 + z^2 = 1)",
+    "explanation": "A rotation quaternion must be a unit quaternion: $|q| = \\sqrt{w^2 + x^2 + y^2 + z^2} = 1$. Non-unit quaternions introduce unwanted scaling when applied to points."
+  },
+  {
+    "id": 12,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What problem do quaternions solve that Euler angles suffer from?",
+    "hint": "It occurs when two rotation axes align, losing a degree of freedom.",
+    "options": ["A) Euler angles cannot represent rotations greater than $360°$", "B) Gimbal lock — the loss of one degree of freedom when two axes align", "C) Euler angles require more memory", "D) Euler angles cannot be inverted"],
+    "answer_key": "B",
+    "explanation": "Gimbal lock occurs in Euler angle representations when two rotation axes align (e.g., pitch at $\\pm 90°$), collapsing 3 DOF to 2. Quaternions avoid this entirely because they parameterize rotations on a smooth 4D sphere."
+  },
+  {
+    "id": 13,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "When the dot product $q_1 \\cdot q_2 < 0$ before SLERP, what adjustment should be made?",
+    "hint": "A negative dot product means the interpolation would take the long way around.",
+    "options": ["A) Swap $q_1$ and $q_2$", "B) Negate one quaternion so the interpolation takes the shortest arc", "C) Use linear interpolation instead", "D) Set the result to the identity quaternion"],
+    "answer_key": "B",
+    "explanation": "A negative dot product indicates that the two quaternions are in opposite hemispheres of the 4D sphere, so SLERP would take the long arc ($> 180°$). Negating one quaternion (e.g., $q_2 \\to -q_2$) flips it to the same hemisphere, ensuring the shortest path."
+  },
+  {
+    "id": 14,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "The SLERP formula is $\\text{slerp}(q_1, q_2, t) = q_1 \\frac{\\sin((1-t)\\Omega)}{\\sin\\Omega} + q_2 \\frac{\\sin(t\\Omega)}{\\sin\\Omega}$. What is $\\Omega$?",
+    "hint": "$\\Omega$ is the angle between the two quaternions on the unit sphere.",
+    "answer_key": "the angle between q1 and q2, computed as arccos(q1 dot q2)",
+    "explanation": "$\\Omega = \\arccos(q_1 \\cdot q_2)$, where the dot product is the 4D dot product $w_1 w_2 + x_1 x_2 + y_1 y_2 + z_1 z_2$. It represents the angular distance between the two orientations."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Rotate the point $\\vec{p} = (1, 0, 0)$ by $90°$ around the Z-axis using quaternion math.",
+    "hint": "Form the quaternion, encode the point as a pure quaternion, and apply the sandwich product.",
+    "steps": [
+      {
+        "prompt": "Compute the rotation quaternion $q$ for $90°$ around $\\hat{z} = (0, 0, 1)$.",
+        "answer_key": "(0.707, 0, 0, 0.707)",
+        "explanation": "$q = (\\cos 45°, \\sin 45° \\cdot (0, 0, 1)) = (\\frac{\\sqrt{2}}{2}, 0, 0, \\frac{\\sqrt{2}}{2}) \\approx (0.707, 0, 0, 0.707)$."
+      },
+      {
+        "prompt": "Encode $\\vec{p}$ as a pure quaternion $p = (0, 1, 0, 0)$. Compute $q \\cdot p$.",
+        "answer_key": "(0, 0.707, 0.707, 0)",
+        "explanation": "$q \\cdot p = (0.707, 0, 0, 0.707)(0, 1, 0, 0)$. Using Hamilton product: $w = -0, x = 0.707, y = 0.707, z = 0$. Result: $(0, 0.707, 0.707, 0)$."
+      },
+      {
+        "prompt": "Compute $(q \\cdot p) \\cdot q^* = (0, 0.707, 0.707, 0) \\cdot (0.707, 0, 0, -0.707)$. What is the resulting point?",
+        "answer_key": "(0, 1, 0)",
+        "explanation": "Completing the sandwich product gives $(0, 0, 1, 0)$. The vector part is $(0, 1, 0)$, confirming that rotating $(1, 0, 0)$ by $90°$ around Z gives $(0, 1, 0)$."
+      }
+    ],
+    "explanation": "The quaternion sandwich product $q p q^*$ correctly rotates the point. The $90°$ rotation around Z maps the x-axis to the y-axis, as expected."
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Convert the quaternion $q = (0, 1, 0, 0)$ (a $180°$ rotation around X) to its equivalent axis-angle representation and verify.",
+    "hint": "Extract the angle from $w$ and the axis from the vector part.",
+    "steps": [
+      {
+        "prompt": "Compute the rotation angle $\\theta = 2 \\arccos(w)$ where $w = 0$.",
+        "answer_key": "180 degrees",
+        "explanation": "$\\theta = 2 \\arccos(0) = 2 \\times 90° = 180°$."
+      },
+      {
+        "prompt": "Compute the rotation axis from the vector part. $\\vec{v} = (1, 0, 0)$, $\\sin(\\theta/2) = \\sin(90°) = 1$. What is $\\hat{n}$?",
+        "answer_key": "(1, 0, 0)",
+        "explanation": "$\\hat{n} = \\frac{\\vec{v}}{\\sin(\\theta/2)} = \\frac{(1, 0, 0)}{1} = (1, 0, 0)$. The rotation axis is the X-axis."
+      }
+    ],
+    "explanation": "Converting from quaternion to axis-angle: $\\theta = 2\\arccos(w)$ and $\\hat{n} = \\vec{v} / \\sin(\\theta/2)$. This confirms $q = (0, 1, 0, 0)$ represents $180°$ around X."
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "NLERP (normalized linear interpolation) is sometimes used instead of SLERP. What is NLERP's main advantage and main disadvantage compared to SLERP?",
+    "hint": "NLERP simply lerps components and normalizes. Think about speed vs. quality.",
+    "answer_key": "advantage: faster (no trig); disadvantage: non-constant angular velocity",
+    "explanation": "NLERP is faster because it avoids trigonometric functions (just lerp + normalize). However, it does not maintain constant angular velocity, causing rotation to speed up in the middle and slow down at the ends. For small angles, the difference is negligible."
+  }
+]

@@ -1,0 +1,191 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the key difference between orthographic and perspective projection?",
+    "hint": "Think about how size changes with distance in real life versus in a blueprint drawing.",
+    "options": ["A) Orthographic uses matrices; perspective does not", "B) Perspective makes distant objects appear smaller; orthographic does not", "C) Orthographic only works in 2D", "D) Perspective preserves parallel lines; orthographic does not"],
+    "answer_key": "B",
+    "explanation": "Perspective projection makes distant objects appear smaller through the perspective divide ($\\div w$), while orthographic projection preserves object size regardless of distance ($w = 1$)."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the viewing volume shape for a perspective projection?",
+    "hint": "Picture a pyramid with its tip cut off.",
+    "options": ["A) A cube", "B) A sphere", "C) A frustum (truncated pyramid)", "D) A cylinder"],
+    "answer_key": "C",
+    "explanation": "Perspective projection defines a frustum (truncated pyramid) as its viewing volume, defined by the FOV, aspect ratio, near plane, and far plane."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why does most depth buffer precision concentrate near the near plane?",
+    "hint": "Consider the $1/z$ relationship in the perspective depth mapping.",
+    "options": ["A) The GPU allocates more bits for close objects", "B) The perspective matrix maps $z$ non-linearly, compressing distant depth values", "C) Close objects have more triangles", "D) The framebuffer resolution is higher near the camera"],
+    "answer_key": "B",
+    "explanation": "The perspective matrix maps depth non-linearly. For typical near/far values like $0.1$ and $1000$, about 50% of the depth buffer covers just the first 10cm, leaving very little precision for distant objects."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is z-fighting?",
+    "hint": "Imagine two walls placed at almost the same distance from the camera.",
+    "options": ["A) Two cameras rendering the same scene", "B) Two surfaces at similar distances flickering because they map to the same depth buffer value", "C) A GPU error when the Z axis is not defined", "D) Conflict between left-handed and right-handed coordinate systems"],
+    "answer_key": "B",
+    "explanation": "Z-fighting occurs when two surfaces at similar depths receive the same depth buffer value due to limited precision, causing them to flicker as they compete for visibility."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In a perspective projection with FOV = $90°$ and aspect = 1, what is $w_{clip}$ for a vertex at view-space $z = -5$?",
+    "hint": "The perspective matrix sets $w_{clip}$ equal to $-z_{eye}$.",
+    "answer_key": "5",
+    "explanation": "The perspective matrix sets $w_{clip} = -z_{eye}$. For $z_{eye} = -5$, we get $w_{clip} = -(-5) = 5$."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Can the near plane distance be zero in a perspective projection? Answer yes or no.",
+    "hint": "Think about what happens to the depth range when the near plane is at zero.",
+    "answer_key": "no",
+    "explanation": "Setting the near plane to zero causes the depth mapping to degenerate: the entire depth range collapses to a single value, making the depth buffer useless."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What four parameters define a symmetric perspective projection matrix?",
+    "hint": "Two control the shape of the view, one controls how close you can see, one controls how far.",
+    "options": ["A) Width, height, depth, angle", "B) Field of view, aspect ratio, near plane, far plane", "C) Position, target, up, right", "D) Left, right, top, bottom"],
+    "answer_key": "B",
+    "explanation": "A symmetric perspective projection is defined by the vertical field of view (FOV), the aspect ratio (width/height), the near plane distance, and the far plane distance."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What operation converts clip-space coordinates to NDC?",
+    "hint": "It involves dividing by a specific component of the clip-space vector.",
+    "options": ["A) Multiplying by the model matrix", "B) Dividing $x$, $y$, $z$ by $w$ (the perspective divide)", "C) Clamping all values to $[0, 1]$", "D) Taking the absolute value of each component"],
+    "answer_key": "B",
+    "explanation": "The perspective divide divides clip-space $x$, $y$, $z$ by $w$ to produce NDC coordinates. This is where perspective foreshortening actually occurs."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "For a perspective matrix with $\\text{FOV} = 90°$, what is $\\cot(\\text{FOV}/2)$?",
+    "hint": "Compute $\\cot(45°)$.",
+    "options": ["A) 0", "B) 0.5", "C) 1", "D) 2"],
+    "answer_key": "C",
+    "explanation": "$\\cot(90°/2) = \\cot(45°) = \\frac{\\cos 45°}{\\sin 45°} = 1$. This value appears in the $(0,0)$ and $(1,1)$ entries of the perspective matrix (scaled by aspect ratio)."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is the viewing volume shape for an orthographic projection?",
+    "hint": "Unlike perspective, orthographic has no convergence point.",
+    "answer_key": "rectangular box",
+    "explanation": "An orthographic projection defines a rectangular box (axis-aligned bounding box) as its viewing volume, specified by left, right, bottom, top, near, and far planes."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "After the perspective divide, a vertex has NDC coordinates $(-0.3, 0.7, 0.5)$. Is it inside the OpenGL NDC cube $[-1, 1]^3$? Answer yes or no.",
+    "hint": "Check whether each coordinate falls within $[-1, 1]$.",
+    "answer_key": "yes",
+    "explanation": "All three components are within $[-1, 1]$: $-1 \\leq -0.3 \\leq 1$, $-1 \\leq 0.7 \\leq 1$, $-1 \\leq 0.5 \\leq 1$. The vertex is inside the NDC cube."
+  },
+  {
+    "id": 12,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A reversed-Z depth buffer maps the near plane to 1 and the far plane to 0. What problem does this solve?",
+    "hint": "Think about where the standard depth buffer wastes precision.",
+    "options": ["A) It makes the GPU run faster", "B) It distributes depth precision more evenly, reducing z-fighting at far distances", "C) It allows a near plane of zero", "D) It eliminates the need for a depth buffer entirely"],
+    "answer_key": "B",
+    "explanation": "Reversed-Z exploits the floating-point distribution (more precision near 0) to counteract the non-linear $1/z$ mapping. The far region maps near 0.0 where floats have high precision, greatly reducing z-fighting at distance."
+  },
+  {
+    "id": 13,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "With $n = 0.1$ and $f = 1000$ in a standard depth buffer, approximately what percentage of depth precision is used by the first 1 unit of distance?",
+    "hint": "The depth mapping follows $1/z$, so most resolution is consumed near the near plane.",
+    "options": ["A) 0.1%", "B) 10%", "C) 50%", "D) 91%"],
+    "answer_key": "D",
+    "explanation": "The non-linear mapping allocates depth buffer values proportional to $1/z$. With $n=0.1$, the range $[0.1, 1.0]$ consumes roughly $\\frac{1/0.1 - 1/1.0}{1/0.1 - 1/1000} \\approx 90\\%$ of the depth resolution."
+  },
+  {
+    "id": 14,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A vertex is at view-space position $(2, 3, -10)$ and the perspective matrix sets $w_{clip} = -z_{eye}$. What are the NDC $x$ and $y$ coordinates if the top-left entry of the projection matrix for $x$ is 1.0 and for $y$ is 1.0?",
+    "hint": "First compute clip-space $x$ and $y$, then divide by $w_{clip}$.",
+    "answer_key": "x = 0.2, y = 0.3",
+    "explanation": "$w_{clip} = -(-10) = 10$. $x_{clip} = 1.0 \\times 2 = 2$, $y_{clip} = 1.0 \\times 3 = 3$. NDC: $x_{ndc} = 2/10 = 0.2$, $y_{ndc} = 3/10 = 0.3$."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Given a perspective projection with FOV $= 60°$, aspect ratio $= 16/9$, near $= 0.5$, far $= 100$, compute the top-row scale factor and verify a vertex's clip-space coordinates.",
+    "hint": "The scale factor $f = \\cot(\\text{FOV}/2)$ appears in the matrix. The $x$ scale also divides by the aspect ratio.",
+    "steps": [
+      {
+        "prompt": "Compute $f = \\cot(30°)$ (the vertical scale factor).",
+        "answer_key": "1.732",
+        "explanation": "$f = \\cot(30°) = \\frac{\\cos 30°}{\\sin 30°} = \\frac{\\sqrt{3}/2}{1/2} = \\sqrt{3} \\approx 1.732$."
+      },
+      {
+        "prompt": "What is the horizontal scale factor $f_x = f / \\text{aspect}$?",
+        "answer_key": "0.974",
+        "explanation": "$f_x = \\frac{1.732}{16/9} = \\frac{1.732}{1.778} \\approx 0.974$."
+      },
+      {
+        "prompt": "A vertex is at view-space $(1, 1, -2)$. Compute $x_{clip}$ and $w_{clip}$, then $x_{ndc}$.",
+        "answer_key": "x_ndc = 0.487",
+        "explanation": "$x_{clip} = 0.974 \\times 1 = 0.974$. $w_{clip} = -z_{eye} = 2$. $x_{ndc} = 0.974 / 2 = 0.487$."
+      }
+    ],
+    "explanation": "The perspective matrix scales $x$ by $\\cot(\\text{FOV}/2) / \\text{aspect}$ and $y$ by $\\cot(\\text{FOV}/2)$, then the perspective divide by $w$ produces the final foreshortened coordinates."
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "An infinite far-plane perspective matrix replaces the far plane with $\\infty$. Derive the simplified depth mapping.",
+    "hint": "Take the limit of the standard depth mapping entries as $f \\to \\infty$.",
+    "steps": [
+      {
+        "prompt": "In the standard OpenGL perspective matrix, the depth mapping entries are $A = -(f+n)/(f-n)$ and $B = -2fn/(f-n)$. What is $\\lim_{f \\to \\infty} A$?",
+        "answer_key": "-1",
+        "explanation": "$A = \\frac{-(f+n)}{f-n} = \\frac{-1 - n/f}{1 - n/f}$. As $f \\to \\infty$, $n/f \\to 0$, so $A \\to -1$."
+      },
+      {
+        "prompt": "What is $\\lim_{f \\to \\infty} B$?",
+        "answer_key": "-2n",
+        "explanation": "$B = \\frac{-2fn}{f-n} = \\frac{-2n}{1 - n/f}$. As $f \\to \\infty$, $B \\to -2n$."
+      }
+    ],
+    "explanation": "The infinite far-plane projection simplifies the depth entries to $A = -1$ and $B = -2n$, allowing rendering of arbitrarily distant objects without a fixed far-plane cutoff. This is useful for open-world scenes."
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "In Vulkan, the NDC depth range is $[0, 1]$ instead of OpenGL's $[-1, 1]$. If OpenGL's depth mapping produces $z_{ndc}^{GL}$, what simple transform gives the Vulkan depth $z_{ndc}^{VK}$?",
+    "hint": "You need to map $[-1, 1]$ to $[0, 1]$.",
+    "answer_key": "(z_ndc_GL + 1) / 2",
+    "explanation": "$z_{ndc}^{VK} = \\frac{z_{ndc}^{GL} + 1}{2}$, which maps $-1 \\to 0$ and $1 \\to 1$. Alternatively, the projection matrix can be modified directly to output in $[0, 1]$."
+  }
+]

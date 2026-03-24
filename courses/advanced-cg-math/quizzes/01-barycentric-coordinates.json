@@ -1,0 +1,198 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What do the barycentric coordinates $(\\lambda_0, \\lambda_1, \\lambda_2)$ of a point $P$ inside a triangle represent geometrically?",
+    "hint": "Think about what happens when you connect $P$ to each edge of the triangle — what areas form?",
+    "options": ["A) The distances from $P$ to each vertex", "B) The ratios of sub-triangle areas (opposite each vertex) to the total triangle area", "C) The angles at each vertex as seen from $P$", "D) The projections of $P$ onto each edge"],
+    "answer_key": "B",
+    "explanation": "Each barycentric coordinate $\\lambda_i$ equals the area of the sub-triangle formed by $P$ and the edge opposite vertex $V_i$, divided by the total triangle area. This area-ratio interpretation is the geometric definition of barycentric coordinates."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "In perspective-correct interpolation, why must vertex attributes be divided by the clip-space $w$ before interpolating in screen space?",
+    "hint": "Consider what kind of transformation perspective projection is — affine or projective — and how that affects linearity.",
+    "options": ["A) Division by $w$ converts the attributes to normalized device coordinates", "B) The $w$ value encodes the vertex color which must be factored out", "C) Perspective projection makes attributes non-linear in screen space, but $\\frac{A}{w}$ and $\\frac{1}{w}$ are linear in screen space", "D) Dividing by $w$ converts world-space units to pixel units"],
+    "answer_key": "C",
+    "explanation": "Perspective projection is a projective (not affine) transformation. While vertex attributes vary non-linearly across a projected triangle in screen space, the quantities $\\frac{A}{w}$ and $\\frac{1}{w}$ are linear in screen space. So we interpolate these linearly, then recover $A = \\frac{A/w}{1/w}$ at each fragment."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Which GLSL interpolation qualifier should you use when you want standard perspective-correct interpolation for a fragment shader input?",
+    "hint": "One of these is the default behavior in GLSL — you do not even need to write it.",
+    "options": ["A) `flat`", "B) `noperspective`", "C) `smooth` (the default — no qualifier needed)", "D) `centroid`"],
+    "answer_key": "C",
+    "explanation": "The default interpolation in GLSL is `smooth`, which performs perspective-correct interpolation. No qualifier is needed. `noperspective` explicitly requests linear (affine) screen-space interpolation, and `flat` disables interpolation entirely (takes the value from the provoking vertex)."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the key advantage of using edge functions for the point-in-triangle test in GPU rasterization?",
+    "hint": "Think about what it means for a function to be linear in screen coordinates when you step pixel by pixel.",
+    "options": ["A) Edge functions are non-linear and provide higher accuracy", "B) Edge functions are linear, so they can be evaluated incrementally with simple additions when stepping across pixels", "C) Edge functions automatically perform perspective correction", "D) Edge functions work only for right triangles, which are faster to process"],
+    "answer_key": "B",
+    "explanation": "The edge function $E = A \\cdot P_x + B \\cdot P_y + C$ is linear in screen coordinates. When stepping one pixel to the right, the value changes by a constant $A$; stepping one pixel down adds $B$. This means the GPU can evaluate edge functions with just additions per pixel after an initial setup, making it extremely efficient for hardware rasterization."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A triangle has vertices $V_0 = (0, 0)$, $V_1 = (10, 0)$, $V_2 = (0, 10)$. What are the barycentric coordinates $(\\lambda_0, \\lambda_1, \\lambda_2)$ of the point $P = (2, 3)$?",
+    "hint": "Use the relationship $P = \\lambda_0 V_0 + \\lambda_1 V_1 + \\lambda_2 V_2$ and solve the system of equations. Remember the coordinates must sum to 1.",
+    "answer_key": "0.5, 0.2, 0.3",
+    "explanation": "Using $P = \\lambda_0 V_0 + \\lambda_1 V_1 + \\lambda_2 V_2$: the $x$-equation gives $2 = 10\\lambda_1$, so $\\lambda_1 = 0.2$. The $y$-equation gives $3 = 10\\lambda_2$, so $\\lambda_2 = 0.3$. Then $\\lambda_0 = 1 - 0.2 - 0.3 = 0.5$. Verify: $0.5(0,0) + 0.2(10,0) + 0.3(0,10) = (2, 3)$."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In the generalization of barycentric coordinates to tetrahedra, how many coordinates does a point have, and what geometric quantity (analogous to triangle area) do the ratios use?",
+    "hint": "A tetrahedron has one more vertex than a triangle. What is the 3D analog of area?",
+    "answer_key": "4 coordinates, volume ratios",
+    "explanation": "A tetrahedron has 4 vertices, so a point inside it has 4 barycentric coordinates. Each coordinate is the ratio of the volume of the sub-tetrahedron (formed by replacing one vertex with the point) to the volume of the full tetrahedron. The 4 coordinates sum to 1, just as the 3 coordinates sum to 1 for triangles."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is always true about the barycentric coordinates $(\\lambda_0, \\lambda_1, \\lambda_2)$ of any point inside a triangle?",
+    "hint": "There are two constraints: one about the sum, and one about the sign of each coordinate.",
+    "options": ["A) They sum to 0 and are all positive", "B) They sum to 1 and are all non-negative", "C) They sum to 1 and can be any real number", "D) They are all between $-1$ and $1$ with no sum constraint"],
+    "answer_key": "B",
+    "explanation": "For a point inside or on the boundary of a triangle, the barycentric coordinates sum to exactly 1 (the partition-of-unity property) and each coordinate is non-negative ($\\lambda_i \\geq 0$). If any coordinate is negative, the point lies outside the triangle."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What are the barycentric coordinates of vertex $V_1$ itself in a triangle $(V_0, V_1, V_2)$?",
+    "hint": "A vertex is entirely associated with itself — it contributes 100% weight to one coordinate.",
+    "options": ["A) $(1, 0, 0)$", "B) $(0, 1, 0)$", "C) $(\\frac{1}{3}, \\frac{1}{3}, \\frac{1}{3})$", "D) $(0, 0, 1)$"],
+    "answer_key": "B",
+    "explanation": "The barycentric coordinates of vertex $V_i$ are the standard basis vector $\\mathbf{e}_i$. For $V_1$, this is $(0, 1, 0)$ because $P = 0 \\cdot V_0 + 1 \\cdot V_1 + 0 \\cdot V_2 = V_1$."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What are the barycentric coordinates of the centroid of a triangle?",
+    "hint": "The centroid is the point that is equally influenced by all three vertices.",
+    "options": ["A) $(1, 0, 0)$", "B) $(0.5, 0.5, 0)$", "C) $(\\frac{1}{3}, \\frac{1}{3}, \\frac{1}{3})$", "D) $(0.25, 0.25, 0.5)$"],
+    "answer_key": "C",
+    "explanation": "The centroid is the average of the three vertices: $G = \\frac{V_0 + V_1 + V_2}{3}$. This corresponds to equal barycentric coordinates $(\\frac{1}{3}, \\frac{1}{3}, \\frac{1}{3})$."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "If the barycentric coordinates of a point are $(0.5, 0.5, 0)$, where does the point lie relative to the triangle?",
+    "hint": "Notice that one coordinate is zero — what does that mean geometrically?",
+    "answer_key": "on the edge between V0 and V1 (midpoint)",
+    "explanation": "When $\\lambda_2 = 0$, the point lies on the edge opposite $V_2$, which is the edge connecting $V_0$ and $V_1$. Since $\\lambda_0 = \\lambda_1 = 0.5$, the point is exactly at the midpoint of edge $V_0 V_1$."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A triangle has vertices $V_0 = (1, 1)$, $V_1 = (5, 1)$, $V_2 = (1, 4)$. Compute the area of the triangle using the cross-product formula $\\frac{1}{2} |( V_1 - V_0 ) \\times ( V_2 - V_0 )|$.",
+    "hint": "Compute the two edge vectors first, then recall that for 2D vectors $(a,b)$ and $(c,d)$, the cross product magnitude is $|ad - bc|$.",
+    "answer_key": "6",
+    "explanation": "$V_1 - V_0 = (4, 0)$ and $V_2 - V_0 = (0, 3)$. The 2D cross product is $4 \\cdot 3 - 0 \\cdot 0 = 12$. Area $= \\frac{1}{2} |12| = 6$."
+  },
+  {
+    "id": 12,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In GPU rasterization, the top-left fill rule is used when a pixel center lies exactly on a triangle edge. What problem does this rule solve?",
+    "hint": "Think about what happens when two triangles share an edge and a pixel lies exactly on that shared edge.",
+    "options": ["A) It reduces the number of triangles that need to be rasterized", "B) It prevents double-shading of pixels on shared edges between adjacent triangles", "C) It ensures that all triangles are rendered in front-to-back order", "D) It improves perspective-correct interpolation accuracy"],
+    "answer_key": "B",
+    "explanation": "When two triangles share an edge, pixels on that edge would be inside both triangles. The top-left rule assigns each such pixel to exactly one triangle, preventing double-counting (which would cause visible seams or blending artifacts). A top or left edge belongs to its triangle; a bottom or right edge does not."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Given a triangle with vertices $V_0 = (0, 0)$, $V_1 = (6, 0)$, $V_2 = (0, 8)$, and vertex colors $C_0 = \\text{red}(1,0,0)$, $C_1 = \\text{green}(0,1,0)$, $C_2 = \\text{blue}(0,0,1)$, what is the interpolated color at point $P = (2, 2)$ using barycentric interpolation?",
+    "hint": "First find the barycentric coordinates of $P$, then use them to blend the three colors: $C = \\lambda_0 C_0 + \\lambda_1 C_1 + \\lambda_2 C_2$.",
+    "answer_key": "(0.5, 0.333, 0.25) or approximately (1/2, 1/3, 1/4)",
+    "explanation": "From $P = \\lambda_0 V_0 + \\lambda_1 V_1 + \\lambda_2 V_2$: $2 = 6\\lambda_1$ gives $\\lambda_1 = 1/3$; $2 = 8\\lambda_2$ gives $\\lambda_2 = 1/4$; $\\lambda_0 = 1 - 1/3 - 1/4 = 5/12$. Color $= \\frac{5}{12}(1,0,0) + \\frac{1}{3}(0,1,0) + \\frac{1}{4}(0,0,1) = (5/12, 1/3, 1/4) \\approx (0.417, 0.333, 0.25)$."
+  },
+  {
+    "id": 14,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "A degenerate triangle has two identical vertices: $V_0 = V_1 = (0, 0)$, $V_2 = (1, 1)$. What happens when you try to compute barycentric coordinates using the area method?",
+    "hint": "What is the area of a triangle when two of its vertices coincide?",
+    "options": ["A) The coordinates are well-defined and equal to $(0.5, 0.5, 0)$", "B) The total triangle area is zero, causing a division by zero — barycentric coordinates are undefined", "C) The coordinates default to $(1, 0, 0)$", "D) The computation automatically falls back to 1D interpolation along the line"],
+    "answer_key": "B",
+    "explanation": "When two vertices coincide, the triangle collapses to a line segment with zero area. Since barycentric coordinates are defined as area ratios with the total area in the denominator, the computation involves division by zero. In practice, GPU rasterizers discard degenerate triangles during setup."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A triangle has vertices $V_0 = (0, 0)$, $V_1 = (8, 0)$, $V_2 = (0, 6)$. You need to perform perspective-correct interpolation of a depth attribute. The vertices have clip-space $w$ values $w_0 = 2$, $w_1 = 4$, $w_2 = 3$ and depth values $Z_0 = 10$, $Z_1 = 20$, $Z_2 = 15$. The screen-space barycentric coordinates at a fragment are $(\\lambda_0, \\lambda_1, \\lambda_2) = (0.5, 0.25, 0.25)$.",
+    "hint": "Remember: interpolate $1/w$ and $Z/w$ linearly in screen space, then divide to recover $Z$.",
+    "steps": [
+      {
+        "prompt": "Compute the interpolated $\\frac{1}{w}$ value using the screen-space barycentric coordinates.",
+        "answer_key": "0.3958",
+        "explanation": "$\\frac{1}{w} = \\lambda_0 \\cdot \\frac{1}{w_0} + \\lambda_1 \\cdot \\frac{1}{w_1} + \\lambda_2 \\cdot \\frac{1}{w_2} = 0.5 \\cdot \\frac{1}{2} + 0.25 \\cdot \\frac{1}{4} + 0.25 \\cdot \\frac{1}{3} = 0.25 + 0.0625 + 0.08\\overline{3} \\approx 0.3958$."
+      },
+      {
+        "prompt": "Compute the interpolated $\\frac{Z}{w}$ value using the screen-space barycentric coordinates.",
+        "answer_key": "5.5",
+        "explanation": "$\\frac{Z}{w} = \\lambda_0 \\cdot \\frac{Z_0}{w_0} + \\lambda_1 \\cdot \\frac{Z_1}{w_1} + \\lambda_2 \\cdot \\frac{Z_2}{w_2} = 0.5 \\cdot \\frac{10}{2} + 0.25 \\cdot \\frac{20}{4} + 0.25 \\cdot \\frac{15}{3} = 2.5 + 1.25 + 1.25 = 5.0$."
+      },
+      {
+        "prompt": "Recover the perspective-correct depth $Z$ at the fragment.",
+        "answer_key": "12.63",
+        "explanation": "$Z = \\frac{Z/w}{1/w} = \\frac{5.0}{0.3958} \\approx 12.63$. This is the correct perspective-interpolated depth, which differs from the naively interpolated value $0.5(10) + 0.25(20) + 0.25(15) = 13.75$."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "You are implementing an edge function rasterizer. The triangle has screen-space vertices $V_0 = (2, 1)$, $V_1 = (8, 1)$, $V_2 = (5, 7)$.",
+    "hint": "The edge function for edge $V_i \\to V_j$ evaluated at point $P$ is $(P_x - V_{i,x})(V_{j,y} - V_{i,y}) - (P_y - V_{i,y})(V_{j,x} - V_{i,x})$.",
+    "steps": [
+      {
+        "prompt": "Compute the edge function $E_{01}(P)$ for edge $V_0 \\to V_1$ in the form $A \\cdot P_x + B \\cdot P_y + C$. What are $A$, $B$, and $C$?",
+        "answer_key": "A=0, B=-6, C=6",
+        "explanation": "Edge $V_0 \\to V_1$: $A = V_{0,y} - V_{1,y} = 1 - 1 = 0$; $B = V_{1,x} - V_{0,x} = 8 - 2 = 6$; wait — let us use the standard form. $E_{01}(P) = (P_x - V_{0,x})(V_{1,y} - V_{0,y}) - (P_y - V_{0,y})(V_{1,x} - V_{0,x}) = (P_x - 2)(0) - (P_y - 1)(6) = -6 P_y + 6$. So $A = 0$, $B = -6$, $C = 6$."
+      },
+      {
+        "prompt": "Evaluate $E_{01}$ at the pixel center $P = (5, 4)$. Is the point on the positive side of this edge?",
+        "answer_key": "-18, no (negative side)",
+        "explanation": "$E_{01}(5, 4) = 0 \\cdot 5 + (-6) \\cdot 4 + 6 = -24 + 6 = -18$. The value is negative, so the point is on the negative side of edge $V_0 \\to V_1$. For a counter-clockwise triangle, positive values indicate the interior; for a clockwise triangle, negative values do. Since this triangle is clockwise in screen space (y-down), the point is inside with respect to this edge."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What property of barycentric coordinates makes them useful for texture mapping on a triangle?",
+    "hint": "Think about how you smoothly transition an attribute (like a UV coordinate) across a triangle's surface.",
+    "answer_key": "They provide a natural way to linearly interpolate any vertex attribute across the triangle",
+    "explanation": "Barycentric coordinates allow any per-vertex attribute (texture coordinates, normals, colors, etc.) to be linearly interpolated to any interior point via $A(P) = \\lambda_0 A_0 + \\lambda_1 A_1 + \\lambda_2 A_2$. This is the fundamental mechanism GPUs use for fragment attribute interpolation."
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "The `noperspective` GLSL qualifier causes screen-space (affine) interpolation instead of perspective-correct interpolation. Name one practical use case where `noperspective` is preferred over the default `smooth` interpolation.",
+    "hint": "Think about effects that should appear uniform across the screen regardless of 3D depth.",
+    "answer_key": "Wireframe rendering (screen-space edge distance), UI overlays, or screen-space line thickness",
+    "explanation": "Screen-space wireframe rendering is the classic use case: edge distances are computed in screen pixels and must be interpolated linearly in screen space to produce lines of uniform pixel width. Using perspective-correct interpolation would cause the wireframe lines to appear thicker on nearer parts and thinner on farther parts, which is not the desired effect."
+  }
+]

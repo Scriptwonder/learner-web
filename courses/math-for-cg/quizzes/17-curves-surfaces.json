@@ -1,0 +1,200 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "How many control points does a cubic Bezier curve use?",
+    "hint": "A cubic polynomial has degree 3, which requires degree + 1 control points.",
+    "options": ["A) 2", "B) 3", "C) 4", "D) 6"],
+    "answer_key": "C",
+    "explanation": "A cubic Bezier curve uses 4 control points: two endpoints ($P_0$ and $P_3$) that the curve passes through, and two control handles ($P_1$ and $P_2$) that shape the curve."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What limitation of Bezier curves do B-splines solve?",
+    "hint": "Think about what happens when you edit one control point of a high-degree Bezier curve.",
+    "options": ["A) Bezier curves cannot represent straight lines", "B) Bezier curves lack smooth continuity", "C) Moving any single control point affects the entire Bezier curve (no local control)", "D) Bezier curves cannot be rendered by GPUs"],
+    "answer_key": "C",
+    "explanation": "B-splines provide local control: moving one control point only affects nearby curve segments, unlike Bezier curves where every control point influences the entire curve."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the de Casteljau algorithm?",
+    "hint": "It builds a point on the curve through repeated averaging.",
+    "options": ["A) A method for converting curves to triangles", "B) A recursive subdivision algorithm that evaluates Bezier curves through repeated linear interpolation (lerps)", "C) An algorithm for computing the inverse of a matrix", "D) A ray-curve intersection test"],
+    "answer_key": "B",
+    "explanation": "The de Casteljau algorithm builds a Bezier curve point through repeated lerps of adjacent control points at each level, until a single point remains. It is numerically stable and supports curve subdivision."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "A bicubic Bezier surface patch uses how many control points?",
+    "hint": "It extends the cubic Bezier to two parameters, forming a grid.",
+    "options": ["A) 4", "B) 8", "C) 12", "D) 16"],
+    "answer_key": "D",
+    "explanation": "A bicubic Bezier surface uses a $4 \\times 4$ grid of control points (16 total), evaluating Bernstein basis polynomials in both the $u$ and $v$ parameters."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the GLSL built-in function equivalent to linear interpolation `(1-t)*a + t*b`?",
+    "hint": "It's a three-letter function that blends two values.",
+    "answer_key": "mix",
+    "explanation": "GLSL provides `mix(a, b, t)` which computes $(1-t) \\cdot a + t \\cdot b$, the standard linear interpolation (lerp)."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "For a cubic Bezier, the tangent at $t = 0$ is $3(P_1 - P_0)$. What is the tangent at $t = 1$?",
+    "hint": "By symmetry, the tangent at the end uses the last two control points.",
+    "answer_key": "3(P3 - P2)",
+    "explanation": "The tangent at the endpoint $t = 1$ is $\\vec{P}'(1) = 3(P_3 - P_2)$, pointing from the last control handle toward the endpoint."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "A Bezier curve of degree $n$ has how many control points?",
+    "hint": "The number of control points is always one more than the degree.",
+    "options": ["A) $n$", "B) $n + 1$", "C) $2n$", "D) $n^2$"],
+    "answer_key": "B",
+    "explanation": "A degree-$n$ Bezier curve has $n + 1$ control points. For example, a cubic ($n = 3$) has 4 control points, a quadratic ($n = 2$) has 3."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Does a cubic Bezier curve always pass through its control points $P_1$ and $P_2$?",
+    "hint": "These are the interior control points (handles), not the endpoints.",
+    "options": ["A) Yes, the curve always passes through all control points", "B) No, the curve only passes through the endpoints $P_0$ and $P_3$; $P_1$ and $P_2$ act as handles", "C) Only when $t = 0.5$", "D) Only for 2D curves"],
+    "answer_key": "B",
+    "explanation": "A cubic Bezier curve interpolates (passes through) only the endpoints $P_0$ (at $t=0$) and $P_3$ (at $t=1$). The interior points $P_1$ and $P_2$ influence the shape but are generally not on the curve."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the convex hull property of Bezier curves?",
+    "hint": "The curve is bounded by the shape formed by its control points.",
+    "options": ["A) The curve always forms a convex shape", "B) The curve lies entirely within the convex hull of its control points", "C) The control points must form a convex polygon", "D) The curve is always longer than the convex hull perimeter"],
+    "answer_key": "B",
+    "explanation": "A Bezier curve is guaranteed to lie within the convex hull of its control points. This property is useful for bounding box tests, collision detection, and clipping."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the parameter range for a standard Bezier curve?",
+    "hint": "The parameter $t$ sweeps from the start to the end of the curve.",
+    "answer_key": "[0, 1]",
+    "explanation": "A Bezier curve is defined for $t \\in [0, 1]$, where $t = 0$ gives $P_0$ (start) and $t = 1$ gives $P_n$ (end)."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What level of continuity means two joined curve segments share the same tangent direction and magnitude at the junction?",
+    "hint": "There are different levels: $C^0$ is just positional continuity, $C^1$ adds...",
+    "answer_key": "C1",
+    "explanation": "$C^1$ continuity means that at the junction, both the position ($C^0$) and the first derivative (tangent direction and magnitude) match. $G^1$ would only require the direction to match, not the magnitude."
+  },
+  {
+    "id": 12,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the Bernstein basis polynomial $B_{2,3}(t)$ for a cubic Bezier?",
+    "hint": "The general formula is $B_{i,n}(t) = \\binom{n}{i} t^i (1-t)^{n-i}$.",
+    "options": ["A) $t^3$", "B) $3t^2(1-t)$", "C) $3t(1-t)^2$", "D) $(1-t)^3$"],
+    "answer_key": "B",
+    "explanation": "$B_{2,3}(t) = \\binom{3}{2} t^2 (1-t)^{3-2} = 3t^2(1-t)$. This is the weight applied to control point $P_2$ at parameter $t$."
+  },
+  {
+    "id": 13,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "How is $C^1$ continuity enforced when joining two cubic Bezier segments at a junction point?",
+    "hint": "The tangent at the end of the first curve must equal the tangent at the start of the second.",
+    "options": ["A) The curves must have the same control points", "B) $P_3$ of the first segment must coincide with $P_0$ of the second, and $P_2$ of the first, $P_3(=P_0')$, and $P_1'$ of the second must be collinear and equidistant", "C) Only the endpoints need to match", "D) The second curve must be a copy of the first"],
+    "answer_key": "B",
+    "explanation": "For $C^1$: (1) $P_3 = P_0'$ ensures positional continuity. (2) The tangent at the junction from the first curve is $3(P_3 - P_2)$ and from the second is $3(P_1' - P_0')$. These must be equal, requiring $P_2$, $P_3$, and $P_1'$ to be collinear with $P_3 - P_2 = P_1' - P_0'$."
+  },
+  {
+    "id": 14,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "A quadratic Bezier has control points $P_0 = (0, 0)$, $P_1 = (1, 2)$, $P_2 = (2, 0)$. What is the curve point at $t = 0.5$?",
+    "hint": "Use the formula $\\vec{P}(t) = (1-t)^2 P_0 + 2t(1-t) P_1 + t^2 P_2$.",
+    "answer_key": "(1, 1)",
+    "explanation": "$\\vec{P}(0.5) = 0.25(0,0) + 2(0.5)(0.5)(1,2) + 0.25(2,0) = (0,0) + (0.5, 1.0) + (0.5, 0) = (1, 1)$."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Evaluate a cubic Bezier curve at $t = 0.5$ using the de Casteljau algorithm.",
+    "hint": "Perform three levels of linear interpolation between adjacent control points.",
+    "steps": [
+      {
+        "prompt": "Control points: $P_0 = (0, 0)$, $P_1 = (1, 3)$, $P_2 = (3, 3)$, $P_3 = (4, 0)$. Compute the first-level lerps at $t = 0.5$: $Q_0 = \\text{lerp}(P_0, P_1, 0.5)$, $Q_1 = \\text{lerp}(P_1, P_2, 0.5)$, $Q_2 = \\text{lerp}(P_2, P_3, 0.5)$.",
+        "answer_key": "Q0 = (0.5, 1.5), Q1 = (2, 3), Q2 = (3.5, 1.5)",
+        "explanation": "$Q_0 = 0.5(0,0) + 0.5(1,3) = (0.5, 1.5)$. $Q_1 = 0.5(1,3) + 0.5(3,3) = (2, 3)$. $Q_2 = 0.5(3,3) + 0.5(4,0) = (3.5, 1.5)$."
+      },
+      {
+        "prompt": "Compute the second-level lerps: $R_0 = \\text{lerp}(Q_0, Q_1, 0.5)$, $R_1 = \\text{lerp}(Q_1, Q_2, 0.5)$.",
+        "answer_key": "R0 = (1.25, 2.25), R1 = (2.75, 2.25)",
+        "explanation": "$R_0 = 0.5(0.5, 1.5) + 0.5(2, 3) = (1.25, 2.25)$. $R_1 = 0.5(2, 3) + 0.5(3.5, 1.5) = (2.75, 2.25)$."
+      },
+      {
+        "prompt": "Compute the final point: $S = \\text{lerp}(R_0, R_1, 0.5)$.",
+        "answer_key": "(2, 2.25)",
+        "explanation": "$S = 0.5(1.25, 2.25) + 0.5(2.75, 2.25) = (2, 2.25)$. This is the point on the curve at $t = 0.5$."
+      }
+    ],
+    "explanation": "The de Casteljau algorithm reduces 4 control points to 3, then 2, then 1, through repeated lerps at the given $t$ value. It is numerically stable and naturally provides subdivision information."
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Compute the tangent vector of a cubic Bezier at $t = 0$ and $t = 1$.",
+    "hint": "The derivative of a degree-$n$ Bezier is a degree-$(n-1)$ Bezier with scaled control points.",
+    "steps": [
+      {
+        "prompt": "Control points: $P_0 = (0, 0)$, $P_1 = (2, 4)$, $P_2 = (6, 4)$, $P_3 = (8, 0)$. Compute the tangent at $t = 0$: $\\vec{P}'(0) = 3(P_1 - P_0)$.",
+        "answer_key": "(6, 12)",
+        "explanation": "$\\vec{P}'(0) = 3((2,4) - (0,0)) = 3(2, 4) = (6, 12)$."
+      },
+      {
+        "prompt": "Compute the tangent at $t = 1$: $\\vec{P}'(1) = 3(P_3 - P_2)$.",
+        "answer_key": "(6, -12)",
+        "explanation": "$\\vec{P}'(1) = 3((8,0) - (6,4)) = 3(2, -4) = (6, -12)$."
+      }
+    ],
+    "explanation": "The tangent at the endpoints of a cubic Bezier depends only on the nearest two control points, scaled by 3. This is why control handles directly govern the tangent direction and magnitude at each endpoint."
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Catmull-Rom splines automatically compute tangents from neighboring control points. What is the tangent formula at point $P_i$?",
+    "hint": "It uses the two neighboring points as a finite difference.",
+    "answer_key": "(P_{i+1} - P_{i-1}) / 2",
+    "explanation": "The Catmull-Rom tangent at $P_i$ is $\\vec{T}_i = \\frac{P_{i+1} - P_{i-1}}{2}$, a central difference of the neighboring control points. This ensures $C^1$ continuity at each point without manual tangent specification."
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What does a NURBS curve add over a standard B-spline?",
+    "hint": "Each control point gets an additional scalar value.",
+    "answer_key": "per-control-point weights (rational basis functions)",
+    "explanation": "NURBS (Non-Uniform Rational B-Splines) add a weight to each control point, enabling exact representation of conic sections (circles, ellipses) that standard polynomial B-splines cannot reproduce exactly."
+  }
+]

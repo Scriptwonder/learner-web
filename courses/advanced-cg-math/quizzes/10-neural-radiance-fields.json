@@ -1,0 +1,204 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In NeRF, why does the volume density $\\sigma(\\mathbf{x})$ depend only on position, while color $\\mathbf{c}(\\mathbf{x}, \\mathbf{d})$ also depends on viewing direction?",
+    "hint": "Think about which visual properties change when you move the camera vs. which stay fixed.",
+    "options": ["A) To reduce the number of network parameters", "B) Because density represents geometry (which is view-independent), while color includes view-dependent effects like specular highlights", "C) Because density is always zero and doesn't need direction", "D) To enable faster training convergence"],
+    "answer_key": "B",
+    "explanation": "Density represents how opaque the scene is at a point — this is a geometric property that doesn't change with the observer's position. Color, however, can change with viewing direction due to specular reflections, iridescence, and other non-Lambertian effects. The architecture enforces this by outputting $\\sigma$ before the direction encoding is injected."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the key advantage of Instant-NGP's multi-resolution hash encoding over NeRF's positional encoding?",
+    "hint": "Think about where the computation happens — in the MLP or in a data structure.",
+    "options": ["A) It produces higher-quality images at the same resolution", "B) It replaces most of the MLP computation with fast hash table lookups, achieving orders-of-magnitude speedup", "C) It eliminates the need for training data", "D) It supports dynamic scenes natively"],
+    "answer_key": "B",
+    "explanation": "Instant-NGP stores trainable feature vectors in multi-resolution hash tables ($L$ levels, each of size $T$). Instead of evaluating a large 8-layer MLP, it performs fast hash lookups with trilinear interpolation and feeds the result to a tiny 2-layer MLP. This reduces training from hours to seconds and enables real-time rendering (~15ms/frame)."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "In Mip-NeRF's integrated positional encoding, the expected value $\\mathbb{E}[\\sin(\\omega^T \\mathbf{x})]$ over a Gaussian frustum includes a factor $\\exp(-\\frac{1}{2} \\omega^T \\Sigma \\omega)$. What role does this factor play?",
+    "hint": "Consider what happens to high-frequency terms when the covariance $\\Sigma$ is large.",
+    "options": ["A) It amplifies high-frequency components for sharper images", "B) It acts as a low-pass filter, attenuating high frequencies when the frustum is large", "C) It normalizes the encoding to unit length", "D) It converts the encoding from frequency domain to spatial domain"],
+    "answer_key": "B",
+    "explanation": "The exponential factor $\\exp(-\\frac{1}{2} \\omega^T \\Sigma \\omega)$ decreases for high frequencies $\\omega$ when the covariance $\\Sigma$ is large (i.e., the frustum covers a large spatial volume). This naturally implements anti-aliasing: distant pixels, which subtend large frustums, suppress fine details that would otherwise cause aliasing."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In NeRF's hierarchical sampling, what is the role of the coarse network?",
+    "hint": "The coarse network's rendering weights tell the fine network where to focus.",
+    "options": ["A) It produces the final rendered image", "B) It generates a probability distribution along the ray to guide importance sampling for the fine network", "C) It detects and removes outlier samples", "D) It computes the camera pose from the input image"],
+    "answer_key": "B",
+    "explanation": "The coarse network evaluates $N_c$ uniform samples and produces rendering weights $w_i = T_i \\alpha_i$ that form a piecewise-constant PDF. This PDF indicates where content exists along the ray. The fine network then draws $N_f$ additional samples from this distribution via inverse CDF sampling, concentrating computational resources on non-empty regions."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In Instant-NGP's hash encoding, the spatial hash function uses the formula $h(i,j,k) = (i \\oplus (j \\cdot 2654435761) \\oplus (k \\cdot 805459861)) \\mod T$. What does the $\\oplus$ symbol represent?",
+    "hint": "It is a bitwise operation commonly used in hash functions.",
+    "answer_key": "bitwise XOR",
+    "explanation": "The $\\oplus$ symbol represents the bitwise XOR (exclusive OR) operation. XOR with large prime multipliers distributes integer grid coordinates pseudo-randomly across the hash table of size $T$, minimizing clustering while being extremely fast to compute on GPUs."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Score Distillation Sampling (SDS) in DreamFusion computes a gradient by comparing the diffusion model's predicted noise $\\epsilon_\\phi(\\mathbf{x}_t; y, t)$ with the actual added noise $\\epsilon$. In which direction does this gradient push the rendered image?",
+    "hint": "The gradient measures the discrepancy between what the diffusion model expects and what was actually added.",
+    "answer_key": "toward images the diffusion model considers plausible for the text prompt",
+    "explanation": "The SDS gradient $\\nabla_\\theta \\mathcal{L}_{\\text{SDS}} \\propto (\\epsilon_\\phi - \\epsilon)$ measures how the diffusion model would denoise the rendered image. If the predicted noise differs from the actual noise, the gradient pushes the NeRF's rendered output toward the manifold of images the diffusion model considers realistic and consistent with the text prompt $y$."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What input does the original NeRF MLP take for each sample point along a ray?",
+    "hint": "There are two pieces of information: where in space and from which direction.",
+    "options": ["A) Only the 3D position $(x, y, z)$", "B) The 3D position $(x, y, z)$ and viewing direction $(\\theta, \\phi)$, both positionally encoded", "C) The pixel coordinates $(u, v)$ and depth $d$", "D) The RGB color and surface normal"],
+    "answer_key": "B",
+    "explanation": "NeRF takes a 5D input: the 3D spatial position $(x, y, z)$ and the 2D viewing direction $(\\theta, \\phi)$, both mapped through positional encoding. The position is encoded with $L = 10$ frequency bands (60D) and the direction with $L = 4$ bands (24D)."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What type of data does NeRF require as training input?",
+    "hint": "NeRF needs to know both what the scene looks like and where each image was taken from.",
+    "options": ["A) A single image and a depth map", "B) Multiple images of the scene with known camera poses", "C) A 3D mesh and texture maps", "D) A point cloud from a LiDAR scanner"],
+    "answer_key": "B",
+    "explanation": "NeRF requires a set of posed images — multiple photographs of the scene taken from different viewpoints, each with a known camera position and orientation (typically obtained via COLMAP or similar SfM pipelines). During training, rays are cast through each pixel using the known camera parameters."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What does NeRF stand for?",
+    "hint": "It describes a field that encodes both radiance (color) and density in a neural network.",
+    "answer_key": "Neural Radiance Fields",
+    "explanation": "NeRF stands for Neural Radiance Fields. The 'radiance field' refers to the continuous volumetric function mapping 5D coordinates (position + direction) to color and density, and 'neural' indicates this function is represented by a neural network (MLP)."
+  },
+  {
+    "id": 10,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In the original NeRF paper, how many sample points are typically evaluated along each ray for the coarse network?",
+    "hint": "The paper uses a specific number of stratified samples for the coarse pass.",
+    "options": ["A) 8", "B) 32", "C) 64", "D) 256"],
+    "answer_key": "C",
+    "explanation": "The original NeRF uses $N_c = 64$ stratified samples for the coarse network and $N_f = 128$ additional importance-sampled points for the fine network, totaling 192 MLP evaluations per ray. This is one reason training the original NeRF takes ~1-2 days on a single GPU."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What common Structure-from-Motion tool is typically used to obtain camera poses for NeRF training?",
+    "hint": "It is an open-source SfM pipeline whose name starts with 'COL'.",
+    "answer_key": "COLMAP",
+    "explanation": "COLMAP is the standard SfM pipeline used to estimate camera intrinsics and extrinsics from a set of unposed images. It detects and matches feature points across images, then jointly optimizes camera parameters and a sparse 3D point cloud. NeRF and most follow-up methods use COLMAP poses as input."
+  },
+  {
+    "id": 12,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What problem does Mip-NeRF solve that the original NeRF does not handle well?",
+    "hint": "The issue appears when the same scene is viewed at very different distances.",
+    "options": ["A) Dynamic scene reconstruction", "B) Aliasing artifacts when rendering at different scales (zoom levels)", "C) Training speed", "D) Relighting under novel illumination"],
+    "answer_key": "B",
+    "explanation": "The original NeRF treats each ray as an infinitesimally thin line, ignoring the fact that pixels subtend different solid angles at different distances. This causes aliasing when the camera zooms in or out. Mip-NeRF models each pixel as a cone and integrates the positional encoding over conical frustums, providing built-in anti-aliasing across scales."
+  },
+  {
+    "id": 13,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In Instant-NGP, what happens when two different grid vertices hash to the same table entry (a hash collision)?",
+    "hint": "The system does not explicitly resolve collisions — think about what gradient descent does.",
+    "options": ["A) The system crashes and requires a larger hash table", "B) Both vertices share the same feature vector, and gradient descent averages their contributions, naturally resolving most collisions", "C) A secondary hash function is used to find an empty slot", "D) The collision is detected and one entry is evicted"],
+    "answer_key": "B",
+    "explanation": "Instant-NGP uses open addressing — collisions are not resolved explicitly. When two grid vertices map to the same entry, they share a feature vector. During training, gradient descent receives gradients from both locations and learns a compromise. Coarse resolution levels rarely collide (grid fits in the table), while fine levels have more collisions but are also less critical because coarser levels already capture the main structure."
+  },
+  {
+    "id": 14,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "The NeRF training loss is simply the MSE between rendered and ground-truth pixel colors. Why does this simple loss work without explicit 3D supervision?",
+    "hint": "Think about what happens when you enforce multi-view consistency through the volumetric representation.",
+    "answer_key": "Because the volumetric representation forces multi-view consistency — the same 3D density and color must explain all training views simultaneously",
+    "explanation": "The MLP represents a single consistent 3D volume. Rendering from different camera poses produces different 2D images, but they all come from the same underlying density and color fields. Minimizing the photometric loss across all views forces the network to learn a geometrically consistent 3D representation — the 3D structure emerges as the only explanation consistent with all 2D observations."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Analyze the memory and computation trade-offs of Instant-NGP's multi-resolution hash encoding.",
+    "hint": "Consider the hash table size, number of levels, and feature vector dimensionality.",
+    "steps": [
+      {
+        "prompt": "Step 1: If Instant-NGP uses $L = 16$ resolution levels, each with a hash table of size $T = 2^{19}$ entries, and each entry stores a feature vector of $F = 2$ floats (half-precision), what is the total memory for the hash tables?",
+        "answer_key": "16 * 2^19 * 2 * 2 bytes = 32 MB (using 16-bit floats)",
+        "explanation": "$16 \\times 2^{19} \\times 2 = 16{,}777{,}216$ half-precision floats. At 2 bytes each: $16{,}777{,}216 \\times 2 = 33{,}554{,}432$ bytes $\\approx 32$ MB. This is the dominant memory cost of the model, far exceeding the tiny MLP."
+      },
+      {
+        "prompt": "Step 2: For a single query point, how many hash table lookups are performed (accounting for trilinear interpolation at each level)?",
+        "answer_key": "16 levels * 8 corners = 128 lookups",
+        "explanation": "Each resolution level requires trilinear interpolation from the 8 corners of the enclosing voxel, giving $8$ lookups per level. With $L = 16$ levels: $16 \\times 8 = 128$ total hash table lookups. These are highly parallelizable on a GPU."
+      },
+      {
+        "prompt": "Step 3: After concatenating all level features, what is the input dimension to the MLP, and how does this compare to original NeRF's positional encoding dimension?",
+        "answer_key": "16 * 2 = 32 dimensions (vs. NeRF's 60D for position encoding with L=10)",
+        "explanation": "Instant-NGP concatenates $F = 2$ features from each of $L = 16$ levels, giving $16 \\times 2 = 32$ input dimensions. NeRF's positional encoding with $L = 10$ gives $3 \\times 2 \\times 10 = 60$ dimensions for position alone. Despite similar input sizes, the hash features are much more informative (they are learned, spatially-adaptive features rather than fixed sinusoids), allowing a tiny 2-layer MLP instead of an 8-layer one."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Walk through NeRF's hierarchical sampling for a single ray.",
+    "hint": "First uniform stratified sampling, then importance sampling based on the coarse weights.",
+    "steps": [
+      {
+        "prompt": "Step 1: The coarse network evaluates $N_c = 4$ stratified samples at depths $t = [1.0, 2.0, 3.0, 4.0]$ and produces rendering weights $w = [0.05, 0.60, 0.30, 0.05]$. Normalize these to form a PDF.",
+        "answer_key": "PDF = [0.05, 0.60, 0.30, 0.05] (already sums to 1.0)",
+        "explanation": "The weights $w_i = T_i \\alpha_i$ sum to $0.05 + 0.60 + 0.30 + 0.05 = 1.0$, so they already form a valid PDF. (In practice, they may not sum to exactly 1 if the ray doesn't fully accumulate, in which case normalization is needed.)"
+      },
+      {
+        "prompt": "Step 2: Using this PDF, where will most of the $N_f$ fine samples be concentrated?",
+        "answer_key": "Around t = 2.0 (60% of samples) and t = 3.0 (30% of samples)",
+        "explanation": "Importance sampling draws samples proportional to the PDF. Since $w_2 = 0.60$ and $w_3 = 0.30$, approximately 60% of fine samples will fall near $t = 2.0$ and 30% near $t = 3.0$. Very few samples will be placed near $t = 1.0$ or $t = 4.0$ (only 5% each), avoiding wasted computation in empty space."
+      },
+      {
+        "prompt": "Step 3: Why does the fine network evaluate ALL samples (both coarse and fine) rather than just the fine samples?",
+        "answer_key": "To avoid missing details at the coarse sample locations and to ensure the full ray integral is computed with consistent density/color estimates",
+        "explanation": "The fine network evaluates all $N_c + N_f$ samples together to compute a single, high-quality ray integral. Using only the importance-sampled points would miss contributions at the original coarse locations and produce a biased estimate of the volume rendering integral. Evaluating all samples with the fine network ensures every region of the ray is accounted for."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "DreamFusion uses SDS (Score Distillation Sampling) to train a NeRF from text. A known artifact is the 'Janus problem' — the generated 3D object shows a face on every side. What causes this?",
+    "hint": "Think about what the 2D diffusion model has learned about the relationship between text prompts and viewing angles.",
+    "options": ["A) The NeRF has too many parameters", "B) The diffusion model's prior prefers canonical front-facing views for most prompts, so it pushes every viewpoint to look like the front", "C) The camera poses are incorrect", "D) The volume rendering equation has a numerical error"],
+    "answer_key": "B",
+    "explanation": "The 2D diffusion model was trained on images that overwhelmingly show objects from canonical (front-facing) viewpoints. When SDS optimizes a NeRF from a side or back view, the diffusion model's gradient still pushes the rendering toward a front-facing appearance, because that is what it considers most likely for the text prompt. This results in the same face appearing on all sides of the 3D object."
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the primary metric used to evaluate novel view synthesis quality in NeRF papers?",
+    "hint": "It measures the ratio between the maximum possible signal and the reconstruction error, expressed in decibels.",
+    "answer_key": "PSNR (Peak Signal-to-Noise Ratio)",
+    "explanation": "PSNR (Peak Signal-to-Noise Ratio), measured in decibels (dB), is the standard metric for evaluating NeRF rendering quality. It is computed as $\\text{PSNR} = 10 \\log_{10}(\\frac{\\text{MAX}^2}{\\text{MSE}})$ where MAX is the maximum pixel value (1.0 for normalized images). Higher PSNR indicates better reconstruction. NeRF papers also report SSIM and LPIPS for perceptual quality."
+  }
+]

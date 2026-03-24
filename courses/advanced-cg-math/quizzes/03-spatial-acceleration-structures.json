@@ -1,0 +1,198 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What does the Surface Area Heuristic (SAH) use to estimate the probability that a ray hitting a parent node also hits a child node?",
+    "hint": "Think about what geometric property of a convex bounding box is proportional to how likely a random ray is to intersect it.",
+    "options": ["A) The number of primitives in the child divided by the total primitives", "B) The volume of the child AABB divided by the parent AABB volume", "C) The surface area of the child AABB divided by the parent AABB surface area", "D) The depth of the child in the tree divided by the total tree depth"],
+    "answer_key": "C",
+    "explanation": "The SAH models the probability that a uniformly distributed random ray intersects a child bounding box, given that it intersects the parent, as $P = \\frac{SA(\\text{child})}{SA(\\text{parent})}$. This surface-area ratio is the key insight behind SAH — it rewards splits that produce children with small surface areas."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why is front-to-back traversal order important during BVH ray traversal?",
+    "hint": "What happens to the valid range of the ray parameter $t$ when you find a closer hit?",
+    "options": ["A) It ensures that all nodes are visited exactly once", "B) Finding a closer hit sooner tightens $t_{\\max}$, allowing entire far subtrees to be skipped", "C) It reduces the depth of the BVH tree", "D) Front-to-back order is required by RT core hardware and cannot be changed"],
+    "answer_key": "B",
+    "explanation": "By traversing the nearer child first, any hit found updates $t_{\\max}$ to a smaller value. When the far child's AABB entry distance exceeds this $t_{\\max}$, the entire subtree can be pruned without traversal. This front-to-back optimization is what makes BVH traversal $O(\\log n)$ in practice rather than visiting all nodes."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In Karras (2012) LBVH construction, what is the purpose of Morton codes?",
+    "hint": "Morton codes interleave the bits of quantized $x$, $y$, $z$ coordinates — what kind of ordering does that produce?",
+    "options": ["A) They encode the color of each primitive for shading", "B) They map 3D primitive centroids to a 1D ordering that preserves spatial locality, enabling parallel tree construction", "C) They store the surface area of each primitive for SAH evaluation", "D) They compress the BVH tree into fewer bytes for memory efficiency"],
+    "answer_key": "B",
+    "explanation": "Morton codes interleave the bits of a point's quantized $x$, $y$, $z$ coordinates into a single integer. Sorting by Morton code produces a Z-order curve — a space-filling curve that preserves spatial locality. This sorted order defines the leaf ordering, from which the entire BVH hierarchy can be constructed in parallel."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which acceleration structure is the standard choice for modern GPU ray tracing with hardware RT core support?",
+    "hint": "All major GPU vendors (Nvidia RTX, AMD RDNA 2+, Intel Arc) have converged on the same structure.",
+    "options": ["A) Uniform grid", "B) kd-tree", "C) Bounding Volume Hierarchy (BVH)", "D) Octree"],
+    "answer_key": "C",
+    "explanation": "BVH is the dominant acceleration structure for GPU ray tracing. All hardware RT core implementations (Nvidia RTX, AMD RDNA 2+, Intel Arc) are designed around BVH traversal and ray-triangle intersection. The two-level BVH (BLAS + TLAS) scheme enables efficient instancing and dynamic scene updates."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A BVH node with surface area $SA(P) = 80$ is split into a left child ($SA(L) = 30$, $N_L = 5$) and right child ($SA(R) = 50$, $N_R = 10$). Using $C_{\\text{trav}} = 1$ and $C_{\\text{isect}} = 1$, what is the SAH cost of this split?",
+    "hint": "The SAH formula is $C = C_{\\text{trav}} + \\frac{SA(L)}{SA(P)} N_L C_{\\text{isect}} + \\frac{SA(R)}{SA(P)} N_R C_{\\text{isect}}$.",
+    "answer_key": "9.125",
+    "explanation": "$C = C_{\\text{trav}} + \\frac{SA(L)}{SA(P)} \\cdot N_L \\cdot C_{\\text{isect}} + \\frac{SA(R)}{SA(P)} \\cdot N_R \\cdot C_{\\text{isect}} = 1 + \\frac{30}{80} \\cdot 5 \\cdot 1 + \\frac{50}{80} \\cdot 10 \\cdot 1 = 1 + 1.875 + 6.25 = 9.125$. Compare to the leaf cost of $N \\cdot C_{\\text{isect}} = 15$, so the split is beneficial."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is the key difference between how a kd-tree and a BVH handle a primitive (e.g., triangle) that spans a spatial split plane?",
+    "hint": "One approach splits space; the other groups objects. How does each handle an object that straddles a boundary?",
+    "answer_key": "kd-tree duplicates the primitive into both children; BVH assigns it to exactly one child",
+    "explanation": "A kd-tree splits space, so a primitive straddling the split plane must be referenced in both children (primitive duplication). A BVH groups primitives into bounding volumes — each primitive belongs to exactly one leaf node, and the child AABBs are allowed to overlap. This no-duplication property makes BVH construction simpler and memory usage more predictable."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does AABB stand for in the context of bounding volumes?",
+    "hint": "It describes a box whose faces are all aligned with the coordinate axes.",
+    "options": ["A) Adaptively Aligned Bounding Box", "B) Axis-Aligned Bounding Box", "C) Asymmetrically Adjusted Bounding Box", "D) Average Area Bounding Box"],
+    "answer_key": "B",
+    "explanation": "AABB stands for Axis-Aligned Bounding Box. Its faces are perpendicular to the coordinate axes ($x$, $y$, $z$), making intersection tests extremely fast — just six comparisons against min/max coordinates per axis."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In a two-level BVH (used in Vulkan/DXR ray tracing), what are the two levels called?",
+    "hint": "One level handles individual meshes; the other places instances of those meshes in the scene.",
+    "options": ["A) Top-Level Octree (TLO) and Bottom-Level Grid (BLG)", "B) Scene BVH and Mesh BVH", "C) Top-Level Acceleration Structure (TLAS) and Bottom-Level Acceleration Structure (BLAS)", "D) Global kd-tree and Local kd-tree"],
+    "answer_key": "C",
+    "explanation": "The two-level BVH consists of a Bottom-Level Acceleration Structure (BLAS) built per unique mesh, and a Top-Level Acceleration Structure (TLAS) built over all instances in the scene. This separation allows instances (copies with different transforms) to share the same BLAS, and the TLAS can be rebuilt quickly when objects move."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the time complexity of a ray-AABB intersection test?",
+    "hint": "It involves comparing the ray against 3 pairs of axis-aligned slabs — how many operations is that?",
+    "options": ["A) $O(N)$ where $N$ is the number of primitives", "B) $O(1)$ — a fixed number of comparisons regardless of scene size", "C) $O(\\log N)$", "D) $O(N^2)$"],
+    "answer_key": "B",
+    "explanation": "A ray-AABB intersection test is $O(1)$ — it requires computing the entry and exit $t$ values for each of the 3 axis-aligned slabs (6 divisions, 6 comparisons), then checking whether the intervals overlap. This constant cost is what makes BVH traversal efficient: each node test is cheap."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the surface area of an axis-aligned bounding box with dimensions $(w, h, d) = (4, 6, 2)$?",
+    "hint": "An AABB has 3 pairs of rectangular faces. Surface area = $2(wh + hd + wd)$.",
+    "answer_key": "88",
+    "explanation": "$SA = 2(wh + hd + wd) = 2(4 \\cdot 6 + 6 \\cdot 2 + 4 \\cdot 2) = 2(24 + 12 + 8) = 2 \\cdot 44 = 88$."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In SAH-based BVH construction, the leaf cost for a node containing $N$ primitives is $N \\cdot C_{\\text{isect}}$. When is it better to make a node a leaf rather than splitting it further?",
+    "hint": "Compare the SAH split cost to the cost of testing all primitives without splitting.",
+    "answer_key": "When the SAH split cost exceeds the leaf cost N * C_isect",
+    "explanation": "If the best possible split has SAH cost $C_{\\text{split}} > N \\cdot C_{\\text{isect}}$, it is cheaper on average to test all $N$ primitives directly than to pay the traversal overhead and continue splitting. At that point, the node should become a leaf. This termination condition prevents over-partitioning."
+  },
+  {
+    "id": 12,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is a key disadvantage of using a uniform grid as a ray tracing acceleration structure?",
+    "hint": "Think about what happens when objects are very unevenly distributed in space (e.g., a few large objects and many tiny objects clustered together).",
+    "options": ["A) Uniform grids cannot be built in parallel", "B) Uniform grids perform poorly on non-uniform primitive distributions — the 'teapot in a stadium' problem", "C) Uniform grids require more memory than BVHs for all scenes", "D) Uniform grids cannot handle moving objects"],
+    "answer_key": "B",
+    "explanation": "Uniform grids partition space into equal-sized cells. When primitives are clustered in a small region (the 'teapot in a stadium' problem), most cells are empty, and the occupied cells may contain many overlapping primitives. Adaptive structures like BVH concentrate their hierarchy where the geometry actually is, making them far more efficient for non-uniform distributions."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Explain why BVH refitting (updating bounding boxes without rebuilding the tree topology) works well for animation with small deformations but fails for large-scale object movement.",
+    "hint": "Consider what happens to the quality of the bounding box hierarchy when objects move far from their original positions.",
+    "answer_key": "Refitting preserves tree topology, so large movements cause overlapping and bloated bounding boxes, destroying SAH quality and making traversal nearly brute-force",
+    "explanation": "Refitting only updates the AABB bounds of existing nodes without changing the tree structure. For small deformations (e.g., cloth, skeletal animation), the spatial locality is preserved and the bounding boxes remain tight. But when objects move far apart, the AABBs grow to encompass the new positions, creating massive overlap between sibling nodes. This overlap means the ray must traverse both children almost every time, degrading performance to nearly brute-force. Full rebuild or incremental restructuring is needed for large movements."
+  },
+  {
+    "id": 14,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "In a stackless BVH traversal algorithm (e.g., using skip pointers or rope-based traversal), what is the primary benefit compared to stack-based traversal?",
+    "hint": "Think about GPU execution — threads in a warp may diverge, and stack memory per thread adds up.",
+    "options": ["A) It always visits fewer nodes than stack-based traversal", "B) It reduces per-thread memory usage and avoids divergent stack operations, which benefits GPU SIMT architectures", "C) It produces more accurate intersection results", "D) It eliminates the need for AABB intersection tests"],
+    "answer_key": "B",
+    "explanation": "Stack-based traversal requires per-thread stack memory and can cause warp divergence on GPUs when different threads push/pop at different times. Stackless traversal encodes the traversal order directly in the BVH nodes (via skip pointers, ropes, or parent pointers), eliminating the stack entirely. This reduces register pressure and memory divergence, which is particularly beneficial for GPU ray tracing."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "You are building a BVH for 4 triangles with centroids on the $x$-axis at positions $x = 1, 3, 7, 9$. Evaluate two candidate splits along the $x$-axis.",
+    "hint": "Compare the SAH cost of splitting between positions 3 and 7 vs. splitting between 1 and 3.",
+    "steps": [
+      {
+        "prompt": "Split A places triangles at $x = 1, 3$ in the left child (AABB $x$-extent = [0, 4]) and $x = 7, 9$ in the right child (AABB $x$-extent = [6, 10]). Assuming 1D AABBs where surface area equals the extent length, compute the SAH cost with $C_{\\text{trav}} = 1$, $C_{\\text{isect}} = 1$, and parent extent = [0, 10].",
+        "answer_key": "2.6",
+        "explanation": "Parent SA = 10. Left SA = 4, $N_L = 2$. Right SA = 4, $N_R = 2$. $C = 1 + \\frac{4}{10} \\cdot 2 \\cdot 1 + \\frac{4}{10} \\cdot 2 \\cdot 1 = 1 + 0.8 + 0.8 = 2.6$."
+      },
+      {
+        "prompt": "Split B places triangle at $x = 1$ in the left child (AABB $x$-extent = [0, 2]) and $x = 3, 7, 9$ in the right child (AABB $x$-extent = [2, 10]). Compute the SAH cost.",
+        "answer_key": "3.6",
+        "explanation": "Left SA = 2, $N_L = 1$. Right SA = 8, $N_R = 3$. $C = 1 + \\frac{2}{10} \\cdot 1 \\cdot 1 + \\frac{8}{10} \\cdot 3 \\cdot 1 = 1 + 0.2 + 2.4 = 3.6$."
+      },
+      {
+        "prompt": "Which split is better according to SAH, and why?",
+        "answer_key": "Split A (cost 2.6 < 3.6)",
+        "explanation": "Split A has a lower SAH cost (2.6 vs. 3.6) because it produces two equally sized children with balanced primitive counts and equal surface areas. Split B creates an unbalanced partition where the right child has a large surface area with many primitives, increasing the expected traversal cost. SAH naturally favors balanced splits with tight bounding boxes."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "You are computing the Morton code for a 3D point with quantized integer coordinates $(x, y, z) = (5, 3, 6)$ using 3-bit coordinates.",
+    "hint": "Write each coordinate in binary, then interleave the bits in $z, y, x$ order from most significant to least significant.",
+    "steps": [
+      {
+        "prompt": "Write the 3-bit binary representations of $x = 5$, $y = 3$, $z = 6$.",
+        "answer_key": "x = 101, y = 011, z = 110",
+        "explanation": "$5 = 101_2$, $3 = 011_2$, $6 = 110_2$. Each coordinate uses 3 bits, so the Morton code will be $3 \\times 3 = 9$ bits total."
+      },
+      {
+        "prompt": "Interleave the bits in the order $z_2 y_2 x_2 \\, z_1 y_1 x_1 \\, z_0 y_0 x_0$ to form the 9-bit Morton code. Give the binary result.",
+        "answer_key": "101 010 011",
+        "explanation": "Reading the highest bits first: $z_2=1, y_2=0, x_2=1$ gives $101$. Middle bits: $z_1=1, y_1=1, x_1=0$ gives $110$. Lowest bits: $z_0=0, y_0=1, x_0=1$ gives $011$. The full Morton code is $101\\,110\\,011_2 = 371_{10}$."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "In BVH construction, what does it mean to use the 'object median' split strategy?",
+    "hint": "Think about dividing the primitives into two groups of equal count.",
+    "answer_key": "Split primitives into two equal-sized groups by sorting along an axis and choosing the median primitive as the split point",
+    "explanation": "Object median splits sort primitives along the chosen axis by their centroids and places the first half in the left child and the second half in the right. This guarantees a balanced tree (equal depth on both sides) but does not optimize bounding box tightness. SAH splitting often produces better trees but is more expensive to compute."
+  },
+  {
+    "id": 18,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Explain the concept of 'ray packet traversal' and why it improves BVH performance on CPUs with SIMD instruction sets.",
+    "hint": "SIMD processes 4 or 8 values simultaneously. How can you exploit that when multiple rays travel in similar directions?",
+    "answer_key": "Multiple coherent rays (e.g., 4 or 8) are traversed through the BVH together, testing all rays against each AABB simultaneously using SIMD, amortizing traversal overhead",
+    "explanation": "Ray packet traversal bundles coherent rays (e.g., a 2x2 or 4x4 block of primary rays) into a single group that traverses the BVH together. SIMD instructions (SSE, AVX) test all rays in the packet against each AABB in parallel. If any ray in the packet hits a node, all rays descend into it. For coherent rays (similar origins and directions), the traversal paths are nearly identical, making the SIMD utilization very high and amortizing node-fetch and branch-prediction costs across multiple rays."
+  }
+]

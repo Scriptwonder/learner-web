@@ -1,0 +1,200 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the correct order of the vertex transform pipeline?",
+    "hint": "Start from the object's local space and end at the screen.",
+    "options": ["A) World -> Local -> Clip -> NDC -> Screen -> Eye", "B) Local -> World -> Eye -> Clip -> NDC -> Screen", "C) Local -> Eye -> World -> NDC -> Clip -> Screen", "D) Screen -> NDC -> Clip -> Eye -> World -> Local"],
+    "answer_key": "B",
+    "explanation": "The pipeline goes: Local (Object) $\\xrightarrow{M}$ World $\\xrightarrow{V}$ Eye $\\xrightarrow{P}$ Clip $\\xrightarrow{\\div w}$ NDC $\\xrightarrow{viewport}$ Screen."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "The view matrix is the inverse of which matrix?",
+    "hint": "Instead of moving the camera, we move the world in the opposite way.",
+    "options": ["A) The projection matrix", "B) The model matrix of the rendered object", "C) The camera's own model matrix", "D) The MVP matrix"],
+    "answer_key": "C",
+    "explanation": "The view matrix transforms world space into camera space. It is the inverse of the camera's model matrix $V = M_{cam}^{-1}$, moving the entire world so the camera sits at the origin."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What does the perspective projection matrix set $w_{clip}$ to?",
+    "hint": "The bottom row of the projection matrix encodes this.",
+    "options": ["A) $1$", "B) $z_{eye}$", "C) $-z_{eye}$", "D) $0$"],
+    "answer_key": "C",
+    "explanation": "The perspective projection matrix sets $w_{clip} = -z_{eye}$ via its bottom row $(0, 0, -1, 0)$. This encodes depth for the perspective divide."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why do you often send the model matrix $M$ separately to the shader even when you already send the MVP matrix?",
+    "hint": "Certain calculations need world-space data, not clip-space data.",
+    "options": ["A) The MVP matrix cannot be computed on the CPU", "B) World-space positions and normals are needed for lighting calculations", "C) The GPU requires both matrices for rasterization", "D) The model matrix is needed for the perspective divide"],
+    "answer_key": "B",
+    "explanation": "Lighting calculations (diffuse, specular, distance attenuation) require world-space positions and normals, which come from the model matrix. The MVP alone only gets you to clip space."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the combined matrix $P \\cdot V \\cdot M$ commonly called?",
+    "hint": "It is a three-letter abbreviation.",
+    "answer_key": "MVP",
+    "explanation": "The product of the Projection, View, and Model matrices is called the MVP matrix. It transforms vertices directly from local space to clip space in a single multiply."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "In OpenGL's view space, the camera looks along which axis direction?",
+    "hint": "In a right-handed system, the camera looks into negative territory.",
+    "answer_key": "-Z",
+    "explanation": "In OpenGL's right-handed convention, the camera sits at the origin and looks along the negative Z axis ($-Z$), with $+Y$ up and $+X$ right."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which matrix in the pipeline is responsible for creating the perspective foreshortening effect?",
+    "hint": "It encodes the field of view, aspect ratio, and near/far planes.",
+    "options": ["A) Model matrix", "B) View matrix", "C) Projection matrix", "D) Viewport matrix"],
+    "answer_key": "C",
+    "explanation": "The projection matrix (specifically a perspective projection) creates foreshortening by encoding the frustum shape and setting $w_{clip} = -z_{eye}$, which causes the perspective divide to shrink distant objects."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does the viewport transform convert NDC coordinates into?",
+    "hint": "The final step before pixels are drawn on the monitor.",
+    "options": ["A) World coordinates", "B) Camera coordinates", "C) Screen (pixel) coordinates", "D) Clip coordinates"],
+    "answer_key": "C",
+    "explanation": "The viewport transform maps NDC $[-1, 1]$ to screen pixel coordinates, e.g., $[0, width] \\times [0, height]$, determining where fragments land on the screen."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "If two objects share the same view and projection matrices but have different model matrices, what does that tell you?",
+    "hint": "Think about what each matrix controls.",
+    "options": ["A) They are in different scenes", "B) They are viewed from different cameras", "C) They are different objects at different positions/orientations in the same scene viewed from the same camera", "D) One is transparent and the other is opaque"],
+    "answer_key": "C",
+    "explanation": "The model matrix encodes each object's individual position, rotation, and scale. Different model matrices with shared view/projection means different objects rendered from the same camera."
+  },
+  {
+    "id": 10,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is frustum culling?",
+    "hint": "Not all objects in the world need to be rendered.",
+    "options": ["A) Removing back-facing triangles", "B) Discarding objects that lie entirely outside the camera's view frustum before rendering", "C) Reducing polygon count for distant objects", "D) Sorting objects by depth"],
+    "answer_key": "B",
+    "explanation": "Frustum culling tests whether an object's bounding volume intersects the camera's view frustum. If it doesn't, the object is skipped entirely, saving GPU work."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Which matrix transforms from world space to camera (eye) space?",
+    "hint": "It is named after what the camera does.",
+    "answer_key": "view matrix",
+    "explanation": "The view matrix transforms world-space coordinates into camera-space (eye-space) coordinates, effectively positioning the camera at the origin."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In the expression `gl_Position = projection * view * model * vec4(pos, 1.0)`, how many matrix multiplications happen per vertex?",
+    "hint": "Count each $\\times$ operation. If you precompute the MVP, how many do you need?",
+    "answer_key": "3",
+    "explanation": "Three multiplications: model $\\times$ vec4, then view $\\times$ result, then projection $\\times$ result. If MVP is precomputed on the CPU, only one multiplication is needed per vertex in the shader."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What are the four parameters that define a perspective projection frustum?",
+    "hint": "Think about field of view, shape, and depth range.",
+    "answer_key": "field of view, aspect ratio, near plane, far plane",
+    "explanation": "A perspective frustum is defined by the vertical field of view (FOV), the aspect ratio (width/height), and the near and far clipping plane distances."
+  },
+  {
+    "id": 14,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Why is it more efficient to pre-multiply $M_{MVP} = P \\cdot V \\cdot M$ on the CPU rather than computing all three multiplications per vertex in the shader?",
+    "hint": "Consider how many vertices a typical mesh has versus how many matrix multiplications you save.",
+    "options": ["A) The GPU cannot multiply matrices", "B) One matrix multiply per vertex instead of three saves 2 multiplications per vertex across thousands of vertices", "C) The CPU can do floating-point math more accurately", "D) It reduces the number of draw calls"],
+    "answer_key": "B",
+    "explanation": "Precomputing the MVP on the CPU costs one matrix-matrix multiply (done once). Then each vertex needs only one matrix-vector multiply instead of three, saving significant computation across thousands of vertices."
+  },
+  {
+    "id": 15,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "When using a depth buffer, which space are depth comparisons actually performed in?",
+    "hint": "After the perspective divide, depth values are mapped to a range for the depth buffer.",
+    "options": ["A) World space", "B) Eye space", "C) NDC / window space (after the perspective divide and viewport transform)", "D) Clip space"],
+    "answer_key": "C",
+    "explanation": "Depth buffer comparisons happen in NDC/window space after the perspective divide and viewport depth mapping. The non-linear $1/z$ distribution means more precision near the camera and less far away."
+  },
+  {
+    "id": 16,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "A `lookAt` function constructs the view matrix from the camera position, target, and up vector. Which operation does it perform internally?",
+    "hint": "The function builds an orthonormal basis from the camera's orientation, then inverts it.",
+    "options": ["A) Only a translation", "B) A rotation to align the camera's forward/right/up axes, combined with a translation to the camera's position, then inverts the result", "C) A projection based on the field of view", "D) A scale to match the screen resolution"],
+    "answer_key": "B",
+    "explanation": "lookAt constructs the camera's local frame (forward, right, up vectors), places the camera with a translation, forming $M_{cam}$, then returns its inverse $V = M_{cam}^{-1}$. For an orthonormal rotation, the inverse is just the transpose."
+  },
+  {
+    "id": 17,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A vertex is at local position $(1, 0, 0)$. The model matrix rotates $90°$ around $Y$ (so $x \\to z$). The view matrix translates by $(0, 0, -10)$. Trace the vertex through the pipeline to eye space.",
+    "hint": "Apply model first, then view.",
+    "steps": [
+      {
+        "prompt": "After the model matrix ($90°$ rotation around $Y$), what is the world-space position?",
+        "answer_key": "(0, 0, -1)",
+        "explanation": "$R_y(90°)$ maps $(1, 0, 0)$ to $(0, 0, -1)$. The $x$-axis rotates toward $-z$."
+      },
+      {
+        "prompt": "After the view matrix (translation by $(0, 0, -10)$), what is the eye-space position?",
+        "answer_key": "(0, 0, -11)",
+        "explanation": "$(0, 0, -1) + (0, 0, -10) = (0, 0, -11)$. The vertex is 11 units in front of the camera."
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A camera is at world position $(0, 5, 10)$, looking at the origin $(0, 0, 0)$ with up vector $(0, 1, 0)$. Compute the forward (look) direction vector.",
+    "hint": "The forward direction points from the camera toward the target.",
+    "steps": [
+      {
+        "prompt": "What is the unnormalized forward vector (target - camera position)?",
+        "answer_key": "(0, -5, -10)",
+        "explanation": "$(0, 0, 0) - (0, 5, 10) = (0, -5, -10)$."
+      },
+      {
+        "prompt": "What is the magnitude of $(0, -5, -10)$, to two decimal places?",
+        "answer_key": "11.18",
+        "explanation": "$\\sqrt{0 + 25 + 100} = \\sqrt{125} = 5\\sqrt{5} \\approx 11.18$."
+      },
+      {
+        "prompt": "What is the normalized forward direction, to two decimal places per component?",
+        "answer_key": "(0, -0.45, -0.89)",
+        "explanation": "$(0/11.18, -5/11.18, -10/11.18) \\approx (0, -0.45, -0.89)$. This unit vector points from the camera toward the origin."
+      }
+    ]
+  }
+]

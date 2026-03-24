@@ -1,0 +1,196 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Why must all lighting calculations be performed in linear color space?",
+    "hint": "Think about whether doubling a pixel value should double the perceived brightness or the physical intensity.",
+    "options": ["A) Linear space uses less memory", "B) Linear space ensures doubling a value doubles the light intensity, making arithmetic physically correct", "C) GPUs can only process linear values", "D) sRGB values cause compile errors in GLSL"],
+    "answer_key": "B",
+    "explanation": "In linear color space, values scale proportionally to physical intensity. Performing lighting math in non-linear sRGB space produces physically incorrect results: shadows that are too dark and washed-out highlights."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the approximate gamma value used by the sRGB standard?",
+    "hint": "It is greater than 2 but less than 2.5.",
+    "options": ["A) 1.0", "B) 1.8", "C) 2.2", "D) 3.0"],
+    "answer_key": "C",
+    "explanation": "The sRGB standard uses a gamma curve approximately equal to $x^{2.2}$. Gamma correction applies the inverse: $x^{1/2.2}$."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the Reinhard tone mapping formula?",
+    "hint": "It maps the entire $[0, \\infty)$ range to $[0, 1)$ with a simple rational function.",
+    "options": ["A) $c_{out} = c_{in}^{2.2}$", "B) $c_{out} = \\frac{c_{in}}{1 + c_{in}}$", "C) $c_{out} = \\min(c_{in}, 1.0)$", "D) $c_{out} = c_{in} \\times \\text{exposure}$"],
+    "answer_key": "B",
+    "explanation": "Reinhard tone mapping compresses the HDR range using $c_{out} = \\frac{c_{in}}{1 + c_{in}}$, mapping $[0, \\infty)$ to $[0, 1)$ with a smooth rolloff for highlights."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In the complete HDR pipeline, what is the correct order of operations?",
+    "hint": "First adjust brightness, then compress to displayable range, then encode for the monitor.",
+    "options": ["A) Gamma correction, tone mapping, exposure", "B) Tone mapping, exposure, gamma correction", "C) Exposure, tone mapping, gamma correction", "D) Exposure, gamma correction, tone mapping"],
+    "answer_key": "C",
+    "explanation": "The correct order is: exposure (brightness control) first, then tone mapping (compress HDR to LDR), then gamma correction (encode for the monitor)."
+  },
+  {
+    "id": 5,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "To linearize an sRGB texture value using the gamma approximation, what power do you raise it to?",
+    "hint": "The sRGB encoding curve is approximately $x^{1/2.2}$, so undoing it requires...",
+    "answer_key": "2.2",
+    "explanation": "To convert from sRGB to linear: $c_{linear} = c_{sRGB}^{2.2}$. This undoes the sRGB encoding curve."
+  },
+  {
+    "id": 6,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Should normal map textures be treated as sRGB and linearized? Answer yes or no.",
+    "hint": "Consider whether normal maps store perceptual color or raw data.",
+    "answer_key": "no",
+    "explanation": "Normal maps store linear data (direction vectors), not perceptual color. Applying sRGB linearization would corrupt the normal values. Only color textures (diffuse, albedo, emissive) should be treated as sRGB."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does HDR stand for in the context of rendering?",
+    "hint": "It describes a range of brightness values beyond what a standard display can show.",
+    "options": ["A) High Definition Rendering", "B) High Dynamic Range", "C) Hardware Dependent Resolution", "D) Half Data Rate"],
+    "answer_key": "B",
+    "explanation": "HDR stands for High Dynamic Range, referring to images or buffers that can store brightness values greater than 1.0, representing scenes with extreme contrast between light and dark areas."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the exposure control operation in the HDR pipeline?",
+    "hint": "It is a simple multiplicative or exponential adjustment to overall brightness.",
+    "options": ["A) $c_{out} = c_{in} / (1 + c_{in})$", "B) $c_{out} = c_{in}^{2.2}$", "C) $c_{out} = c_{in} \\times 2^{\\text{exposure}}$ or $c_{out} = 1 - e^{-c_{in} \\times \\text{exposure}}$", "D) $c_{out} = \\text{clamp}(c_{in}, 0, 1)$"],
+    "answer_key": "C",
+    "explanation": "Exposure control scales the HDR values, typically as $c_{in} \\times 2^{\\text{ev}}$ (photographic stops) or using $1 - e^{-c_{in} \\times \\text{exposure}}$ (filmic). This simulates camera exposure adjustment."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why do monitors need gamma-encoded input (sRGB) rather than linear values?",
+    "hint": "The human eye perceives brightness non-linearly.",
+    "options": ["A) Linear encoding would require 32-bit textures", "B) Human perception is non-linear; gamma encoding allocates more precision to dark tones where the eye is most sensitive", "C) Monitors cannot display linear values", "D) Gamma encoding makes textures smaller on disk"],
+    "answer_key": "B",
+    "explanation": "Human vision is more sensitive to differences in dark tones. sRGB gamma encoding allocates more bits to darks and fewer to brights, maximizing perceptual quality within 8 bits per channel."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Apply Reinhard tone mapping to the HDR value $c_{in} = 4.0$. What is $c_{out}$?",
+    "hint": "Use $c_{out} = c_{in} / (1 + c_{in})$.",
+    "answer_key": "0.8",
+    "explanation": "$c_{out} = 4.0 / (1 + 4.0) = 4.0 / 5.0 = 0.8$."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the gamma-correction formula to encode a linear value $c$ for sRGB display (using the power approximation)?",
+    "hint": "It is the inverse of the linearization step.",
+    "answer_key": "c^(1/2.2)",
+    "explanation": "$c_{sRGB} = c_{linear}^{1/2.2} \\approx c_{linear}^{0.4545}$. This brightens dark values to counteract the monitor's gamma curve."
+  },
+  {
+    "id": 12,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What happens visually if you skip gamma correction and display linear values directly?",
+    "hint": "The monitor applies its own gamma curve, so linear values get darkened.",
+    "options": ["A) The image appears correctly", "B) The image appears too dark, especially in mid-tones and shadows", "C) The image appears too bright", "D) Colors become inverted"],
+    "answer_key": "B",
+    "explanation": "Without gamma correction, the monitor's gamma curve ($\\approx x^{2.2}$) darkens the already-linear values. Mid-tones and shadows suffer the most, producing a noticeably dark image."
+  },
+  {
+    "id": 13,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "In the ACES filmic tone mapping curve, what visual property does it preserve better than Reinhard?",
+    "hint": "Think about what happens to very bright highlights in each curve.",
+    "options": ["A) It is mathematically simpler", "B) It preserves color saturation in highlights and has a pleasant S-curve with toe and shoulder", "C) It is lossless", "D) It works without a floating-point framebuffer"],
+    "answer_key": "B",
+    "explanation": "The ACES filmic curve includes a toe (contrast boost in darks) and shoulder (gentle highlight rolloff) that produce a more cinematic look. Reinhard tends to desaturate bright highlights and lacks contrast in shadows."
+  },
+  {
+    "id": 14,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "An sRGB value of 0.5 represents what approximate linear intensity? Round to two decimal places.",
+    "hint": "Raise 0.5 to the power of 2.2.",
+    "answer_key": "0.22",
+    "explanation": "$c_{linear} = 0.5^{2.2} \\approx 0.2176 \\approx 0.22$. This shows how sRGB 50% gray is much darker in linear space than one might expect."
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Walk through the full HDR pipeline for a pixel with linear HDR value $c = 8.0$, exposure EV $= -2$.",
+    "hint": "Apply exposure, then tone map, then gamma encode.",
+    "steps": [
+      {
+        "prompt": "Apply exposure: $c' = c \\times 2^{EV} = 8.0 \\times 2^{-2}$.",
+        "answer_key": "2.0",
+        "explanation": "$c' = 8.0 \\times 2^{-2} = 8.0 \\times 0.25 = 2.0$."
+      },
+      {
+        "prompt": "Apply Reinhard tone mapping: $c'' = c' / (1 + c')$.",
+        "answer_key": "0.667",
+        "explanation": "$c'' = 2.0 / (1 + 2.0) = 2.0 / 3.0 \\approx 0.667$."
+      },
+      {
+        "prompt": "Apply gamma correction: $c_{final} = (c'')^{1/2.2}$. Give approximate value.",
+        "answer_key": "0.832",
+        "explanation": "$c_{final} = 0.667^{1/2.2} = 0.667^{0.4545}$. $\\ln(0.667) = -0.405$, $-0.405 \\times 0.4545 = -0.184$, $e^{-0.184} \\approx 0.832$."
+      }
+    ],
+    "explanation": "The HDR pipeline converts a raw physically-computed value through three stages: exposure adjusts overall brightness, tone mapping compresses the range to $[0, 1)$, and gamma correction encodes for the display."
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Demonstrate the visual error caused by performing lighting in sRGB space instead of linear space.",
+    "hint": "Compare the result of blending two sRGB values directly versus linearizing first.",
+    "steps": [
+      {
+        "prompt": "Two sRGB texels are averaged: $c_1 = 0.5$ (sRGB), $c_2 = 0.5$ (sRGB). What is the naive average in sRGB space?",
+        "answer_key": "0.5",
+        "explanation": "Naive average: $(0.5 + 0.5) / 2 = 0.5$."
+      },
+      {
+        "prompt": "Now linearize both: $c_1^{lin} = 0.5^{2.2}$, $c_2^{lin} = 0.5^{2.2}$. Average in linear, then gamma-encode back. What do you get?",
+        "answer_key": "0.5",
+        "explanation": "$c_1^{lin} = c_2^{lin} = 0.2176$. Average $= 0.2176$. Gamma encode: $0.2176^{1/2.2} \\approx 0.5$. In this symmetric case the results match, but they diverge for different values."
+      },
+      {
+        "prompt": "Repeat with $c_1 = 0.2$ (sRGB), $c_2 = 0.8$ (sRGB). Naive sRGB average vs. correct linear-space average (gamma-encoded back). Approximate both.",
+        "answer_key": "naive = 0.5, correct = 0.46",
+        "explanation": "Naive: $(0.2 + 0.8)/2 = 0.5$. Linear: $0.2^{2.2} \\approx 0.029$, $0.8^{2.2} \\approx 0.604$. Average $= 0.316$. Gamma: $0.316^{1/2.2} \\approx 0.59$. Actually, a more precise calculation: $0.316^{0.4545} \\approx 0.59$. The correct result is brighter than the naive one because sRGB averaging underweights the bright value."
+      }
+    ],
+    "explanation": "Arithmetic in sRGB space produces incorrect results because the space is non-linear. The error is most visible when blending disparate values, causing banding and incorrect mid-tones."
+  },
+  {
+    "id": 17,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What texture format flag in OpenGL tells the driver that a texture stores sRGB data and should be automatically linearized on sampling?",
+    "hint": "It is a variant of the standard RGBA8 internal format.",
+    "answer_key": "GL_SRGB8_ALPHA8",
+    "explanation": "Using `GL_SRGB8_ALPHA8` (or `GL_SRGB8`) as the internal format tells OpenGL to automatically convert sRGB to linear on texture reads, avoiding manual `pow(tex, 2.2)` in the shader."
+  }
+]
