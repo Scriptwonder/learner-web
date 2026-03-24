@@ -55,6 +55,7 @@ function updateStudyForCourseMode() {
     resetState();
     studyContent.innerHTML = '';
     tocList.innerHTML = '';
+    if (window.Visualizer) Visualizer.hide();
     showScreen('courseBrowser');
     loadCourseList();
   });

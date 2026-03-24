@@ -144,6 +144,8 @@ async function openLesson(courseId, lessonId) {
     showScreen('study');
     // Scroll to top
     document.getElementById('study-content').scrollTop = 0;
+    // Load 3D visualization
+    if (window.Visualizer) Visualizer.load(lessonId);
   } catch (err) {
     alert('Failed to load lesson: ' + err.message);
   }

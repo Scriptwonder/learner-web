@@ -12,6 +12,14 @@
   <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"
+    }
+  }
+  </script>
 </head>
 <body>
   <div class="grid-bg" aria-hidden="true"></div>
@@ -42,6 +50,11 @@
       <button class="btn-quiz study-sidebar-quiz" id="btn-quiz-from-study">Quiz Me</button>
     </div>
     <div class="study-content" id="study-content"></div>
+    <div class="viz-panel" id="viz-panel">
+      <div class="viz-canvas-wrap" id="viz-canvas-wrap"></div>
+      <div class="viz-controls" id="viz-controls"></div>
+      <div class="viz-info" id="viz-info"></div>
+    </div>
   </div>
 
   <div id="quiz-screen" class="screen">
@@ -122,5 +135,6 @@
   <script src="js/study.js"></script>
   <script src="js/quiz.js"></script>
   <script src="js/course-browser.js"></script>
+  <script type="module" src="js/visualizer.js"></script>
 </body>
 </html>
