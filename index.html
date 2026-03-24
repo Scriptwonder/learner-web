@@ -51,7 +51,14 @@
     </div>
     <div class="study-content" id="study-content"></div>
     <div class="viz-panel" id="viz-panel">
+      <div class="viz-toolbar">
+        <button class="viz-tab active" id="viz-tab-3d" data-tab="3d">3D View</button>
+        <button class="viz-tab" id="viz-tab-code" data-tab="code">Code</button>
+      </div>
       <div class="viz-canvas-wrap" id="viz-canvas-wrap"></div>
+      <div class="viz-code-wrap" id="viz-code-wrap" style="display:none;">
+        <pre class="viz-code-block"><code id="viz-code-content"></code></pre>
+      </div>
       <div class="viz-controls" id="viz-controls"></div>
       <div class="viz-info" id="viz-info"></div>
     </div>

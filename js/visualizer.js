@@ -7,11 +7,39 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const panel = document.getElementById('viz-panel');
 const canvasWrap = document.getElementById('viz-canvas-wrap');
+const codeWrap = document.getElementById('viz-code-wrap');
+const codeContent = document.getElementById('viz-code-content');
 const controlsDiv = document.getElementById('viz-controls');
 const infoDiv = document.getElementById('viz-info');
+const tab3d = document.getElementById('viz-tab-3d');
+const tabCode = document.getElementById('viz-tab-code');
 
 let renderer, scene, camera, controls, animId;
 let currentViz = null;
+let currentCodeSnippet = '';
+
+// === TAB TOGGLE ===
+tab3d.addEventListener('click', () => {
+  tab3d.classList.add('active');
+  tabCode.classList.remove('active');
+  canvasWrap.style.display = '';
+  codeWrap.style.display = 'none';
+  resize();
+});
+tabCode.addEventListener('click', () => {
+  tabCode.classList.add('active');
+  tab3d.classList.remove('active');
+  canvasWrap.style.display = 'none';
+  codeWrap.style.display = '';
+  if (currentCodeSnippet) {
+    codeContent.textContent = currentCodeSnippet;
+    if (typeof hljs !== 'undefined') hljs.highlightElement(codeContent);
+  }
+});
+
+function setCode(code) {
+  currentCodeSnippet = code;
+}
 
 // === CORE ENGINE ===
 
@@ -763,9 +791,489 @@ function vizQuaternions() {
   camera.position.set(0, 2.5, 5);
 }
 
+// === ADVANCED: Barycentric Coordinates ===
+function vizBarycentric() {
+  addGrid();
+  const v0 = new THREE.Vector3(-2, 0, 0);
+  const v1 = new THREE.Vector3(2, 0, 0);
+  const v2 = new THREE.Vector3(0, 3, 0);
+
+  // Triangle with vertex colors
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute([...v0.toArray(), ...v1.toArray(), ...v2.toArray()], 3));
+  geo.setAttribute('color', new THREE.Float32BufferAttribute([1,0,0, 0,1,0, 0,0,1], 3));
+  const mat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide, transparent: true, opacity: 0.6 });
+  const tri = new THREE.Mesh(geo, mat);
+  scene.add(tri);
+
+  // Wireframe
+  const wireGeo = new THREE.BufferGeometry().setFromPoints([v0, v1, v2, v0]);
+  scene.add(new THREE.Line(wireGeo, new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.3 })));
+
+  // Point marker
+  const marker = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 12), new THREE.MeshBasicMaterial({ color: COLORS.white }));
+  scene.add(marker);
+
+  let u = 0.33, v = 0.33;
+
+  const rebuild = () => {
+    const w = 1 - u - v;
+    const p = v0.clone().multiplyScalar(u).add(v1.clone().multiplyScalar(v)).add(v2.clone().multiplyScalar(w));
+    marker.position.copy(p);
+    const inside = u >= 0 && v >= 0 && w >= 0;
+    marker.material.color.setHex(inside ? COLORS.white : COLORS.red);
+    setInfo(`<div class="viz-readout">Bary = (${u.toFixed(2)}, ${v.toFixed(2)}, ${w.toFixed(2)})<br>Color = (${(u).toFixed(2)}R, ${(v).toFixed(2)}G, ${(w).toFixed(2)}B)<br>${inside ? '<b style="color:#50c878">Inside</b>' : '<b style="color:#e85d5d">Outside</b>'}</div>`);
+  };
+
+  addSlider('u (v0)', 0, 1, u, 0.01, val => { u = val; rebuild(); });
+  addSlider('v (v1)', 0, 1, v, 0.01, val => { v = val; rebuild(); });
+  rebuild();
+  camera.position.set(0, 2, 5);
+  setCode(`// Barycentric interpolation
+vec3 baryInterp(vec3 bary, vec3 a0, vec3 a1, vec3 a2) {
+    return bary.x * a0 + bary.y * a1 + bary.z * a2;
+}
+
+// Perspective-correct interpolation
+// Each vertex attribute divided by w before interpolation,
+// then multiply result by interpolated 1/w
+float corrected = (a0/w0 * b.x + a1/w1 * b.y + a2/w2 * b.z)
+               / (1.0/w0 * b.x + 1.0/w1 * b.y + 1.0/w2 * b.z);`);
+}
+
+// === ADVANCED: SDF Sphere Marching ===
+function vizSDF() {
+  addGrid();
+
+  // SDF sphere
+  const sphere = new THREE.Mesh(
+    new THREE.SphereGeometry(1, 32, 32),
+    new THREE.MeshBasicMaterial({ color: COLORS.cyan, wireframe: true, transparent: true, opacity: 0.25 })
+  );
+  sphere.position.set(0, 1, 0);
+  scene.add(sphere);
+
+  const rayGeo = new THREE.BufferGeometry();
+  const rayLine = new THREE.Line(rayGeo, new THREE.LineBasicMaterial({ color: COLORS.accent }));
+  scene.add(rayLine);
+
+  let marchSpheres = [];
+  let ox = -4, oy = 1.5;
+
+  const rebuild = () => {
+    marchSpheres.forEach(s => { scene.remove(s); s.geometry.dispose(); s.material.dispose(); });
+    marchSpheres = [];
+
+    const origin = new THREE.Vector3(ox, oy, 0);
+    const dir = new THREE.Vector3(1, 0, 0);
+    let p = origin.clone();
+    const steps = [];
+
+    for (let i = 0; i < 12; i++) {
+      const d = p.distanceTo(new THREE.Vector3(0, 1, 0)) - 1; // SDF sphere
+      if (d < 0.01) break;
+      steps.push({ pos: p.clone(), dist: d });
+
+      // March sphere (safe distance)
+      const ring = new THREE.Mesh(
+        new THREE.RingGeometry(d - 0.02, d, 32),
+        new THREE.MeshBasicMaterial({ color: COLORS.accent, transparent: true, opacity: 0.15, side: THREE.DoubleSide })
+      );
+      ring.position.copy(p);
+      ring.lookAt(camera.position);
+      scene.add(ring);
+      marchSpheres.push(ring);
+
+      // Step marker
+      const dot = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 8), new THREE.MeshBasicMaterial({ color: COLORS.accent }));
+      dot.position.copy(p);
+      scene.add(dot);
+      marchSpheres.push(dot);
+
+      p = p.clone().add(dir.clone().multiplyScalar(d));
+    }
+
+    const end = origin.clone().add(dir.clone().multiplyScalar(8));
+    rayGeo.setFromPoints([origin, end]);
+    setInfo(`<div class="viz-readout">Steps: ${steps.length}<br>Origin = (${ox.toFixed(1)}, ${oy.toFixed(1)})<br>Each circle = safe march distance</div>`);
+  };
+
+  addSlider('Origin Y', -1, 4, oy, 0.1, v => { oy = v; rebuild(); });
+  addSlider('Origin X', -5, -1, ox, 0.1, v => { ox = v; rebuild(); });
+  rebuild();
+  camera.position.set(0, 2, 7);
+  setCode(`// SDF primitives
+float sdSphere(vec3 p, float r) { return length(p) - r; }
+float sdBox(vec3 p, vec3 b) {
+    vec3 q = abs(p) - b;
+    return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0);
+}
+
+// Sphere marching
+float t = 0.0;
+for (int i = 0; i < MAX_STEPS; i++) {
+    vec3 p = ro + rd * t;
+    float d = sceneSDF(p);
+    if (d < EPSILON) break;  // Hit!
+    t += d;                   // Safe step
+    if (t > MAX_DIST) break;  // Miss
+}`);
+}
+
+// === ADVANCED: PBR Microfacet ===
+function vizPBR() {
+  const sphereGeo = new THREE.SphereGeometry(1, 64, 64);
+  const sphereMat = new THREE.MeshStandardMaterial({ color: 0xdddddd, roughness: 0.3, metalness: 0.0 });
+  const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+  sphere.position.set(0, 1, 0);
+  scene.add(sphere);
+
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(8, 8), new THREE.MeshStandardMaterial({ color: 0x181828, roughness: 0.8 }));
+  floor.rotation.x = -Math.PI / 2;
+  scene.add(floor);
+
+  const ambient = new THREE.AmbientLight(0x111122, 0.5);
+  scene.add(ambient);
+  const envLight = new THREE.HemisphereLight(0x8899bb, 0x222233, 0.6);
+  scene.add(envLight);
+
+  const pointLight = new THREE.PointLight(COLORS.accent, 50, 15);
+  pointLight.position.set(3, 3, 3);
+  scene.add(pointLight);
+
+  const lightDot = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 8), new THREE.MeshBasicMaterial({ color: COLORS.accent }));
+  lightDot.position.copy(pointLight.position);
+  scene.add(lightDot);
+
+  let roughness = 0.3, metalness = 0.0;
+
+  const rebuild = () => {
+    sphereMat.roughness = roughness;
+    sphereMat.metalness = metalness;
+    const label = metalness > 0.5 ? 'Metallic' : 'Dielectric';
+    setInfo(`<div class="viz-readout">Roughness = ${roughness.toFixed(2)}<br>Metalness = ${metalness.toFixed(2)}<br>Type: ${label}<br>F0 = ${metalness > 0.5 ? 'albedo' : '0.04'}</div>`);
+  };
+
+  addSlider('Roughness', 0.05, 1, roughness, 0.01, v => { roughness = v; rebuild(); });
+  addSlider('Metalness', 0, 1, metalness, 0.01, v => { metalness = v; rebuild(); });
+  rebuild();
+  camera.position.set(0, 2, 4);
+  setCode(`// Cook-Torrance BRDF
+// f_r = kD * (c/pi) + kS * DFG / (4 * NdotL * NdotV)
+
+// D: GGX Normal Distribution
+float D_GGX(float NdotH, float a) {
+    float a2 = a * a;
+    float d = NdotH * NdotH * (a2 - 1.0) + 1.0;
+    return a2 / (PI * d * d);
+}
+
+// F: Schlick Fresnel
+vec3 F_Schlick(float VdotH, vec3 F0) {
+    return F0 + (1.0 - F0) * pow(1.0 - VdotH, 5.0);
+}
+
+// G: Smith GGX
+float G_Smith(float NdotV, float NdotL, float a) {
+    float k = (a + 1.0) * (a + 1.0) / 8.0;
+    float gv = NdotV / (NdotV * (1.0 - k) + k);
+    float gl = NdotL / (NdotL * (1.0 - k) + k);
+    return gv * gl;
+}`);
+}
+
+// === ADVANCED: Sampling / Monte Carlo ===
+function vizSampling() {
+  // Hemisphere with sample points
+  const hemiGeo = new THREE.SphereGeometry(2, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+  const hemiMat = new THREE.MeshBasicMaterial({ color: COLORS.cyan, wireframe: true, transparent: true, opacity: 0.15 });
+  const hemi = new THREE.Mesh(hemiGeo, hemiMat);
+  scene.add(hemi);
+
+  // Ground disc
+  const disc = new THREE.Mesh(new THREE.CircleGeometry(2, 32), new THREE.MeshBasicMaterial({ color: 0x181828, side: THREE.DoubleSide }));
+  disc.rotation.x = -Math.PI / 2;
+  scene.add(disc);
+
+  // Normal arrow
+  scene.add(makeArrow(new THREE.Vector3(0, 1, 0), new THREE.Vector3(), COLORS.green, 2.5));
+
+  let dots = [];
+  let sampleCount = 64;
+  let useCosine = false;
+
+  const rebuild = () => {
+    dots.forEach(d => { scene.remove(d); d.geometry.dispose(); d.material.dispose(); });
+    dots = [];
+
+    for (let i = 0; i < sampleCount; i++) {
+      const u1 = Math.random(), u2 = Math.random();
+      let x, y, z;
+      if (useCosine) {
+        // Cosine-weighted: Malley's method
+        const r = Math.sqrt(u1);
+        const theta = 2 * Math.PI * u2;
+        x = r * Math.cos(theta);
+        z = r * Math.sin(theta);
+        y = Math.sqrt(1 - u1);
+      } else {
+        // Uniform hemisphere
+        const theta = 2 * Math.PI * u1;
+        const phi = Math.acos(u2);
+        x = Math.sin(phi) * Math.cos(theta);
+        y = Math.cos(phi);
+        z = Math.sin(phi) * Math.sin(theta);
+      }
+
+      const dot = new THREE.Mesh(
+        new THREE.SphereGeometry(0.03, 6, 6),
+        new THREE.MeshBasicMaterial({ color: useCosine ? COLORS.accent : COLORS.cyan })
+      );
+      dot.position.set(x * 2, y * 2, z * 2);
+      scene.add(dot);
+      dots.push(dot);
+    }
+
+    setInfo(`<div class="viz-readout">Samples: ${sampleCount}<br>Method: ${useCosine ? 'Cosine-weighted' : 'Uniform'}<br>${useCosine ? 'PDF = cos(θ)/π — more samples near normal' : 'PDF = 1/(2π) — uniform coverage'}</div>`);
+  };
+
+  addSlider('Samples', 16, 256, sampleCount, 1, v => { sampleCount = Math.round(v); rebuild(); });
+  addToggle('Cosine-weighted', false, v => { useCosine = v; rebuild(); });
+  rebuild();
+  camera.position.set(3, 3, 4);
+  setCode(`// Uniform hemisphere sampling
+vec3 sampleHemisphere(vec2 u) {
+    float phi = 2.0 * PI * u.x;
+    float cosTheta = u.y;
+    float sinTheta = sqrt(1.0 - cosTheta * cosTheta);
+    return vec3(sinTheta * cos(phi), cosTheta, sinTheta * sin(phi));
+}
+// PDF = 1 / (2*PI)
+
+// Cosine-weighted (Malley's method)
+vec3 sampleCosine(vec2 u) {
+    float r = sqrt(u.x);
+    float phi = 2.0 * PI * u.y;
+    float x = r * cos(phi);
+    float z = r * sin(phi);
+    float y = sqrt(1.0 - u.x);
+    return vec3(x, y, z);
+}
+// PDF = cos(theta) / PI`);
+}
+
+// === ADVANCED: Gaussian Splatting ===
+function viz3DGS() {
+  addGrid();
+
+  // Create ellipsoid gaussians
+  const gaussians = [];
+  const positions = [
+    [0, 0.8, 0], [-1, 0.5, 0.5], [1, 0.6, -0.3], [0.3, 1.2, 0.8], [-0.5, 0.4, -0.6],
+    [0.8, 1, 0.4], [-0.7, 0.9, -0.2], [0.2, 0.3, 0.3], [-0.3, 1.1, 0.1], [0.5, 0.7, -0.5]
+  ];
+  const colors = [0xd4a04a, 0x4ecdc4, 0x50c878, 0xe85d5d, 0x4488ff, 0xd4a04a, 0x4ecdc4, 0x50c878, 0xe85d5d, 0x4488ff];
+
+  positions.forEach((pos, i) => {
+    const sx = 0.15 + Math.random() * 0.3;
+    const sy = 0.1 + Math.random() * 0.25;
+    const sz = 0.12 + Math.random() * 0.2;
+    const geo = new THREE.SphereGeometry(1, 16, 12);
+    const mat = new THREE.MeshBasicMaterial({ color: colors[i % colors.length], transparent: true, opacity: 0.35 });
+    const g = new THREE.Mesh(geo, mat);
+    g.position.set(...pos);
+    g.scale.set(sx, sy, sz);
+    g.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+    scene.add(g);
+    gaussians.push(g);
+  });
+
+  let opacity = 0.35, showWireframe = false;
+
+  const rebuild = () => {
+    gaussians.forEach(g => {
+      g.material.opacity = opacity;
+      g.material.wireframe = showWireframe;
+    });
+    setInfo(`<div class="viz-readout">Gaussians: ${gaussians.length}<br>Each: position μ, covariance Σ = RSS<sup>T</sup>R<sup>T</sup><br>Rendered via splatting to 2D ellipses</div>`);
+  };
+
+  addSlider('Opacity', 0.05, 0.8, opacity, 0.01, v => { opacity = v; rebuild(); });
+  addToggle('Wireframe (show ellipsoids)', false, v => { showWireframe = v; rebuild(); });
+  rebuild();
+  camera.position.set(2, 2, 3);
+  setCode(`// 3D Gaussian: G(x) = exp(-0.5 (x-μ)ᵀ Σ⁻¹ (x-μ))
+// Σ = R S Sᵀ Rᵀ  (rotation R from quaternion, scale S diagonal)
+
+// Project to 2D: Σ' = J W Σ Wᵀ Jᵀ
+// W = world-to-camera rotation
+// J = Jacobian of perspective projection
+
+// Alpha blending (front-to-back):
+// C = Σᵢ cᵢ αᵢ Πⱼ<ᵢ (1 - αⱼ)
+
+// Training loss:
+// L = (1-λ) * L1(render, gt) + λ * D-SSIM(render, gt)
+
+// Adaptive density control:
+// - Clone: small gradient, small gaussian
+// - Split: large gradient, large gaussian
+// - Prune: opacity < threshold`);
+}
+
+// === ADVANCED: NeRF Volume Rendering ===
+function vizNeRF() {
+  addGrid();
+
+  // Target "scene" — a simple object
+  const target = new THREE.Mesh(
+    new THREE.TorusKnotGeometry(0.6, 0.2, 64, 16),
+    new THREE.MeshBasicMaterial({ color: COLORS.cyan, wireframe: true, transparent: true, opacity: 0.3 })
+  );
+  target.position.set(0, 1, 0);
+  scene.add(target);
+
+  // Ray with sample points
+  const rayGeo = new THREE.BufferGeometry();
+  const rayLine = new THREE.Line(rayGeo, new THREE.LineBasicMaterial({ color: COLORS.accent }));
+  scene.add(rayLine);
+
+  let sampleDots = [];
+  let numSamples = 32;
+  let oy = 1.5, oz = 3;
+
+  const rebuild = () => {
+    sampleDots.forEach(d => { scene.remove(d); d.geometry.dispose(); d.material.dispose(); });
+    sampleDots = [];
+
+    const origin = new THREE.Vector3(0, oy, oz);
+    const dir = new THREE.Vector3(0, 0, -1);
+    const near = 0.5, far = 5;
+    const rayEnd = origin.clone().add(dir.clone().multiplyScalar(far));
+    rayGeo.setFromPoints([origin, rayEnd]);
+
+    for (let i = 0; i < numSamples; i++) {
+      const t = near + (far - near) * (i + Math.random()) / numSamples;
+      const p = origin.clone().add(dir.clone().multiplyScalar(t));
+      const distToCenter = p.distanceTo(new THREE.Vector3(0, 1, 0));
+      const density = Math.max(0, 1 - distToCenter / 1.2);
+      const alpha = density > 0.1 ? 0.8 : 0.15;
+
+      const dot = new THREE.Mesh(
+        new THREE.SphereGeometry(0.03 + density * 0.03, 6, 6),
+        new THREE.MeshBasicMaterial({ color: density > 0.1 ? COLORS.accent : COLORS.cyan, transparent: true, opacity: alpha })
+      );
+      dot.position.copy(p);
+      scene.add(dot);
+      sampleDots.push(dot);
+    }
+
+    setInfo(`<div class="viz-readout">Samples: ${numSamples}<br>Ray: (0, ${oy.toFixed(1)}, ${oz.toFixed(1)}) → (0, 0, -1)<br>Bright dots = high density (σ)<br>Accumulated via volume rendering</div>`);
+  };
+
+  addSlider('Samples', 8, 128, numSamples, 1, v => { numSamples = Math.round(v); rebuild(); });
+  addSlider('Ray Y', -1, 3, oy, 0.1, v => { oy = v; rebuild(); });
+  rebuild();
+  camera.position.set(3, 2, 4);
+  setCode(`// NeRF volume rendering (discrete approximation)
+// C(r) = Σᵢ Tᵢ (1 - exp(-σᵢ δᵢ)) cᵢ
+// where Tᵢ = exp(-Σⱼ<ᵢ σⱼ δⱼ)  (transmittance)
+
+// MLP: (x,y,z,θ,φ) → (σ, c)  [density, color]
+
+# Hierarchical sampling (coarse + fine)
+t_coarse = stratified_sample(near, far, N_coarse)
+weights = render_weights(sigma_coarse, deltas)
+t_fine = importance_sample(weights, N_fine)
+t_all = sort(concat(t_coarse, t_fine))
+color = volume_render(t_all, sigma, rgb)
+
+# Instant-NGP hash encoding
+def hash_encode(x, L=16):
+    features = []
+    for l in range(L):
+        resolution = base_res * growth_factor**l
+        # Hash grid lookup + trilinear interpolation
+        features.append(grid_lookup(x, resolution))
+    return concat(features)  # → tiny MLP`);
+}
+
+// === ADVANCED: Spherical Harmonics ===
+function vizSphericalHarmonics() {
+  // Visualize SH basis functions on a sphere
+  const geo = new THREE.SphereGeometry(1.5, 64, 32);
+  const positions = geo.attributes.position;
+  const colors = new Float32Array(positions.count * 3);
+
+  let band = 0, order = 0;
+
+  // SH basis functions (first 3 bands, real form)
+  function sh(l, m, theta, phi) {
+    if (l === 0) return 0.2821;
+    if (l === 1 && m === -1) return 0.4886 * Math.sin(theta) * Math.sin(phi);
+    if (l === 1 && m === 0) return 0.4886 * Math.cos(theta);
+    if (l === 1 && m === 1) return 0.4886 * Math.sin(theta) * Math.cos(phi);
+    if (l === 2 && m === -2) return 1.0925 * Math.sin(theta) * Math.sin(theta) * Math.sin(2 * phi) * 0.5;
+    if (l === 2 && m === -1) return 1.0925 * Math.sin(theta) * Math.cos(theta) * Math.sin(phi);
+    if (l === 2 && m === 0) return 0.3154 * (3 * Math.cos(theta) * Math.cos(theta) - 1);
+    if (l === 2 && m === 1) return 1.0925 * Math.sin(theta) * Math.cos(theta) * Math.cos(phi);
+    if (l === 2 && m === 2) return 0.5463 * Math.sin(theta) * Math.sin(theta) * Math.cos(2 * phi);
+    return 0;
+  }
+
+  const mat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide });
+  const mesh = new THREE.Mesh(geo, mat);
+  scene.add(mesh);
+
+  const rebuild = () => {
+    for (let i = 0; i < positions.count; i++) {
+      const x = positions.getX(i), y = positions.getY(i), z = positions.getZ(i);
+      const r = Math.sqrt(x * x + y * y + z * z);
+      const theta = Math.acos(y / r);
+      const phi = Math.atan2(z, x);
+      const val = sh(band, order, theta, phi);
+
+      // Map val to color: positive = warm, negative = cool
+      if (val >= 0) {
+        colors[i * 3] = val * 3;
+        colors[i * 3 + 1] = val * 1.5;
+        colors[i * 3 + 2] = 0;
+      } else {
+        colors[i * 3] = 0;
+        colors[i * 3 + 1] = -val * 1.5;
+        colors[i * 3 + 2] = -val * 3;
+      }
+    }
+    geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+    geo.attributes.color.needsUpdate = true;
+
+    const names = { '0,0': 'Y₀₀ (constant)', '1,-1': 'Y₁₋₁ (sin·sinφ)', '1,0': 'Y₁₀ (cosθ)', '1,1': 'Y₁₁ (sin·cosφ)', '2,-2': 'Y₂₋₂', '2,-1': 'Y₂₋₁', '2,0': 'Y₂₀ (3cos²-1)', '2,1': 'Y₂₁', '2,2': 'Y₂₂' };
+    setInfo(`<div class="viz-readout">Band l=${band}, order m=${order}<br>${names[band + ',' + order] || ''}<br><span style="color:#d4a04a">Warm = positive</span><br><span style="color:#4488ff">Cool = negative</span></div>`);
+  };
+
+  addSlider('Band (l)', 0, 2, 0, 1, v => { band = Math.round(v); if (Math.abs(order) > band) order = 0; rebuild(); });
+  addSlider('Order (m)', -2, 2, 0, 1, v => { order = Math.round(v); if (Math.abs(order) > band) order = Math.sign(order) * band; rebuild(); });
+  rebuild();
+  camera.position.set(0, 2, 4);
+  setCode(`// SH irradiance evaluation (L2, 9 coefficients)
+vec3 evalSH(vec3 n, vec3 sh[9]) {
+    return sh[0] * 0.2821
+      + sh[1] * 0.4886 * n.y
+      + sh[2] * 0.4886 * n.z
+      + sh[3] * 0.4886 * n.x
+      + sh[4] * 1.0925 * n.x * n.y
+      + sh[5] * 1.0925 * n.y * n.z
+      + sh[6] * 0.3154 * (3.0*n.z*n.z - 1.0)
+      + sh[7] * 1.0925 * n.x * n.z
+      + sh[8] * 0.5463 * (n.x*n.x - n.y*n.y);
+}
+// 9 coefficients capture ~99% of diffuse irradiance`);
+}
+
 // === VISUALIZATION REGISTRY ===
 
 const vizRegistry = {
+  // Fundamentals
   '01-vectors': vizVectors,
   '02-dot-product': vizDotProduct,
   '03-cross-product': vizCrossProduct,
@@ -781,6 +1289,102 @@ const vizRegistry = {
   '16-quaternions': vizQuaternions,
   '17-curves-surfaces': vizBezier,
   '18-ray-intersections': vizRayIntersection,
+  // Advanced
+  '01-barycentric-coordinates': vizBarycentric,
+  '02-signed-distance-functions': vizSDF,
+  '03-spatial-acceleration-structures': vizTransforms, // reuse transforms for BVH concept
+  '04-pbr-microfacet-theory': vizPBR,
+  '05-sampling-monte-carlo': vizSampling,
+  '06-spherical-harmonics': vizSphericalHarmonics,
+  '07-fourier-analysis-aliasing': vizSampling, // sampling reused for signal concepts
+  '08-dual-quaternions': vizQuaternions, // quaternion viz applies
+  '09-neural-rendering-foundations': vizNeRF,
+  '10-neural-radiance-fields': vizNeRF,
+  '11-3d-gaussian-splatting': viz3DGS,
+};
+
+// Code snippets for fundamentals (already shown inline)
+const codeSnippets = {
+  '01-vectors': `// Vector operations in GLSL
+vec3 v = vec3(2.0, 1.5, 1.0);
+float mag = length(v);           // |v| = 2.693
+vec3 n = normalize(v);           // unit vector
+float dist = distance(a, b);    // |a - b|`,
+
+  '02-dot-product': `// Dot product — the most used operation in CG
+float d = dot(a, b);              // a·b
+float angle = acos(dot(n1, n2));  // angle between unit vectors
+float diffuse = max(dot(N, L), 0.0);  // Lambert
+vec3 R = reflect(-L, N);          // R = 2(N·L)N - L
+float spec = pow(max(dot(R, V), 0.0), shininess);`,
+
+  '03-cross-product': `// Cross product — perpendicular vector
+vec3 c = cross(a, b);            // a × b
+vec3 normal = normalize(cross(e1, e2));  // triangle normal
+float area = length(cross(e1, e2)) * 0.5;
+// TBN frame: B = normalize(cross(N, T))`,
+
+  '07-3d-transforms': `// 3D rotation matrices
+mat4 rotateY(float a) {
+    float c = cos(a), s = sin(a);
+    return mat4(c,0,s,0, 0,1,0,0, -s,0,c,0, 0,0,0,1);
+}
+// Compose: M = T * R * S  (scale first, rotate, translate)
+gl_Position = projection * view * model * vec4(pos, 1.0);`,
+
+  '10-camera-view-matrix': `// LookAt camera construction
+vec3 f = normalize(target - eye);   // forward
+vec3 r = normalize(cross(f, up));   // right
+vec3 u = cross(r, f);               // true up
+// View matrix = R * T(-eye)
+mat4 view = mat4(
+    r.x, u.x, -f.x, 0,
+    r.y, u.y, -f.y, 0,
+    r.z, u.z, -f.z, 0,
+    -dot(r,eye), -dot(u,eye), dot(f,eye), 1
+);`,
+
+  '14-lighting-models': `// Blinn-Phong lighting
+vec3 L = normalize(lightPos - fragPos);
+vec3 V = normalize(camPos - fragPos);
+vec3 H = normalize(L + V);
+float diff = max(dot(N, L), 0.0);
+float spec = pow(max(dot(N, H), 0.0), shininess);
+vec3 color = ambient + diff * albedo + spec * specColor;`,
+
+  '16-quaternions': `// Quaternion rotation
+// q = (w, x, y, z) = cos(θ/2) + sin(θ/2)(xi + yj + zk)
+// Rotate point: p' = q * p * q⁻¹
+
+// Compose rotations: q_total = q2 * q1
+// SLERP: slerp(q0, q1, t) = q0*(q0⁻¹*q1)^t
+
+// Quaternion to matrix:
+// |1-2(y²+z²)  2(xy-wz)    2(xz+wy)  |
+// |2(xy+wz)    1-2(x²+z²)  2(yz-wx)  |
+// |2(xz-wy)    2(yz+wx)    1-2(x²+y²)|`,
+
+  '17-curves-surfaces': `// Cubic Bézier curve
+// B(t) = (1-t)³P₀ + 3(1-t)²tP₁ + 3(1-t)t²P₂ + t³P₃
+
+// De Casteljau (recursive lerps):
+vec3 deCasteljau(vec3 p[4], float t) {
+    vec3 a = mix(p[0], p[1], t);
+    vec3 b = mix(p[1], p[2], t);
+    vec3 c = mix(p[2], p[3], t);
+    vec3 d = mix(a, b, t);
+    vec3 e = mix(b, c, t);
+    return mix(d, e, t);  // point on curve
+}`,
+
+  '18-ray-intersections': `// Ray-sphere intersection
+// |O + tD - C|² = r²  →  at² + bt + c = 0
+float a = dot(D, D);
+float b = 2.0 * dot(D, O - C);
+float c = dot(O-C, O-C) - r*r;
+float disc = b*b - 4.0*a*c;
+if (disc < 0.0) return MISS;
+float t = (-b - sqrt(disc)) / (2.0 * a);`,
 };
 
 // === PUBLIC API ===
@@ -791,10 +1395,20 @@ window.Visualizer = {
     disposeScene();
     createScene();
 
+    // Reset tab to 3D
+    tab3d.classList.add('active');
+    tabCode.classList.remove('active');
+    canvasWrap.style.display = '';
+    codeWrap.style.display = 'none';
+
     const vizFn = vizRegistry[lessonId];
     if (vizFn) {
       panel.classList.add('active');
       vizFn();
+      // Set code snippet if not already set by the viz function
+      if (!currentCodeSnippet && codeSnippets[lessonId]) {
+        setCode(codeSnippets[lessonId]);
+      }
       currentViz = { dispose: () => {} };
       animate();
     } else {
@@ -807,5 +1421,6 @@ window.Visualizer = {
   hide() {
     panel.classList.remove('active');
     disposeScene();
+    currentCodeSnippet = '';
   }
 };

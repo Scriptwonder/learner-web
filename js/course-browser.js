@@ -31,6 +31,9 @@ async function loadCourseList() {
       courseManifests[manifest.id] = manifest;
       renderCourseCard(manifest);
     });
+
+    // Restore lesson from URL hash if present
+    restoreFromHash();
   } catch (err) {
     courseList.innerHTML = '<div class="empty-state">Failed to load courses: ' + err.message + '</div>';
   }
@@ -144,6 +147,8 @@ async function openLesson(courseId, lessonId) {
     showScreen('study');
     // Scroll to top
     document.getElementById('study-content').scrollTop = 0;
+    // Update URL
+    updateHash(courseId, lessonId);
     // Load 3D visualization
     if (window.Visualizer) Visualizer.load(lessonId);
   } catch (err) {
