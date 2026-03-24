@@ -1,12 +1,12 @@
 /* ===================================================================
    Learner — "Precision Instruments" theme
-   Warm amber/gold on deep navy. Graph-paper grid. Technical elegance.
+   Day: architect's drafting table. Night: midnight lab.
    =================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-/* --- Tokens --- */
-:root {
+/* --- Dark theme (default) --- */
+:root, [data-theme="dark"] {
   --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-code: 'JetBrains Mono', monospace;
 
@@ -40,12 +40,56 @@
   --grid-color:      rgba(210, 180, 120, 0.035);
   --grid-size:       48px;
 
+  --code-bg:         rgba(0, 0, 0, 0.35);
+  --sidebar-bg:      rgba(10, 13, 23, 0.85);
+  --focus-ring:      rgba(212, 160, 74, 0.5);
+
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  color-scheme: dark;
+}
+
+/* --- Light theme: "Architect's Drafting Table" --- */
+[data-theme="light"] {
+  --bg:              #f5f0e6;
+  --bg-warm:         #ede8dc;
+  --surface:         rgba(120, 100, 60, 0.06);
+  --surface-hover:   rgba(120, 100, 60, 0.10);
+  --surface-border:  rgba(120, 100, 60, 0.15);
+  --surface-border-hover: rgba(120, 100, 60, 0.30);
+
+  --text-primary:    #1c1a16;
+  --text-body:       #3d3a34;
+  --text-secondary:  #6b665c;
+  --text-muted:      #a09a8e;
+
+  --accent:          #b07c28;
+  --accent-bright:   #c48a2a;
+  --accent-dim:      rgba(176, 124, 40, 0.10);
+  --accent-glow:     rgba(176, 124, 40, 0.06);
+
+  --cyan:            #1a8a82;
+  --cyan-dim:        rgba(26, 138, 130, 0.08);
+
+  --correct:         #2d8f4e;
+  --correct-dim:     rgba(45, 143, 78, 0.08);
+  --incorrect:       #c44040;
+  --incorrect-dim:   rgba(196, 64, 64, 0.08);
+  --info:            #1a8a82;
+  --warning:         #c48a2a;
+
+  --grid-color:      rgba(120, 100, 60, 0.08);
+
+  --code-bg:         rgba(0, 0, 0, 0.04);
+  --sidebar-bg:      rgba(237, 232, 220, 0.9);
+  --focus-ring:      rgba(176, 124, 40, 0.5);
+
+  color-scheme: light;
 }
 
 /* --- Reset --- */
@@ -61,6 +105,116 @@ body {
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background 0.4s var(--ease-out), color 0.3s var(--ease-out);
+}
+
+/* === ACCESSIBILITY === */
+
+/* Skip to content link */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 16px;
+  background: var(--accent);
+  color: var(--bg);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 200;
+  text-decoration: none;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+/* Focus-visible for keyboard nav */
+*:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Remove outline for mouse clicks */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .grid-bg { opacity: 1; animation: none; }
+}
+
+/* === THEME TOGGLE === */
+
+.theme-toggle {
+  position: fixed;
+  top: 14px;
+  right: 18px;
+  z-index: 150;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--surface-border);
+  border-radius: 50%;
+  background: var(--surface);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, border-color 0.2s, transform 0.3s var(--ease-spring);
+  -webkit-tap-highlight-color: transparent;
+}
+.theme-toggle:hover {
+  background: var(--surface-hover);
+  border-color: var(--surface-border-hover);
+  transform: scale(1.08);
+}
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+.theme-toggle svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.5s var(--ease-spring), opacity 0.3s;
+}
+
+/* Sun icon (shown in dark mode) */
+.theme-toggle .icon-sun {
+  color: var(--accent);
+}
+.theme-toggle .icon-moon {
+  color: var(--accent);
+  display: none;
+}
+
+[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+/* Toggle animation */
+.theme-toggle.animating svg {
+  transform: rotate(360deg) scale(0.5);
+  opacity: 0;
+}
+
+/* Theme transition overlay */
+.theme-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.theme-transition-overlay.active {
+  opacity: 1;
+  background: var(--bg);
 }
 
 /* --- Grid background --- */
@@ -529,7 +683,7 @@ body {
   width: 240px;
   flex-shrink: 0;
   padding: 28px 18px 24px;
-  background: rgba(10, 13, 23, 0.85);
+  background: var(--sidebar-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-right: 1px solid var(--surface-border);
@@ -660,7 +814,7 @@ body {
   border: 1px solid rgba(212, 160, 74, 0.1);
 }
 .study-content pre {
-  background: rgba(0, 0, 0, 0.35);
+  background: var(--code-bg);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-md);
   padding: 18px 20px;
@@ -1092,7 +1246,7 @@ body {
   z-index: 100;
 }
 .modal {
-  background: #111520;
+  background: var(--bg);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-lg);
   padding: 36px;
@@ -1479,6 +1633,71 @@ body {
 }
 
 /* ===================================================================
+   Light theme specific overrides
+   =================================================================== */
+
+[data-theme="light"] .grid-bg {
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 10%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 10%, transparent 80%);
+}
+
+[data-theme="light"] .study-content code {
+  background: rgba(176, 124, 40, 0.08);
+  color: #8b6914;
+  border-color: rgba(176, 124, 40, 0.12);
+}
+
+[data-theme="light"] .study-content pre code {
+  color: var(--text-body);
+  background: none;
+  border: none;
+}
+
+[data-theme="light"] .brand-icon { color: var(--accent); }
+
+[data-theme="light"] .quiz-answer-input {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .mc-option {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="light"] .viz-panel {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .viz-controls {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .viz-info {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .viz-code-wrap {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .viz-toolbar {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Light theme scrollbar */
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: rgba(120, 100, 60, 0.2);
+}
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 100, 60, 0.3);
+}
+
+/* Light theme highlight.js override */
+[data-theme="light"] .hljs {
+  color: var(--text-body) !important;
+  background: transparent !important;
+}
+
+/* ===================================================================
    Responsive
    =================================================================== */
 
@@ -1487,6 +1706,7 @@ body {
   .study-content { padding: 32px 24px; }
   .course-browser { padding: 48px 20px 40px; }
   #quiz-screen { padding: 36px 24px; padding-top: 64px; }
+  .theme-toggle { top: 10px; right: 12px; width: 38px; height: 38px; }
 }
 
 @media (max-width: 600px) {
