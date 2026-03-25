@@ -58,7 +58,9 @@ function resize() {
   const w = canvasWrap.clientWidth;
   const h = canvasWrap.clientHeight;
   if (w === 0 || h === 0) return;
-  renderer.setSize(w, h);
+  renderer.setSize(w, h, false);
+  renderer.domElement.style.width = w + 'px';
+  renderer.domElement.style.height = h + 'px';
   if (camera) {
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
