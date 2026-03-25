@@ -1,0 +1,128 @@
+{
+  "id": "04-shapes-with-math",
+  "title": "Shapes with Math",
+  "primer": "Every shape in a fragment shader is really just a mathematical condition: is this pixel inside or outside a region? The key tools are <code>distance()</code> to measure how far a point is from a reference, <code>step()</code> to make a hard binary decision, and <code>smoothstep()</code> to blend that edge into a silky anti-aliased transition. Together these three functions let you draw circles, rings, and rounded rectangles without a single triangle.",
+  "geometry": "quad",
+  "uniforms": ["u_time", "u_resolution"],
+  "challenges": [
+    {
+      "id": "04-shapes-with-math-c1",
+      "title": "Draw a circle",
+      "description": "Draw a white circle of radius 0.3 centered at (0.5, 0.5) on a black background. Use <code>distance()</code> to measure each pixel's distance from the center, then <code>step()</code> to decide inside vs outside.",
+      "template": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 center = vec2(0.5, 0.5);\n\n    float d = distance(uv, center);\n\n    // 1.0 when d < 0.3, 0.0 otherwise\n    float circle = /* ??? */;\n\n    fragColor = vec4(circle, circle, circle, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 center = vec2(0.5, 0.5);\n\n    float d = distance(uv, center);\n\n    // step(edge, x) returns 1.0 when x >= edge, so invert:\n    float circle = 1.0 - step(0.3, d);\n\n    fragColor = vec4(circle, circle, circle, 1.0);\n}\n",
+      "hints": [
+        "`step(edge, x)` returns 0.0 if x < edge, and 1.0 if x >= edge. You want the *inside* of the circle to be white, so think about how to invert the result.",
+        "Try `1.0 - step(0.3, d)`. When d is small (inside the circle), step returns 0.0, so 1.0 - 0.0 = 1.0 (white). When d is large, step returns 1.0, so 1.0 - 1.0 = 0.0 (black)."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5,  "y": 0.5,  "expected": [1.0, 1.0, 1.0, 1.0], "tolerance": 0.05 },
+          { "x": 0.5,  "y": 0.85, "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.05 },
+          { "x": 0.0,  "y": 0.0,  "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.05 }
+        ]
+      },
+      "unlocks_theory": "`step(edge, x)` is a Heaviside step function — it returns a hard 0 or 1 with no in-between. This is fast but produces a jagged, aliased edge at the boundary. For smooth results you'll replace it with `smoothstep`, which interpolates over a small transition band.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n};\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 center = float2(0.5, 0.5);\n\n    float d = distance(uv, center);\n    float circle = 1.0 - step(0.3, d);\n\n    return float4(circle, circle, circle, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 center = float2(0.5, 0.5);\n\n    float d = distance(uv, center);\n    float circle = 1.0 - step(0.3, d);\n\n    return float4(circle, circle, circle, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "04-shapes-with-math-c2",
+      "title": "Smooth circle with smoothstep",
+      "description": "Replace the hard <code>step</code> edge with <code>smoothstep</code> to get an anti-aliased circle. The circle should have radius 0.3 and a smooth falloff over a 0.01 transition band at its edge.",
+      "template": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 center = vec2(0.5, 0.5);\n\n    float d = distance(uv, center);\n\n    // smoothstep(edge0, edge1, x): smooth 0->1 as x goes from edge0 to edge1\n    // We want 1.0 inside and 0.0 outside, with a soft border at 0.3\n    float circle = /* ??? */;\n\n    fragColor = vec4(circle, circle, circle, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 center = vec2(0.5, 0.5);\n\n    float d = distance(uv, center);\n\n    // smoothstep goes from 1.0 to 0.0 as d crosses the 0.3 boundary\n    float circle = smoothstep(0.31, 0.29, d);\n\n    fragColor = vec4(circle, circle, circle, 1.0);\n}\n",
+      "hints": [
+        "`smoothstep(edge0, edge1, x)` returns 0.0 when x <= edge0 and 1.0 when x >= edge1. By swapping the edges (edge0 > edge1) you invert the ramp: 1.0 inside and 0.0 outside.",
+        "Use `smoothstep(0.31, 0.29, d)` — when d is small (inside), the result is 1.0; when d is large (outside), it is 0.0, with a smooth transition between 0.29 and 0.31."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5,  "y": 0.5,  "expected": [1.0, 1.0, 1.0, 1.0], "tolerance": 0.05 },
+          { "x": 0.5,  "y": 0.85, "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.05 }
+        ]
+      },
+      "unlocks_theory": "`smoothstep` uses a cubic Hermite curve (3t² - 2t³) between its two edge values. The result has zero derivative at both endpoints, so colors transition without a visible discontinuity — this is how GPU-drawn circles look pixel-perfect at any scale. The width of the transition band (here 0.02) controls how blurry or sharp the edge appears.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n};\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 center = float2(0.5, 0.5);\n\n    float d = distance(uv, center);\n    float circle = smoothstep(0.31, 0.29, d);\n\n    return float4(circle, circle, circle, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 center = float2(0.5, 0.5);\n\n    float d = distance(uv, center);\n    float circle = smoothstep(0.31, 0.29, d);\n\n    return float4(circle, circle, circle, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "04-shapes-with-math-c3",
+      "title": "Ring (annulus)",
+      "description": "Draw a white ring with inner radius 0.22 and outer radius 0.32, centered at (0.5, 0.5). The ring is the region between two concentric circles — pixels that are inside the outer circle but outside the inner circle.",
+      "template": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 center = vec2(0.5, 0.5);\n    float d = distance(uv, center);\n\n    // Outer circle mask (inside = 1)\n    float outer = smoothstep(0.33, 0.31, d);\n\n    // Inner circle mask (inside = 1) — subtract it\n    float inner = /* ??? */;\n\n    float ring = /* outer minus inner */;\n\n    fragColor = vec4(ring, ring, ring, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 center = vec2(0.5, 0.5);\n    float d = distance(uv, center);\n\n    float outer = smoothstep(0.33, 0.31, d);\n    float inner = smoothstep(0.23, 0.21, d);\n\n    float ring = outer - inner;\n\n    fragColor = vec4(ring, ring, ring, 1.0);\n}\n",
+      "hints": [
+        "Build the inner mask the same way as the outer circle mask but with a smaller radius: `smoothstep(0.23, 0.21, d)`.",
+        "The ring is the outer disk with the inner disk punched out: `ring = outer - inner`. Because both masks are in [0,1], the difference is also in [0,1]."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5,  "y": 0.5,  "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.05 },
+          { "x": 0.5,  "y": 0.23, "expected": [1.0, 1.0, 1.0, 1.0], "tolerance": 0.1  },
+          { "x": 0.0,  "y": 0.0,  "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.05 }
+        ]
+      },
+      "unlocks_theory": "Subtracting one mask from another is a fundamental CSG (constructive solid geometry) operation in shader space. The same idea extends to boolean union (max), intersection (min), and complement (1 - mask). These operations let you build complex shapes from simple primitives entirely in the pixel shader.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n};\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 center = float2(0.5, 0.5);\n    float d = distance(uv, center);\n\n    float outer = smoothstep(0.33, 0.31, d);\n    float inner = smoothstep(0.23, 0.21, d);\n\n    float ring = outer - inner;\n\n    return float4(ring, ring, ring, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 center = float2(0.5, 0.5);\n    float d = distance(uv, center);\n\n    float outer = smoothstep(0.33, 0.31, d);\n    float inner = smoothstep(0.23, 0.21, d);\n\n    float ring = outer - inner;\n\n    return float4(ring, ring, ring, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "04-shapes-with-math-c4",
+      "title": "Rounded rectangle",
+      "description": "Draw a white rounded rectangle centered at (0.5, 0.5) with half-extents (0.3, 0.2) and corner radius 0.08. A rounded rect SDF equals <code>length(max(q, 0.0)) - r</code> where <code>q = abs(uv - center) - halfSize</code>.",
+      "template": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\n// Signed distance to a rounded rectangle\n// b = half-extents, r = corner radius\nfloat sdRoundedRect(vec2 p, vec2 b, float r) {\n    vec2 q = abs(p) - b + r;\n    return /* ??? */ - r;\n}\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 p = uv - vec2(0.5, 0.5);  // center at origin\n\n    float d = sdRoundedRect(p, vec2(0.3, 0.2), 0.08);\n\n    // d < 0 means inside the shape\n    float shape = smoothstep(0.01, -0.01, d);\n\n    fragColor = vec4(shape, shape, shape, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nfloat sdRoundedRect(vec2 p, vec2 b, float r) {\n    vec2 q = abs(p) - b + r;\n    return length(max(q, 0.0)) - r;\n}\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 p = uv - vec2(0.5, 0.5);\n\n    float d = sdRoundedRect(p, vec2(0.3, 0.2), 0.08);\n\n    float shape = smoothstep(0.01, -0.01, d);\n\n    fragColor = vec4(shape, shape, shape, 1.0);\n}\n",
+      "hints": [
+        "The rounded-rect SDF works by computing how far the point is from the nearest corner arc. `q = abs(p) - b + r` folds the space into one quadrant; `max(q, 0.0)` clamps negative components (inside the rect body) to zero.",
+        "Complete the SDF body: `return length(max(q, 0.0)) - r;`. The `- r` shifts the surface inward by the corner radius, rounding the corners."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5,  "y": 0.5,  "expected": [1.0, 1.0, 1.0, 1.0], "tolerance": 0.05 },
+          { "x": 0.5,  "y": 0.05, "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.05 },
+          { "x": 0.05, "y": 0.05, "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.05 }
+        ]
+      },
+      "unlocks_theory": "Signed Distance Functions (SDFs) return negative values inside a shape and positive values outside. This sign makes boolean operations trivial (union = min, intersection = max) and gives you the distance to the surface for free — enabling outlines, glows, and soft shadows all from a single SDF evaluation per pixel.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n};\n\nfloat sdRoundedRect(float2 p, float2 b, float r) {\n    float2 q = abs(p) - b + r;\n    return length(max(q, 0.0)) - r;\n}\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 p = uv - float2(0.5, 0.5);\n\n    float d = sdRoundedRect(p, float2(0.3, 0.2), 0.08);\n    float shape = smoothstep(0.01, -0.01, d);\n\n    return float4(shape, shape, shape, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\n\nfloat sdRoundedRect(float2 p, float2 b, float r) {\n    float2 q = abs(p) - b + r;\n    return length(max(q, 0.0)) - r;\n}\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 p = uv - float2(0.5, 0.5);\n\n    float d = sdRoundedRect(p, float2(0.3, 0.2), 0.08);\n    float shape = smoothstep(0.01, -0.01, d);\n\n    return float4(shape, shape, shape, 1.0);\n}\n"
+        }
+      }
+    }
+  ]
+}

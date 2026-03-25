@@ -1,0 +1,112 @@
+{
+  "id": "01-hello-fragment",
+  "title": "Hello, Fragment Shader",
+  "description": "Every pixel on your screen can be any color — you decide. In a fragment shader, your job is to output exactly one `vec4` color (R, G, B, Alpha) for each fragment. Let's start by painting the entire canvas a solid color.",
+  "theory": {
+    "key_concept": "Fragment shaders run once per pixel. Your only required output is a color — a `vec4` with components in the range [0.0, 1.0]. The renderer prepends `#version 300 es` and `precision highp float;` automatically.",
+    "glsl_notes": "In GLSL ES 3.0, you declare a named output variable instead of writing to `gl_FragColor`. Use `out vec4 fragColor;` at the top of your shader, then assign to it inside `main()`.",
+    "color_model": "Colors are (Red, Green, Blue, Alpha). Each component is a float from 0.0 (none) to 1.0 (full). Alpha controls transparency but is typically 1.0 for opaque output."
+  },
+  "challenges": [
+    {
+      "id": "01-hello-fragment-c1",
+      "title": "Paint it red",
+      "description": "Output a solid red color for every pixel. Red is full red channel (1.0), no green, no blue, fully opaque.",
+      "template": "out vec4 fragColor;\n\nvoid main() {\n    // Output a solid red color\n    fragColor = vec4(/* ??? */);\n}\n",
+      "solution": "out vec4 fragColor;\n\nvoid main() {\n    fragColor = vec4(1.0, 0.0, 0.0, 1.0);\n}\n",
+      "hints": [
+        "A `vec4` takes four float arguments: (R, G, B, A). For pure red with full opacity, only the first component should be 1.0.",
+        "Try `vec4(1.0, 0.0, 0.0, 1.0)` — that is full red, no green, no blue, fully opaque."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [1.0, 0.0, 0.0, 1.0], "tolerance": 0.02 }
+        ]
+      },
+      "unlocks_theory": "Colors as vectors: each channel is an independent scalar in [0,1]. Mixing colors is just adding scaled vectors.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "In HLSL the entry point returns a value instead of writing to a declared output variable.",
+          "code": "float4 main() : SV_Target {\n    return float4(1.0, 0.0, 0.0, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "note": "Slang uses HLSL-style syntax. The `[shader(\"fragment\")]` attribute marks the entry point.",
+          "code": "[shader(\"fragment\")]\nfloat4 main() : SV_Target {\n    return float4(1.0, 0.0, 0.0, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "01-hello-fragment-c2",
+      "title": "Mix your own color",
+      "description": "Paint the canvas a warm orange. Orange lives between red (1, 0, 0) and yellow (1, 1, 0) — a high red, medium green, and very low blue.",
+      "template": "out vec4 fragColor;\n\nvoid main() {\n    // Output a warm orange: roughly R=1.0, G=0.5, B=0.1\n    fragColor = vec4(/* ??? */);\n}\n",
+      "solution": "out vec4 fragColor;\n\nvoid main() {\n    fragColor = vec4(1.0, 0.5, 0.1, 1.0);\n}\n",
+      "hints": [
+        "Think of orange as red with a bit of green mixed in. Keep red at 1.0, set green somewhere around 0.4–0.6, and keep blue very low (0.0–0.15).",
+        "Try `vec4(1.0, 0.5, 0.1, 1.0)`. Experiment — there is no single correct orange. The validator accepts any warm orange in that neighbourhood."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          {
+            "x": 0.5,
+            "y": 0.5,
+            "expected": [1.0, 0.5, 0.1, 1.0],
+            "tolerance": 0.15,
+            "note": "Generous tolerance — any warm orange accepted"
+          }
+        ]
+      },
+      "unlocks_theory": "The RGB colour cube: moving along the R axis gives reds, adding G creates yellows and oranges, adding B pushes towards white.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "float4 main() : SV_Target {\n    return float4(1.0, 0.5, 0.1, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "[shader(\"fragment\")]\nfloat4 main() : SV_Target {\n    return float4(1.0, 0.5, 0.1, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "01-hello-fragment-c3",
+      "title": "Use a uniform",
+      "description": "The renderer supplies `u_resolution` — a `vec2` containing the canvas width and height in pixels. Use it to derive the red channel so the color reacts to the canvas size.",
+      "template": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    // Use u_resolution.x divided by 1000.0 as the red channel\n    float r = /* ??? */;\n    fragColor = vec4(r, 0.2, 0.4, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    float r = u_resolution.x / 1000.0;\n    fragColor = vec4(r, 0.2, 0.4, 1.0);\n}\n",
+      "hints": [
+        "Uniforms are read-only values passed from the CPU. `u_resolution.x` is the canvas width in pixels — divide it by 1000.0 to bring it into the [0, 1] range for a typical canvas.",
+        "Assign `u_resolution.x / 1000.0` to `r`, then pass `r` as the first component of `fragColor`."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "canvas_width": 800,
+        "sample_points": [
+          {
+            "x": 0.5,
+            "y": 0.5,
+            "expected": [0.8, 0.2, 0.4, 1.0],
+            "tolerance": 0.05
+          }
+        ]
+      },
+      "unlocks_theory": "Uniforms are the CPU-to-GPU data channel. Common uniforms: `u_time` (seconds since start), `u_resolution` (canvas size), `u_mouse` (cursor position). You declare them in the shader and the engine fills them in each frame.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "In HLSL, uniforms live in a constant buffer. The `cbuffer` block is bound by the engine.",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n};\n\nfloat4 main() : SV_Target {\n    float r = u_resolution.x / 1000.0;\n    return float4(r, 0.2, 0.4, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "note": "Slang supports both HLSL constant buffers and a cleaner `ParameterBlock` pattern.",
+          "code": "uniform float2 u_resolution;\n\n[shader(\"fragment\")]\nfloat4 main() : SV_Target {\n    float r = u_resolution.x / 1000.0;\n    return float4(r, 0.2, 0.4, 1.0);\n}\n"
+        }
+      }
+    }
+  ]
+}

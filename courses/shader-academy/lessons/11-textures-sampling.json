@@ -1,0 +1,131 @@
+{
+  "id": "11-textures-sampling",
+  "title": "Textures & Sampling",
+  "description": "Textures let you store gigabytes of visual detail and read it back in a single GPU instruction. The `texture2D` (or `texture` in GLSL ES 3.0) built-in maps a UV coordinate to a texel, with the hardware handling filtering and wrapping automatically. This lesson covers sampling, tiling, and UV distortion — the foundation of everything from albedo maps to displacement.",
+  "theory": {
+    "key_concept": "`texture(sampler, uv)` is the core GLSL ES 3.0 sampling call. The sampler is bound to a texture unit by the application (the renderer provides `u_texture0` as a built-in checkerboard). The UV passed in is automatically wrapped and filtered according to the sampler's state.",
+    "wrapping": "Wrapping modes control what happens when UV coordinates go outside [0, 1]. `GL_REPEAT` tiles the texture — UV 1.5 is the same as 0.5. `GL_CLAMP_TO_EDGE` clamps to the border texel. `GL_MIRRORED_REPEAT` flips the texture at each tile boundary. You can fake these in shader with `fract(uv)` (repeat) or `clamp(uv, 0.0, 1.0)`.",
+    "filtering": "Bilinear filtering blends the four nearest texels for a smooth result at the cost of blurriness when magnified. Nearest-neighbor is sharp but pixelated — great for pixel art. Mipmaps (precomputed downsampled versions) prevent aliasing when the texture is minified. All of this is controlled by sampler state, not shader code.",
+    "tiling": "To tile a texture N times, multiply the UV before sampling: `texture(u_texture0, uv * N)`. Fractional tile counts produce partial repeats. Multiplying by a non-uniform vec2 scales differently on each axis."
+  },
+  "geometry": "quad",
+  "uniforms": ["u_time", "u_resolution", "u_texture0"],
+  "challenges": [
+    {
+      "id": "11-textures-sampling-c1",
+      "title": "Sample a Texture",
+      "description": "Sample the built-in checkerboard texture at the fragment's UV coordinates and output the result directly. The canvas should fill with the checkerboard pattern at 1:1 scale.",
+      "template": "uniform vec2 u_resolution;\nuniform sampler2D u_texture0;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n\n    // Sample u_texture0 at uv\n    vec4 texColor = /* ??? */;\n\n    fragColor = texColor;\n}\n",
+      "solution": "uniform vec2 u_resolution;\nuniform sampler2D u_texture0;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n\n    vec4 texColor = texture(u_texture0, uv);\n\n    fragColor = texColor;\n}\n",
+      "hints": [
+        "In GLSL ES 3.0, the texture sampling function is `texture(sampler, uv)`. The `texture2D` function from GLSL ES 1.0 still works but is deprecated.",
+        "`uv` is already in [0, 1] after dividing by resolution. Pass it directly as the second argument to `texture`."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.0, "y": 0.0, "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.1 },
+          { "x": 0.5, "y": 0.5, "expected": [1.0, 1.0, 1.0, 1.0], "tolerance": 0.1 }
+        ]
+      },
+      "unlocks_theory": "The `texture(sampler, uv)` call is one of the most common lines in any production shader. It's used for albedo, normal maps, roughness maps, emissive maps, shadow maps, and more. The hardware texture unit handles all the filtering and wrapping transparently — your shader just provides the coordinate.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "HLSL separates the texture object and sampler state into two objects.",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n};\n\nTexture2D u_texture0 : register(t0);\nSamplerState u_sampler : register(s0);\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    return u_texture0.Sample(u_sampler, uv);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\nuniform Texture2D u_texture0;\nuniform SamplerState u_sampler;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    return u_texture0.Sample(u_sampler, uv);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "11-textures-sampling-c2",
+      "title": "Texture Tiling",
+      "description": "Tile the checkerboard texture 4 times across the canvas on each axis so 16 copies of the pattern are visible. Then animate the tiling count between 2 and 8 using `u_time` so the checkerboard scales over time.",
+      "template": "uniform vec2 u_resolution;\nuniform float u_time;\nuniform sampler2D u_texture0;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n\n    // Animate tile count between 2 and 8\n    float tiles = /* ??? */;\n\n    // Sample with tiling\n    vec4 texColor = /* ??? */;\n\n    fragColor = texColor;\n}\n",
+      "solution": "uniform vec2 u_resolution;\nuniform float u_time;\nuniform sampler2D u_texture0;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n\n    float tiles = 5.0 + 3.0 * sin(u_time);\n\n    vec4 texColor = texture(u_texture0, uv * tiles);\n\n    fragColor = texColor;\n}\n",
+      "hints": [
+        "Multiply `uv` by a scalar before passing to `texture`: `texture(u_texture0, uv * 4.0)`. Each axis repeats 4 times because the hardware wraps UV > 1 back to 0.",
+        "To animate: `5.0 + 3.0 * sin(u_time)` oscillates between 2 and 8. The checkerboard will appear to zoom in and out."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.0, "y": 0.0, "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.1 },
+          { "x": 0.25, "y": 0.0, "expected": [1.0, 1.0, 1.0, 1.0], "tolerance": 0.15 }
+        ]
+      },
+      "unlocks_theory": "Texture tiling is ubiquitous in games: ground planes, walls, and fabric all tile the same small texture to cover large surfaces cheaply. The texture itself stays in GPU memory at a fixed size; it's the UV multiplication that controls scale. A common production pattern is to blend two textures tiled at different frequencies to break up obvious repetition.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n    float u_time;\n};\n\nTexture2D u_texture0 : register(t0);\nSamplerState u_sampler : register(s0);\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float tiles = 5.0 + 3.0 * sin(u_time);\n    return u_texture0.Sample(u_sampler, uv * tiles);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\nuniform float u_time;\nuniform Texture2D u_texture0;\nuniform SamplerState u_sampler;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float tiles = 5.0 + 3.0 * sin(u_time);\n    return u_texture0.Sample(u_sampler, uv * tiles);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "11-textures-sampling-c3",
+      "title": "UV Distortion",
+      "description": "Warp the UVs before sampling to create a wave distortion effect. Offset `uv.x` by a sine wave that varies with `uv.y` and `u_time`, and offset `uv.y` by a cosine wave. The checkerboard should appear to ripple like a flag in the wind.",
+      "template": "uniform vec2 u_resolution;\nuniform float u_time;\nuniform sampler2D u_texture0;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n\n    // Distort UVs with animated sine/cosine waves\n    vec2 distortedUV = uv;\n    distortedUV.x += /* ??? */;\n    distortedUV.y += /* ??? */;\n\n    fragColor = texture(u_texture0, distortedUV);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nuniform float u_time;\nuniform sampler2D u_texture0;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n\n    vec2 distortedUV = uv;\n    distortedUV.x += 0.05 * sin(uv.y * 10.0 + u_time * 2.0);\n    distortedUV.y += 0.05 * cos(uv.x * 10.0 + u_time * 2.0);\n\n    fragColor = texture(u_texture0, distortedUV);\n}\n",
+      "hints": [
+        "Add a small sine offset to uv.x: `uv.x + 0.05 * sin(uv.y * 10.0 + u_time * 2.0)`. The `uv.y * 10.0` term makes the wave vary vertically; `u_time` animates it.",
+        "Keep the amplitude small (0.03 – 0.08) to avoid extreme stretching. Larger values create abstract liquid distortions."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.5 }
+        ]
+      },
+      "unlocks_theory": "UV distortion is used in water shaders (normal-mapped waves), heat haze effects, cloth simulation, and texture bombing. The same principle applies to normal maps: distort the UVs before sampling to create parallax, or sample a flow map to drive UV offset over time. This technique is entirely free — it just adds a few ALU ops before the texture fetch.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n    float u_time;\n};\n\nTexture2D u_texture0 : register(t0);\nSamplerState u_sampler : register(s0);\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    uv.x += 0.05 * sin(uv.y * 10.0 + u_time * 2.0);\n    uv.y += 0.05 * cos(uv.x * 10.0 + u_time * 2.0);\n    return u_texture0.Sample(u_sampler, uv);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\nuniform float u_time;\nuniform Texture2D u_texture0;\nuniform SamplerState u_sampler;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    uv.x += 0.05 * sin(uv.y * 10.0 + u_time * 2.0);\n    uv.y += 0.05 * cos(uv.x * 10.0 + u_time * 2.0);\n    return u_texture0.Sample(u_sampler, uv);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "11-textures-sampling-c4",
+      "title": "Texture Color Grading",
+      "description": "Sample the checkerboard texture and apply a simple color grade: boost the red channel, reduce the blue channel, and multiply by a vignette that darkens the edges of the canvas. The final look should be warm-tinted with darker corners.",
+      "template": "uniform vec2 u_resolution;\nuniform sampler2D u_texture0;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n\n    vec4 tex = texture(u_texture0, uv * 4.0);\n\n    // Vignette: dark at edges, bright at center\n    float vignette = /* ??? */;\n\n    // Color grade: boost red, cut blue\n    vec3 graded = tex.rgb;\n    graded.r = /* ??? */;\n    graded.b = /* ??? */;\n\n    fragColor = vec4(graded * vignette, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nuniform sampler2D u_texture0;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n\n    vec4 tex = texture(u_texture0, uv * 4.0);\n\n    vec2 centered = uv - 0.5;\n    float vignette = 1.0 - dot(centered, centered) * 2.5;\n    vignette = clamp(vignette, 0.0, 1.0);\n\n    vec3 graded = tex.rgb;\n    graded.r = min(1.0, graded.r * 1.3);\n    graded.b = graded.b * 0.5;\n\n    fragColor = vec4(graded * vignette, 1.0);\n}\n",
+      "hints": [
+        "Vignette: `1.0 - dot(uv - 0.5, uv - 0.5) * k`. The dot product gives the squared distance from center, which is 0 at center and ~0.5 at the corner midpoints. Multiply by k=2–3 and clamp.",
+        "Color grading is just per-channel multiplication or addition: `graded.r *= 1.3` boosts red, `graded.b *= 0.5` cuts blue. Together they shift the palette toward warm orange."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [1.0, 1.0, 0.5, 1.0], "tolerance": 0.2 },
+          { "x": 0.0, "y": 0.0, "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.1 }
+        ]
+      },
+      "unlocks_theory": "Color grading and vignettes are applied in virtually every shipped game as part of a post-process stack. Proper post-processing runs on a full-screen quad with the scene rendered to a texture — the same technique we explored conceptually in lesson 12. The math is identical whether you're grading a checkerboard or a 4K scene.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n};\n\nTexture2D u_texture0 : register(t0);\nSamplerState u_sampler : register(s0);\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float4 tex = u_texture0.Sample(u_sampler, uv * 4.0);\n\n    float2 centered = uv - 0.5;\n    float vignette = clamp(1.0 - dot(centered, centered) * 2.5, 0.0, 1.0);\n\n    float3 graded = tex.rgb;\n    graded.r = min(1.0, graded.r * 1.3);\n    graded.b = graded.b * 0.5;\n\n    return float4(graded * vignette, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\nuniform Texture2D u_texture0;\nuniform SamplerState u_sampler;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float4 tex = u_texture0.Sample(u_sampler, uv * 4.0);\n\n    float2 centered = uv - 0.5;\n    float vignette = clamp(1.0 - dot(centered, centered) * 2.5, 0.0, 1.0);\n\n    float3 graded = tex.rgb;\n    graded.r = min(1.0, graded.r * 1.3);\n    graded.b = graded.b * 0.5;\n\n    return float4(graded * vignette, 1.0);\n}\n"
+        }
+      }
+    }
+  ]
+}

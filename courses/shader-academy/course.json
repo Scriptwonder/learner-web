@@ -1,0 +1,20 @@
+{
+  "id": "shader-academy",
+  "title": "Shader Academy",
+  "type": "shader",
+  "description": "Learn shader programming through interactive challenges — write real GLSL, see instant results, and discover HLSL and Slang along the way.",
+  "modules": [
+    {
+      "title": "Shader Basics",
+      "lessons": ["01-hello-fragment", "02-uniforms-time", "03-uv-coordinates", "04-shapes-with-math", "05-color-mixing", "06-transformations", "07-patterns-repetition", "08-noise-randomness"]
+    },
+    {
+      "title": "Advanced Shaders",
+      "lessons": ["09-signed-distance-functions", "10-lighting-fundamentals", "11-textures-sampling", "12-framebuffers-multipass", "13-raymarching", "14-volumetric-effects", "15-pbr-in-shaders"]
+    },
+    {
+      "title": "Language Tracks",
+      "lessons": ["16-syntax-types", "17-shader-stages", "18-builtin-functions", "19-hlsl-deep-dive", "20-slang-deep-dive", "21-cross-compilation"]
+    }
+  ]
+}

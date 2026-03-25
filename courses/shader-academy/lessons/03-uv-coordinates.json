@@ -1,0 +1,104 @@
+{
+  "id": "03-uv-coordinates",
+  "title": "UV Coordinates",
+  "description": "So far every pixel has been the same color. To draw anything spatial — gradients, shapes, patterns — you need to know *where* each fragment is on the canvas. UV coordinates give you a normalised position in [0, 1] × [0, 1] space, independent of canvas resolution.",
+  "theory": {
+    "key_concept": "`gl_FragCoord.xy` contains the pixel's position in window space (pixels from the bottom-left). Dividing by `u_resolution` normalises it to UV space: (0,0) at the bottom-left, (1,1) at the top-right.",
+    "uv_convention": "In OpenGL/GLSL, UV origin is bottom-left (V=0 at the bottom). In DirectX/HLSL, the V axis is flipped (V=0 at the top). Be aware of this difference when porting shaders.",
+    "distance_functions": "The built-in `distance(a, b)` computes the Euclidean distance between two `vec2` points. Combined with UV coordinates you can create circles, radial gradients, and proximity-based effects without any conditionals."
+  },
+  "challenges": [
+    {
+      "id": "03-uv-coordinates-c1",
+      "title": "Horizontal gradient",
+      "description": "Compute UV coordinates from `gl_FragCoord` and `u_resolution`, then use `uv.x` as a grayscale value. The left edge should be black (0) and the right edge white (1).",
+      "template": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    // Normalise gl_FragCoord to [0,1] UV space\n    vec2 uv = /* ??? */;\n\n    // Use uv.x for all three color channels (grayscale gradient)\n    fragColor = vec4(uv.x, uv.x, uv.x, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    fragColor = vec4(uv.x, uv.x, uv.x, 1.0);\n}\n",
+      "hints": [
+        "`gl_FragCoord.xy` gives pixel coordinates in window space (e.g., 0–799 for an 800-wide canvas). Divide by `u_resolution` to get values in [0, 1].",
+        "After computing `uv`, feed `uv.x` into all three color channels to get a grayscale left-to-right gradient."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.0,  "y": 0.5, "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.03 },
+          { "x": 0.5,  "y": 0.5, "expected": [0.5, 0.5, 0.5, 1.0], "tolerance": 0.03 },
+          { "x": 1.0,  "y": 0.5, "expected": [1.0, 1.0, 1.0, 1.0], "tolerance": 0.03 }
+        ]
+      },
+      "unlocks_theory": "UV space is resolution-independent. Code written in UV coordinates produces the same visual regardless of whether the canvas is 400×400 or 1920×1080 — no hard-coded pixel values needed.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "In HLSL, the pixel position comes from a semantic on the input struct, not a built-in global.",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n};\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    return float4(uv.x, uv.x, uv.x, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    return float4(uv.x, uv.x, uv.x, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "03-uv-coordinates-c2",
+      "title": "UV debug view",
+      "description": "Visualise both UV axes at once: set red = uv.x, green = uv.y, blue = 0. The bottom-left corner will be black, the top-right will be yellow, and you can immediately read position from the colors.",
+      "template": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n\n    // R = uv.x, G = uv.y, B = 0.0\n    fragColor = vec4(/* ??? */);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    fragColor = vec4(uv.x, uv.y, 0.0, 1.0);\n}\n",
+      "hints": [
+        "This is the classic UV debug visualisation. Just plug `uv.x` into the red channel and `uv.y` into the green channel.",
+        "The result: bottom-left is black (0,0), bottom-right is red (1,0), top-left is green (0,1), top-right is yellow (1,1)."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.0,  "y": 0.0,  "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.03 },
+          { "x": 1.0,  "y": 0.0,  "expected": [1.0, 0.0, 0.0, 1.0], "tolerance": 0.03 },
+          { "x": 0.0,  "y": 1.0,  "expected": [0.0, 1.0, 0.0, 1.0], "tolerance": 0.03 },
+          { "x": 1.0,  "y": 1.0,  "expected": [1.0, 1.0, 0.0, 1.0], "tolerance": 0.03 }
+        ]
+      },
+      "unlocks_theory": "The UV debug view is a fundamental debugging technique. Whenever a shader behaves unexpectedly, visualising your intermediate values as colors — position, normals, depth — lets you instantly see what the GPU is computing.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n};\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    return float4(uv.x, uv.y, 0.0, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    return float4(uv.x, uv.y, 0.0, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "03-uv-coordinates-c3",
+      "title": "Radial gradient",
+      "description": "Create a bright center that fades to black at the edges. Compute the distance from each UV coordinate to the canvas center (0.5, 0.5), then invert it so the center is white (distance ≈ 0) and the edges are dark (distance ≈ 0.5–0.7).",
+      "template": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 center = vec2(0.5, 0.5);\n\n    // Compute distance from uv to center, then invert\n    float d = /* ??? */;\n    float brightness = /* 1.0 - d */;\n\n    fragColor = vec4(brightness, brightness, brightness, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 center = vec2(0.5, 0.5);\n\n    float d = distance(uv, center);\n    float brightness = 1.0 - d * 2.0;\n\n    fragColor = vec4(brightness, brightness, brightness, 1.0);\n}\n",
+      "hints": [
+        "Use the built-in `distance(uv, center)` to get the Euclidean distance. The maximum distance from the center to a corner of a unit square is about 0.707.",
+        "Invert and scale: `1.0 - d * 2.0` maps d=0 (center) to 1.0 and d=0.5 (edge midpoints) to 0.0. You can clamp or adjust the multiplier to taste."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5,  "y": 0.5,  "expected": [1.0, 1.0, 1.0, 1.0], "tolerance": 0.05 },
+          { "x": 0.0,  "y": 0.0,  "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.1  },
+          { "x": 1.0,  "y": 1.0,  "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.1  }
+        ]
+      },
+      "unlocks_theory": "Radial distance from a point is the foundation of circles, soft shadows, glow effects, vignettes, and signed-distance functions (SDFs). Once you can compute distance in UV space, you can draw any smooth circular shape with a single comparison or `smoothstep` call.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n};\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 center = float2(0.5, 0.5);\n\n    float d = distance(uv, center);\n    float brightness = 1.0 - d * 2.0;\n\n    return float4(brightness, brightness, brightness, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 center = float2(0.5, 0.5);\n\n    float d = distance(uv, center);\n    float brightness = 1.0 - d * 2.0;\n\n    return float4(brightness, brightness, brightness, 1.0);\n}\n"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "id": "18-builtin-functions",
+  "title": "Built-in Functions",
+  "primer": "<p>Each shading language ships with a large standard library of GPU-accelerated built-in functions. Most math is the same across GLSL, HLSL, and Slang — but names and signatures diverge just enough to cause bugs when porting.</p><p>The most common gotchas:</p><ul><li><strong>lerp vs mix</strong> — same semantics, different name (HLSL/Slang vs GLSL).</li><li><strong>saturate vs clamp</strong> — HLSL's <code>saturate(x)</code> is equivalent to GLSL's <code>clamp(x, 0.0, 1.0)</code>; GLSL has no saturate.</li><li><strong>frac vs fract</strong> — fractional part of a float (HLSL vs GLSL).</li><li><strong>ddx/ddy vs dFdx/dFdy</strong> — screen-space partial derivatives (HLSL vs GLSL).</li><li><strong>mul(M, v) vs M * v</strong> — HLSL requires the explicit <code>mul()</code> function for matrix-vector multiply; GLSL uses the <code>*</code> operator directly.</li><li><strong>atan2 vs atan</strong> — two-argument arctangent is <code>atan2(y,x)</code> in HLSL/Slang but <code>atan(y,x)</code> in GLSL.</li></ul><p>In this lesson you will fix broken HLSL-in-GLSL translation errors and practice finding the correct Slang equivalents.</p>",
+  "geometry": "quad",
+  "uniforms": ["u_time", "u_resolution"],
+  "challenges": [
+    {
+      "id": "18-builtin-functions-c1",
+      "title": "Fix broken HLSL→GLSL translation",
+      "description": "The shader below was mechanically copy-pasted from HLSL into a GLSL file. It uses five HLSL-only built-in names that do not exist in GLSL. Find and fix all five.\n\nBroken shader:\n```\nuniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    float t = frac(u_time * 0.5);          // broken\n    float r = saturate(uv.x * 2.0 - 0.5); // broken\n    float g = lerp(0.2, 0.8, uv.y);       // broken\n    float b = length(uv - vec2(0.5));\n    b = saturate(1.0 - b * 2.0);          // broken\n    float angle = atan2(uv.y - 0.5, uv.x - 0.5); // broken\n    fragColor = vec4(r, g, b, 1.0);\n}\n```",
+      "template": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    float t = /* fix: frac */ (u_time * 0.5);\n    float r = /* fix: saturate */ (uv.x * 2.0 - 0.5);\n    float g = /* fix: lerp */ (0.2, 0.8, uv.y);\n    float b = length(uv - vec2(0.5));\n    b = /* fix: saturate */ (1.0 - b * 2.0);\n    float angle = /* fix: atan2 */ (uv.y - 0.5, uv.x - 0.5);\n    fragColor = vec4(r, g, b, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    float t = fract(u_time * 0.5);\n    float r = clamp(uv.x * 2.0 - 0.5, 0.0, 1.0);\n    float g = mix(0.2, 0.8, uv.y);\n    float b = length(uv - vec2(0.5));\n    b = clamp(1.0 - b * 2.0, 0.0, 1.0);\n    float angle = atan(uv.y - 0.5, uv.x - 0.5);\n    fragColor = vec4(r, g, b, 1.0);\n}\n",
+      "hints": [
+        "frac→fract, saturate(x)→clamp(x, 0.0, 1.0), lerp→mix. That covers four of the five errors.",
+        "atan2(y, x) in HLSL becomes atan(y, x) in GLSL — GLSL's two-argument atan is the same function."
+      ],
+      "validation": "compiles",
+      "unlocks_theory": "The core rename table for built-ins: frac→fract, saturate(x)→clamp(x,0.0,1.0), lerp→mix, atan2(y,x)→atan(y,x), ddx→dFdx, ddy→dFdy, mul(M,v)→M*v. Functions that do NOT need renaming: sin, cos, tan, sqrt, pow, abs, floor, ceil, round, step, smoothstep, length, dot, cross, normalize, reflect, refract.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "Correct HLSL version using native HLSL built-ins.",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n    float  u_time;\n};\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float t = frac(u_time * 0.5);\n    float r = saturate(uv.x * 2.0 - 0.5);\n    float g = lerp(0.2, 0.8, uv.y);\n    float b = length(uv - float2(0.5, 0.5));\n    b = saturate(1.0 - b * 2.0);\n    float angle = atan2(uv.y - 0.5, uv.x - 0.5);\n    return float4(r, g, b, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "note": "Slang uses HLSL built-in names; it also exposes mix() as an alias for lerp().",
+          "code": "uniform float2 u_resolution;\nuniform float  u_time;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float t = frac(u_time * 0.5);\n    float r = saturate(uv.x * 2.0 - 0.5);\n    float g = lerp(0.2, 0.8, uv.y);\n    float b = length(uv - float2(0.5, 0.5));\n    b = saturate(1.0 - b * 2.0);\n    float angle = atan2(uv.y - 0.5, uv.x - 0.5);\n    return float4(r, g, b, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "18-builtin-functions-c2",
+      "title": "Matrix multiply: mul() vs *",
+      "description": "In HLSL, matrix-vector multiplication requires the explicit mul() function. In GLSL, the * operator handles it directly. The difference shows up clearly when transforming positions or applying rotation matrices.\n\nHLSL reference:\n```hlsl\nfloat4x4 mvp;   // model-view-projection matrix\nfloat4 pos;     // homogeneous vertex position\nfloat4 clip = mul(mvp, pos);\n```\n\nIn GLSL, write a fragment shader that applies a 2D rotation matrix to the UV coordinates using `*` (not mul). Construct a 2x2 rotation matrix from `u_time` and multiply it against `v_uv - 0.5` to spin the UV space. Output the rotated UV as a color.\n\nKey differences:\n- HLSL uses `mul(matrix, vector)` — * is element-wise for matrices in HLSL.\n- GLSL uses `matrix * vector` directly — * is proper linear algebra.\n- Slang supports both.",
+      "template": "in vec2 v_uv;\nuniform float u_time;\nout vec4 fragColor;\n\nvoid main() {\n    // Build a 2D rotation matrix from u_time\n    float c = cos(u_time);\n    float s = sin(u_time);\n    mat2 rot = mat2(c, -s, s, c);\n\n    // Rotate UV around center (0.5, 0.5) using * operator\n    vec2 centered = v_uv - 0.5;\n    vec2 rotated  = /* ??? */;\n    vec2 result   = rotated + 0.5;\n\n    fragColor = vec4(result, 0.5, 1.0);\n}\n",
+      "solution": "in vec2 v_uv;\nuniform float u_time;\nout vec4 fragColor;\n\nvoid main() {\n    // Build a 2D rotation matrix from u_time\n    float c = cos(u_time);\n    float s = sin(u_time);\n    mat2 rot = mat2(c, -s, s, c);\n\n    // Rotate UV around center (0.5, 0.5) using * operator\n    vec2 centered = v_uv - 0.5;\n    vec2 rotated  = rot * centered;\n    vec2 result   = rotated + 0.5;\n\n    fragColor = vec4(result, 0.5, 1.0);\n}\n",
+      "hints": [
+        "GLSL overloads * for matrix-vector products — just write rot * centered. No mul() needed.",
+        "HLSL's mul(M, v) and GLSL's M * v produce the same result for column-major matrices."
+      ],
+      "validation": "compiles",
+      "unlocks_theory": "HLSL requires mul(matrix, vector) because * is element-wise by default for matrices. GLSL defines * as proper linear-algebraic multiplication for mat*vec, vec*mat, and mat*mat — making mul() unnecessary. Slang supports both mul() and * for compatibility; when targeting GLSL output, the Slang compiler emits *. This difference trips up HLSL developers porting to GLSL: forgetting mul() and using * in HLSL gives silent element-wise wrong results, while using mul() in GLSL is a compile error.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "HLSL pixel shader using mul() for matrix-vector multiply.",
+          "code": "cbuffer Uniforms : register(b0) {\n    float u_time;\n};\n\nfloat4 main(float2 uv : TEXCOORD0) : SV_Target {\n    float c = cos(u_time);\n    float s = sin(u_time);\n    float2x2 rot = float2x2(c, -s, s, c);\n    float2 centered = uv - 0.5;\n    float2 rotated  = mul(rot, centered);\n    float2 result   = rotated + 0.5;\n    return float4(result, 0.5, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "note": "Slang accepts both mul() and * — mul() shown here for HLSL compatibility.",
+          "code": "uniform float u_time;\n\n[shader(\"fragment\")]\nfloat4 main(float2 uv : TEXCOORD0) : SV_Target {\n    float c = cos(u_time);\n    float s = sin(u_time);\n    float2x2 rot = float2x2(c, -s, s, c);\n    float2 centered = uv - 0.5;\n    float2 rotated  = mul(rot, centered);\n    float2 result   = rotated + 0.5;\n    return float4(result, 0.5, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "18-builtin-functions-c3",
+      "title": "Screen-space derivatives: ddx/ddy → dFdx/dFdy",
+      "description": "Screen-space partial derivatives let a fragment shader measure how fast a value changes across neighboring pixels. HLSL calls them ddx()/ddy(); GLSL calls them dFdx()/dFdy().\n\nTranslate the HLSL edge-detection snippet below to GLSL. The shader computes how fast the UV coordinates change and uses that to draw sharp grid lines.\n\nHLSL reference:\n```hlsl\nfloat2 uv;         // screen UVs scaled to [0, 10]\nfloat2 dudv = float2(ddx(uv.x), ddy(uv.y));  // pixel-to-pixel UV delta\nfloat2 grid = abs(frac(uv - 0.5) - 0.5) / dudv;\nfloat  line = min(grid.x, grid.y);\nfloat  val  = 1.0 - min(line, 1.0);\n```",
+      "template": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution * 10.0;\n    // Translate the HLSL derivative + grid logic to GLSL\n    vec2 dudv = vec2(/* ddx */ (uv.x), /* ddy */ (uv.y));\n    vec2 grid = abs(fract(uv - 0.5) - 0.5) / dudv;\n    float line = min(grid.x, grid.y);\n    float val  = 1.0 - min(line, 1.0);\n    fragColor = vec4(vec3(val), 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution * 10.0;\n    vec2 dudv = vec2(dFdx(uv.x), dFdy(uv.y));\n    vec2 grid = abs(fract(uv - 0.5) - 0.5) / dudv;\n    float line = min(grid.x, grid.y);\n    float val  = 1.0 - min(line, 1.0);\n    fragColor = vec4(vec3(val), 1.0);\n}\n",
+      "hints": [
+        "ddx(v) in HLSL is dFdx(v) in GLSL — measures how v changes horizontally across a 2x2 pixel quad.",
+        "ddy(v) in HLSL is dFdy(v) in GLSL. Note: GLSL's dFdy may flip sign on some drivers vs HLSL's ddy."
+      ],
+      "validation": "compiles",
+      "unlocks_theory": "Partial derivatives (dFdx/dFdy in GLSL, ddx/ddy in HLSL) are computed at no cost by comparing values across the 2x2 pixel quads the GPU processes in parallel. They are essential for anti-aliased procedural geometry, automatic mip-map selection in texture2D(), and anisotropic filtering. Slang exposes both ddx()/ddy() and dFdx()/dFdy() aliases — when targeting GLSL it emits dFdx/dFdy.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "Original HLSL grid shader using ddx/ddy.",
+          "code": "cbuffer Uniforms : register(b0) { float2 u_resolution; };\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution * 10.0;\n    float2 dudv = float2(ddx(uv.x), ddy(uv.y));\n    float2 grid = abs(frac(uv - 0.5) - 0.5) / dudv;\n    float  line = min(grid.x, grid.y);\n    float  val  = 1.0 - min(line, 1.0);\n    return float4(val, val, val, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "note": "Slang accepts ddx/ddy; when cross-compiled to GLSL the compiler emits dFdx/dFdy.",
+          "code": "uniform float2 u_resolution;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution * 10.0;\n    float2 dudv = float2(ddx(uv.x), ddy(uv.y));\n    float2 grid = abs(frac(uv - 0.5) - 0.5) / dudv;\n    float  line = min(grid.x, grid.y);\n    float  val  = 1.0 - min(line, 1.0);\n    return float4(val, val, val, 1.0);\n}\n"
+        }
+      }
+    }
+  ]
+}

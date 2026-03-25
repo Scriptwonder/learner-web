@@ -1,0 +1,124 @@
+{
+  "id": "06-transformations",
+  "title": "Transformations",
+  "primer": "In a fragment shader there are no vertex transforms — instead you transform the UV coordinate itself before sampling or evaluating a shape. A 2×2 rotation matrix rotates UV space around a pivot; subtracting an offset translates it; scaling multiplies. These <em>inverse</em> transforms — applied to coordinates rather than geometry — are the foundation of panning, zooming, rotating, and tiling in 2D shaders.",
+  "geometry": "quad",
+  "uniforms": ["u_time", "u_resolution"],
+  "challenges": [
+    {
+      "id": "06-transformations-c1",
+      "title": "Translate UV space",
+      "description": "Shift UV space so that the origin moves to the canvas center, making (0,0) the center pixel. Then draw a white circle of radius 0.25 centered at the new origin. This is the first step before any rotation or zoom.",
+      "template": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n\n    // Translate so (0,0) is at the center of the canvas\n    vec2 p = /* ??? */;\n\n    float d = length(p);\n    float circle = smoothstep(0.26, 0.24, d);\n\n    fragColor = vec4(circle, circle, circle, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n\n    vec2 p = uv - vec2(0.5);\n\n    float d = length(p);\n    float circle = smoothstep(0.26, 0.24, d);\n\n    fragColor = vec4(circle, circle, circle, 1.0);\n}\n",
+      "hints": [
+        "Subtracting a constant from UV coordinates translates the coordinate system. To move the origin to the center, subtract `vec2(0.5)` — the current center position.",
+        "After translation, `p = vec2(0, 0)` corresponds to the canvas center, and `length(p)` gives the distance from center — which is exactly what you need for a centered circle."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5,  "y": 0.5,  "expected": [1.0, 1.0, 1.0, 1.0], "tolerance": 0.05 },
+          { "x": 0.0,  "y": 0.0,  "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.05 }
+        ]
+      },
+      "unlocks_theory": "Translation in UV space is just vector subtraction. To draw something at position P, you subtract P from UV — this shifts all coordinates so that the point at UV=P now maps to UV=0, where your shape formula is defined. This inversion (transform the space, not the shape) is a fundamental GPU pattern: you always work in canonical space and move the space to the shape.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n};\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 p = uv - float2(0.5, 0.5);\n\n    float d = length(p);\n    float circle = smoothstep(0.26, 0.24, d);\n\n    return float4(circle, circle, circle, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 p = uv - float2(0.5, 0.5);\n\n    float d = length(p);\n    float circle = smoothstep(0.26, 0.24, d);\n\n    return float4(circle, circle, circle, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "06-transformations-c2",
+      "title": "Rotate a rectangle",
+      "description": "Apply a 2D rotation matrix to UV space to spin a rectangle over time. Build a <code>mat2</code> rotation matrix using <code>cos</code> and <code>sin</code> of <code>u_time</code>, multiply the centered UV by the matrix, then draw a white rectangle.",
+      "template": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nmat2 rotate2D(float angle) {\n    float c = cos(angle);\n    float s = sin(angle);\n    // Fill in the rotation matrix\n    return mat2(/* ??? */);\n}\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 p = uv - vec2(0.5);\n\n    // Rotate p by u_time\n    p = rotate2D(u_time) * p;\n\n    // Draw a simple rectangle: inside if both |p.x| < 0.3 and |p.y| < 0.15\n    float rect = step(abs(p.x), 0.3) * step(abs(p.y), 0.15);\n\n    fragColor = vec4(rect, rect, rect, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nmat2 rotate2D(float angle) {\n    float c = cos(angle);\n    float s = sin(angle);\n    return mat2(c, -s, s, c);\n}\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 p = uv - vec2(0.5);\n\n    p = rotate2D(u_time) * p;\n\n    float rect = step(abs(p.x), 0.3) * step(abs(p.y), 0.15);\n\n    fragColor = vec4(rect, rect, rect, 1.0);\n}\n",
+      "hints": [
+        "The 2D rotation matrix is `[[cos θ, -sin θ], [sin θ, cos θ]]`. In GLSL column-major order: `mat2(cos, sin, -sin, cos)` or equivalently `mat2(c, s, -s, c)` — check your column ordering. The standard form is `mat2(c, -s, s, c)` which means column 0 = (c, s), column 1 = (-s, c).",
+        "GLSL `mat2` is column-major: `mat2(c, -s, s, c)` constructs columns [(c, -s), (s, c)] — which is the transpose of the mathematical form. Use `mat2(c, s, -s, c)` to get the correct counter-clockwise rotation."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [1.0, 1.0, 1.0, 1.0], "tolerance": 0.05 }
+        ]
+      },
+      "unlocks_theory": "GLSL `mat2` is column-major: `mat2(a, b, c, d)` means the first column is (a, b) and the second column is (c, d). The counter-clockwise rotation matrix with columns (cos θ, sin θ) and (-sin θ, cos θ) is written `mat2(c, s, -s, c)`. Forgetting column-major order is the most common source of incorrect rotations in GLSL.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "HLSL matrices are row-major by default, so the rotation matrix entries are transposed relative to GLSL.",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n    float  u_time;\n};\n\nfloat2x2 rotate2D(float angle) {\n    float c = cos(angle);\n    float s = sin(angle);\n    return float2x2(c, -s, s, c);\n}\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 p = uv - float2(0.5, 0.5);\n\n    p = mul(rotate2D(u_time), p);\n\n    float rect = step(abs(p.x), 0.3) * step(abs(p.y), 0.15);\n    return float4(rect, rect, rect, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\nuniform float  u_time;\n\nfloat2x2 rotate2D(float angle) {\n    float c = cos(angle);\n    float s = sin(angle);\n    return float2x2(c, -s, s, c);\n}\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 p = uv - float2(0.5, 0.5);\n\n    p = mul(rotate2D(u_time), p);\n\n    float rect = step(abs(p.x), 0.3) * step(abs(p.y), 0.15);\n    return float4(rect, rect, rect, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "06-transformations-c3",
+      "title": "Zoom (scale UV)",
+      "description": "Create a zoom effect by scaling UV space. Multiplying centered UV coordinates by a value > 1 zooms out; dividing (or multiplying by < 1) zooms in. Animate the zoom with <code>u_time</code> so the circle pulses between 0.5× and 2× zoom.",
+      "template": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 p = uv - vec2(0.5);\n\n    // Animate zoom: oscillate scale between 0.5 and 2.0\n    float zoom = /* 0.5 + 1.5 * ... using sin(u_time) */;\n\n    // Apply zoom to the coordinate\n    p = /* ??? */;\n\n    float d = length(p);\n    float circle = smoothstep(0.26, 0.24, d);\n\n    fragColor = vec4(circle, circle, circle, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 p = uv - vec2(0.5);\n\n    float zoom = 1.25 + sin(u_time) * 0.75;\n    p = p * zoom;\n\n    float d = length(p);\n    float circle = smoothstep(0.26, 0.24, d);\n\n    fragColor = vec4(circle, circle, circle, 1.0);\n}\n",
+      "hints": [
+        "Scaling UV coordinates by a factor `zoom` is equivalent to zooming the view. When `zoom > 1`, the shape appears smaller (zoomed out); when `zoom < 1`, it appears larger (zoomed in).",
+        "Oscillate with: `float zoom = 1.25 + sin(u_time) * 0.75;` — this gives a range of [0.5, 2.0]. Then apply it with `p = p * zoom;`."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [1.0, 1.0, 1.0, 1.0], "tolerance": 0.1 }
+        ]
+      },
+      "unlocks_theory": "Scaling in UV space is multiplicative. Multiplying `p` by a scale factor > 1 stretches space (shape looks smaller); multiplying by < 1 compresses space (shape looks bigger). The scale factor lives in the coordinate transform, not in the shape definition — so you can zoom, pan, and rotate any shape with no changes to the SDF itself.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n    float  u_time;\n};\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 p = uv - float2(0.5, 0.5);\n\n    float zoom = 1.25 + sin(u_time) * 0.75;\n    p = p * zoom;\n\n    float d = length(p);\n    float circle = smoothstep(0.26, 0.24, d);\n\n    return float4(circle, circle, circle, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\nuniform float  u_time;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 p = uv - float2(0.5, 0.5);\n\n    float zoom = 1.25 + sin(u_time) * 0.75;\n    p = p * zoom;\n\n    float d = length(p);\n    float circle = smoothstep(0.26, 0.24, d);\n\n    return float4(circle, circle, circle, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "06-transformations-c4",
+      "title": "Kaleidoscope",
+      "description": "Create a 6-fold kaleidoscope by converting to polar coordinates, using <code>mod</code> on the angle to fold space into repeating wedges, then rotating slowly with time. The canvas is filled with a mirrored wedge of a circle-ring pattern repeated 6 times.",
+      "template": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 p = uv - vec2(0.5);\n\n    float r = length(p);\n    float a = atan(p.y, p.x) + u_time * 0.2;\n\n    // Fold into N=6 wedges\n    float N = 6.0;\n    float slice = 3.14159265 / N;  // half-wedge angle\n\n    // Use mod to repeat the angle within each wedge\n    a = mod(a, 2.0 * slice);\n\n    // Mirror within the wedge (fold at the midpoint)\n    a = /* abs(a - slice) */;\n\n    // Reconstruct cartesian p from polar (r, a)\n    p = /* vec2(cos(a), sin(a)) * r */;\n\n    // Draw ring pattern in transformed space\n    float ring = smoothstep(0.33, 0.31, r) - smoothstep(0.23, 0.21, r);\n    float spot = smoothstep(0.11, 0.09, length(p - vec2(0.15, 0.0)));\n\n    float shape = clamp(ring + spot, 0.0, 1.0);\n    fragColor = vec4(shape, shape * 0.7, shape * 0.3, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 p = uv - vec2(0.5);\n\n    float r = length(p);\n    float a = atan(p.y, p.x) + u_time * 0.2;\n\n    float N = 6.0;\n    float slice = 3.14159265 / N;\n\n    a = mod(a, 2.0 * slice);\n    a = abs(a - slice);\n\n    p = vec2(cos(a), sin(a)) * r;\n\n    float ring = smoothstep(0.33, 0.31, r) - smoothstep(0.23, 0.21, r);\n    float spot = smoothstep(0.11, 0.09, length(p - vec2(0.15, 0.0)));\n\n    float shape = clamp(ring + spot, 0.0, 1.0);\n    fragColor = vec4(shape, shape * 0.7, shape * 0.3, 1.0);\n}\n",
+      "hints": [
+        "After `a = mod(a, 2.0 * slice)`, the angle is folded into a repeating range [0, 2*slice]. Mirror it by reflecting at the midpoint: `a = abs(a - slice)`. Now all 6 wedges show the same mirrored pattern.",
+        "Reconstruct a Cartesian coordinate from the modified polar angle: `p = vec2(cos(a), sin(a)) * r`. This gives you a position within the canonical wedge that you can use to draw shapes normally."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.08 }
+        ]
+      },
+      "unlocks_theory": "Kaleidoscopes exploit the symmetry of polar coordinates. By taking the angle modulo a wedge size and then reflecting it, you map the entire plane onto a single canonical wedge — any shape drawn in that wedge is automatically repeated and mirrored N times. This is the foundation of symmetry-based generative art and can be combined with any SDF or texture.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "HLSL uses `atan2` for the two-argument arctangent and `fmod` for modulo.",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n    float  u_time;\n};\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 p = uv - float2(0.5, 0.5);\n\n    float r = length(p);\n    float a = atan2(p.y, p.x) + u_time * 0.2;\n\n    float N = 6.0;\n    float slice = 3.14159265 / N;\n\n    a = fmod(a, 2.0 * slice);\n    a = abs(a - slice);\n\n    p = float2(cos(a), sin(a)) * r;\n\n    float ring = smoothstep(0.33, 0.31, r) - smoothstep(0.23, 0.21, r);\n    float spot = smoothstep(0.11, 0.09, length(p - float2(0.15, 0.0)));\n\n    float shape = clamp(ring + spot, 0.0, 1.0);\n    return float4(shape, shape * 0.7, shape * 0.3, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\nuniform float  u_time;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 p = uv - float2(0.5, 0.5);\n\n    float r = length(p);\n    float a = atan2(p.y, p.x) + u_time * 0.2;\n\n    float N = 6.0;\n    float slice = 3.14159265 / N;\n\n    a = fmod(a, 2.0 * slice);\n    a = abs(a - slice);\n\n    p = float2(cos(a), sin(a)) * r;\n\n    float ring = smoothstep(0.33, 0.31, r) - smoothstep(0.23, 0.21, r);\n    float spot = smoothstep(0.11, 0.09, length(p - float2(0.15, 0.0)));\n\n    float shape = clamp(ring + spot, 0.0, 1.0);\n    return float4(shape, shape * 0.7, shape * 0.3, 1.0);\n}\n"
+        }
+      }
+    }
+  ]
+}

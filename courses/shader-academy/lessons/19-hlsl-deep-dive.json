@@ -1,0 +1,84 @@
+{
+  "id": "19-hlsl-deep-dive",
+  "title": "HLSL Deep Dive",
+  "primer": "<p>HLSL has evolved far beyond its DirectX 9 roots. Modern HLSL — compiled by <strong>DXC</strong> (DirectX Shader Compiler) and targeting <strong>Shader Model 6</strong> — introduces features that have no direct counterpart in GLSL ES: constant buffers with explicit register binding, root constants, typed resource views, and Wave (subgroup) intrinsics.</p><p>Key HLSL-specific concepts you will work with in this lesson:</p><ul><li><strong>cbuffer</strong> — a constant buffer block, similar to a GLSL uniform block. Bound to a specific register slot with <code>: register(b0)</code>.</li><li><strong>Register binding</strong> — HLSL resources (buffers, textures, samplers) are bound by name to register slots: <code>b</code> for constant buffers, <code>t</code> for shader resource views, <code>u</code> for unordered-access views, <code>s</code> for samplers.</li><li><strong>Shader Model 6 (SM6)</strong> — enables DXIL bytecode and unlocks Wave intrinsics, mesh/amplification shaders, and DXR ray tracing.</li><li><strong>Wave intrinsics</strong> — SM6 functions like <code>WaveActiveSum()</code>, <code>WaveGetLaneIndex()</code>, and <code>WavePrefixSum()</code> allow threads in a wave (warp) to communicate without shared memory. The GLSL equivalent is the <code>GL_KHR_shader_subgroup</code> extension.</li></ul><p>Each challenge asks you to port a piece of idiomatic HLSL to valid GLSL ES 3.0 — understanding <em>why</em> the translation is what it is, not just what to type.</p>",
+  "geometry": "quad",
+  "uniforms": ["u_time", "u_resolution"],
+  "challenges": [
+    {
+      "id": "19-hlsl-deep-dive-c1",
+      "title": "Port a cbuffer to GLSL uniform block",
+      "description": "HLSL constant buffers group related uniforms and bind them to a register slot. In GLSL ES 3.0, the equivalent is a named uniform block (UBO). Port the HLSL cbuffer and shader below to GLSL.\n\nHLSL to port:\n```hlsl\ncbuffer Material : register(b0) {\n    float4 baseColor;\n    float  roughness;\n    float  metallic;\n    float2 tiling;\n};\n\nfloat4 main(float2 uv : TEXCOORD0) : SV_Target {\n    float2 tiledUV = uv * tiling;\n    float checker = frac(tiledUV.x) < 0.5 ? 1.0 : 0.0;\n    checker       = checker != (frac(tiledUV.y) < 0.5 ? 1.0 : 0.0) ? 1.0 : 0.0;\n    float3 col = baseColor.rgb * (0.5 + 0.5 * checker);\n    col = lerp(col, float3(metallic), roughness);\n    return float4(col, 1.0);\n}\n```\n\nIn GLSL ES 3.0, use:\n- A uniform block: `layout(std140) uniform Material { ... };` (note: WebGL2 does not support `binding=N` on uniform blocks — omit the binding qualifier)\n- `mix()` instead of `lerp()`\n- `fract()` instead of `frac()`\n- `vec4/vec3/vec2/float` type names\n- Receive the UV from `gl_FragCoord` and `u_resolution` (no varyings needed for this exercise)",
+      "template": "uniform vec2 u_resolution;\n\nlayout(std140) uniform Material {\n    vec4  baseColor;\n    float roughness;\n    float metallic;\n    float _pad0;\n    float _pad1;\n    vec2  tiling;\n    vec2  _pad2;\n};\n\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    // Port the HLSL checker + material blend below\n    /* ??? */\n    fragColor = vec4(col, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\n\nlayout(std140) uniform Material {\n    vec4  baseColor;\n    float roughness;\n    float metallic;\n    float _pad0;\n    float _pad1;\n    vec2  tiling;\n    vec2  _pad2;\n};\n\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 tiledUV = uv * tiling;\n    float checker = fract(tiledUV.x) < 0.5 ? 1.0 : 0.0;\n    checker = (checker != (fract(tiledUV.y) < 0.5 ? 1.0 : 0.0)) ? 1.0 : 0.0;\n    vec3 col = baseColor.rgb * (0.5 + 0.5 * checker);\n    col = mix(col, vec3(metallic), roughness);\n    fragColor = vec4(col, 1.0);\n}\n",
+      "hints": [
+        "The cbuffer members become members of the GLSL uniform block — access them by the same bare names (baseColor, roughness, metallic, tiling).",
+        "std140 layout requires explicit padding to align floats — the _pad members in the template handle that. Just fill in the logic."
+      ],
+      "validation": "compiles",
+      "unlocks_theory": "HLSL's cbuffer maps to GLSL's named uniform block (UBO). The key difference is layout packing: HLSL packs cbuffer members tightly by default; GLSL's std140 layout has strict alignment rules (vec3 pads to vec4 size, arrays align to vec4 boundaries). WebGL2 does not support the binding=N qualifier on uniform blocks — block binding must be set at the API level with gl.uniformBlockBinding(). DXC's /Zpc flag controls HLSL column/row-major order. For cross-API work, prefer std430 layout on compute SSBOs and std140 on uniform blocks.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "Original HLSL cbuffer version — the source for this porting exercise.",
+          "code": "cbuffer Material : register(b0) {\n    float4 baseColor;\n    float  roughness;\n    float  metallic;\n    float2 tiling;\n};\n\nfloat4 main(float2 uv : TEXCOORD0) : SV_Target {\n    float2 tiledUV = uv * tiling;\n    float checker = frac(tiledUV.x) < 0.5 ? 1.0 : 0.0;\n    checker       = checker != (frac(tiledUV.y) < 0.5 ? 1.0 : 0.0) ? 1.0 : 0.0;\n    float3 col = baseColor.rgb * (0.5 + 0.5 * checker);\n    col = lerp(col, float3(metallic, metallic, metallic), roughness);\n    return float4(col, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "note": "Slang can use ParameterBlock or a plain uniform cbuffer; here shown with ParameterBlock for modern style.",
+          "code": "struct Material {\n    float4 baseColor;\n    float  roughness;\n    float  metallic;\n    float2 tiling;\n};\n\nuniform ParameterBlock<Material> gMaterial;\n\n[shader(\"fragment\")]\nfloat4 main(float2 uv : TEXCOORD0) : SV_Target {\n    float2 tiledUV = uv * gMaterial.tiling;\n    float checker = frac(tiledUV.x) < 0.5 ? 1.0 : 0.0;\n    checker = checker != (frac(tiledUV.y) < 0.5 ? 1.0 : 0.0) ? 1.0 : 0.0;\n    float3 col = gMaterial.baseColor.rgb * (0.5 + 0.5 * checker);\n    col = lerp(col, float3(gMaterial.metallic), gMaterial.roughness);\n    return float4(col, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "19-hlsl-deep-dive-c2",
+      "title": "Texture sampling: Texture2D + SamplerState",
+      "description": "In HLSL, textures and samplers are separate objects. A Texture2D is bound to a 't' register and a SamplerState to an 's' register. Sampling uses the .Sample() method. In GLSL, the texture and sampler are combined into a single sampler2D uniform, and sampling uses the texture() function.\n\nPort the HLSL textured quad below to GLSL ES 3.0.\n\nHLSL to port:\n```hlsl\nTexture2D    gAlbedo  : register(t0);\nSamplerState gSampler : register(s0);\n\ncbuffer Uniforms : register(b0) {\n    float u_time;\n};\n\nfloat4 main(float2 uv : TEXCOORD0) : SV_Target {\n    float2 animUV = uv + float2(0.05 * sin(u_time), 0.0);\n    float4 color  = gAlbedo.Sample(gSampler, animUV);\n    return color;\n}\n```\n\nNote: use `v_uv` from the quad vertex shader (not `vUV`).",
+      "template": "uniform sampler2D u_albedo;\nuniform float     u_time;\nuniform vec2      u_resolution;\n\nin vec2 v_uv;\nout vec4 fragColor;\n\nvoid main() {\n    // Port the HLSL animated UV + texture sample to GLSL\n    /* ??? */\n}\n",
+      "solution": "uniform sampler2D u_albedo;\nuniform float     u_time;\nuniform vec2      u_resolution;\n\nin vec2 v_uv;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 animUV = v_uv + vec2(0.05 * sin(u_time), 0.0);\n    vec4 color  = texture(u_albedo, animUV);\n    fragColor = color;\n}\n",
+      "hints": [
+        "GLSL combines texture + sampler into sampler2D. Use texture(u_albedo, uv) instead of gAlbedo.Sample(gSampler, uv).",
+        "The animated UV offset just needs vec2() instead of float2() — the math is identical. Use v_uv from the quad vertex shader."
+      ],
+      "validation": "compiles",
+      "unlocks_theory": "HLSL separates textures (Texture2D, Texture3D, TextureCube) from samplers (SamplerState, SamplerComparisonState) to allow one texture to be sampled with different filtering modes. GLSL combines them into opaque sampler types (sampler2D, sampler3D, samplerCube). Slang supports both models and can cross-compile either way. DirectX 12 and Vulkan both expose the separate model natively; the combined model is an OpenGL/WebGL convention.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "Original HLSL with separate Texture2D and SamplerState.",
+          "code": "Texture2D    gAlbedo  : register(t0);\nSamplerState gSampler : register(s0);\n\ncbuffer Uniforms : register(b0) {\n    float u_time;\n};\n\nfloat4 main(float2 uv : TEXCOORD0) : SV_Target {\n    float2 animUV = uv + float2(0.05 * sin(u_time), 0.0);\n    float4 color  = gAlbedo.Sample(gSampler, animUV);\n    return color;\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "note": "Slang uses HLSL-style Texture2D.Sample(); when targeting GLSL, the compiler generates combined sampler2D code.",
+          "code": "Texture2D    gAlbedo;\nSamplerState gSampler;\nuniform float u_time;\n\n[shader(\"fragment\")]\nfloat4 main(float2 uv : TEXCOORD0) : SV_Target {\n    float2 animUV = uv + float2(0.05 * sin(u_time), 0.0);\n    return gAlbedo.Sample(gSampler, animUV);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "19-hlsl-deep-dive-c3",
+      "title": "Wave intrinsics → visualize subgroup lanes in a fragment shader",
+      "description": "Shader Model 6 Wave intrinsics let threads in a wave communicate without shared memory. Key intrinsics: `WaveGetLaneIndex()` (this thread's index within the wave) and `WaveGetLaneCount()` (wave size). The GLSL equivalents use the GL_KHR_shader_subgroup extension: `gl_SubgroupInvocationID` and `gl_SubgroupSize`.\n\nIn a fragment shader, you cannot use subgroup extensions directly in WebGL2 — but you can simulate the lane-coloring concept using the pixel's UV position as a proxy for its 'lane index'.\n\nHLSL Wave intrinsic reference:\n```hlsl\n// In a wave of 32 lanes, color each lane differently\nuint laneIdx   = WaveGetLaneIndex();   // 0..31\nuint laneCount = WaveGetLaneCount();   // e.g. 32\nfloat t = float(laneIdx) / float(laneCount);\n```\n\nWrite a GLSL ES 3.0 fragment shader that:\n- Simulates a 32-lane wave using `v_uv.x` as the lane index proxy\n- Computes `float laneT = fract(v_uv.x * 32.0) / 1.0` — normalized position within a 'lane'\n- Colors the output with a hue cycle: use `laneT` to rotate through red→green→blue using sin with phase offsets\n- Adds a vertical dividing line every 1/32 of width (every lane boundary)",
+      "template": "in vec2 v_uv;\nout vec4 fragColor;\n\nvoid main() {\n    // Simulate wave lane visualization using UV as proxy for lane index\n    float laneIndex = floor(v_uv.x * 32.0);        // which 'lane' (0..31)\n    float laneT     = fract(v_uv.x * 32.0);        // position within lane\n\n    // Color each lane with a hue derived from its index\n    float hue = laneIndex / 32.0;\n    // Use sin with phase offsets to cycle through colors\n    /* ??? */\n\n    // Draw a lane boundary line\n    if (laneT < 0.05) {\n        col = vec3(0.0);\n    }\n\n    fragColor = vec4(col, 1.0);\n}\n",
+      "solution": "in vec2 v_uv;\nout vec4 fragColor;\n\nvoid main() {\n    // Simulate wave lane visualization using UV as proxy for lane index\n    float laneIndex = floor(v_uv.x * 32.0);        // which 'lane' (0..31)\n    float laneT     = fract(v_uv.x * 32.0);        // position within lane\n\n    // Color each lane with a hue derived from its index\n    float hue = laneIndex / 32.0;\n    vec3 col = vec3(\n        0.5 + 0.5 * sin(hue * 6.2832),\n        0.5 + 0.5 * sin(hue * 6.2832 + 2.094),\n        0.5 + 0.5 * sin(hue * 6.2832 + 4.189)\n    );\n\n    // Draw a lane boundary line\n    if (laneT < 0.05) {\n        col = vec3(0.0);\n    }\n\n    fragColor = vec4(col, 1.0);\n}\n",
+      "hints": [
+        "floor(v_uv.x * 32.0) gives you an integer lane index 0..31. Divide by 32.0 to get a normalized hue value.",
+        "sin(hue * 6.2832 + offset) with offsets 0, 2.094 (2π/3), and 4.189 (4π/3) produces the red, green, and blue channels of a full hue cycle."
+      ],
+      "validation": "compiles",
+      "unlocks_theory": "SM6 Wave intrinsics and GLSL subgroup operations are the same hardware feature — SIMD lane communication — under different names. The mapping is consistent: WaveActiveSum→subgroupAdd, WaveActiveBitOr→subgroupOr, WavePrefixSum→subgroupExclusiveAdd, WaveIsFirstLane()→subgroupElect(), WaveGetLaneIndex()→gl_SubgroupInvocationID, WaveGetLaneCount()→gl_SubgroupSize. Vulkan exposes these via VK_EXT_shader_subgroup_basic. WebGL2 does not expose subgroup extensions at all — the closest you can get is simulating lane-like concepts using UV coordinates as shown here. When writing cross-platform GPU compute, prefer Slang's generic wave intrinsics which compile to both targets.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "HLSL SM6 compute shader showing true Wave intrinsics for lane visualization.",
+          "code": "[numthreads(32, 1, 1)]\nvoid csMain(uint3 id : SV_DispatchThreadID,\n            RWBuffer<float4> output : register(u0)) {\n    uint  laneIdx   = WaveGetLaneIndex();\n    uint  laneCount = WaveGetLaneCount();\n    float hue       = float(laneIdx) / float(laneCount);\n    float r = 0.5 + 0.5 * sin(hue * 6.2832);\n    float g = 0.5 + 0.5 * sin(hue * 6.2832 + 2.094);\n    float b = 0.5 + 0.5 * sin(hue * 6.2832 + 4.189);\n    output[id.x] = float4(r, g, b, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "note": "Slang abstracts wave/subgroup ops — the same source compiles to both DXIL and SPIR-V.",
+          "code": "[shader(\"compute\")]\n[numthreads(32, 1, 1)]\nvoid csMain(uint3 id : SV_DispatchThreadID,\n            RWBuffer<float4> output) {\n    uint  laneIdx   = WaveGetLaneIndex();\n    uint  laneCount = WaveGetLaneCount();\n    float hue       = float(laneIdx) / float(laneCount);\n    float r = 0.5 + 0.5 * sin(hue * 6.2832);\n    float g = 0.5 + 0.5 * sin(hue * 6.2832 + 2.094);\n    float b = 0.5 + 0.5 * sin(hue * 6.2832 + 4.189);\n    output[id.x] = float4(r, g, b, 1.0);\n}\n"
+        }
+      }
+    }
+  ]
+}

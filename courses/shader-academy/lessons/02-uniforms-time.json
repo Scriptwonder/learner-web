@@ -1,0 +1,93 @@
+{
+  "id": "02-uniforms-time",
+  "title": "Uniforms & Time",
+  "description": "Static colors are just the beginning. The `u_time` uniform counts seconds since the shader started, and the `sin()` function turns that into a smooth oscillation. Feed time into math and your shader comes alive.",
+  "theory": {
+    "key_concept": "`u_time` is a float uniform updated every frame. Wrapping it in `sin()` produces a value that oscillates between -1 and +1. Rescaling with `sin(t) * 0.5 + 0.5` maps that to the [0, 1] range needed for colors.",
+    "math_note": "Sine oscillates with period 2π ≈ 6.28 seconds at frequency 1. Multiply the argument to speed up: `sin(u_time * 3.0)` completes three full cycles per 2π seconds. Use `abs()` to fold the negative half into positive space.",
+    "phase_offsets": "To animate RGB channels independently, add a phase offset so each channel is at a different point in the cycle. Offsetting by 2π/3 (≈ 2.094) distributes three channels evenly around the sine wave, producing a smooth colour cycle."
+  },
+  "challenges": [
+    {
+      "id": "02-uniforms-time-c1",
+      "title": "Pulsing red",
+      "description": "Make the canvas pulse between black and red over time. The red channel should smoothly oscillate using `sin(u_time)`, remapped to [0, 1].",
+      "template": "uniform float u_time;\nout vec4 fragColor;\n\nvoid main() {\n    // Oscillate red between 0 and 1 using sin(u_time)\n    float r = /* ??? */;\n    fragColor = vec4(r, 0.0, 0.0, 1.0);\n}\n",
+      "solution": "uniform float u_time;\nout vec4 fragColor;\n\nvoid main() {\n    float r = sin(u_time) * 0.5 + 0.5;\n    fragColor = vec4(r, 0.0, 0.0, 1.0);\n}\n",
+      "hints": [
+        "`sin(u_time)` returns a value in [-1, 1]. To shift it into [0, 1], multiply by 0.5 then add 0.5: `sin(u_time) * 0.5 + 0.5`.",
+        "Assign the result to `r` and use it as the red component of `fragColor`."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "animated": true,
+        "note": "Validator checks that the red channel varies sinusoidally with u_time; green and blue must stay 0."
+      },
+      "unlocks_theory": "The `* 0.5 + 0.5` rescaling pattern appears everywhere in shader math. It converts a [-1, 1] oscillation into a [0, 1] range safe for colors, blend factors, and lerp weights.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float u_time;\n};\n\nfloat4 main() : SV_Target {\n    float r = sin(u_time) * 0.5 + 0.5;\n    return float4(r, 0.0, 0.0, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float u_time;\n\n[shader(\"fragment\")]\nfloat4 main() : SV_Target {\n    float r = sin(u_time) * 0.5 + 0.5;\n    return float4(r, 0.0, 0.0, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "02-uniforms-time-c2",
+      "title": "RGB cycle",
+      "description": "Cycle through the full colour wheel by driving each RGB channel with a sine wave offset by 2π/3 radians (≈ 2.094). This spreads R, G, and B evenly around the wave so they never peak at the same time.",
+      "template": "uniform float u_time;\nout vec4 fragColor;\n\nvoid main() {\n    const float TAU = 6.28318;\n    const float offset = TAU / 3.0; // ≈ 2.094 radians\n\n    float r = /* sin wave for red   */;\n    float g = /* sin wave for green */;\n    float b = /* sin wave for blue  */;\n\n    fragColor = vec4(r, g, b, 1.0);\n}\n",
+      "solution": "uniform float u_time;\nout vec4 fragColor;\n\nvoid main() {\n    const float TAU = 6.28318;\n    const float offset = TAU / 3.0;\n\n    float r = sin(u_time)              * 0.5 + 0.5;\n    float g = sin(u_time + offset)     * 0.5 + 0.5;\n    float b = sin(u_time + offset * 2.0) * 0.5 + 0.5;\n\n    fragColor = vec4(r, g, b, 1.0);\n}\n",
+      "hints": [
+        "Start with red: `sin(u_time) * 0.5 + 0.5`. Then add `offset` inside the sine for green and `offset * 2.0` for blue.",
+        "The three channels are: `sin(u_time)`, `sin(u_time + offset)`, `sin(u_time + offset * 2.0)` — all rescaled with `* 0.5 + 0.5`."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "animated": true,
+        "note": "Validator samples the canvas at several time values and checks that R, G, B follow phase-offset sine curves."
+      },
+      "unlocks_theory": "Phase offsets let you schedule multiple animations on the same wave, producing smooth colour cycling, staggered particle bursts, or interlocked UI pulses without any branching.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float u_time;\n};\n\nstatic const float TAU = 6.28318;\nstatic const float offset = TAU / 3.0;\n\nfloat4 main() : SV_Target {\n    float r = sin(u_time)               * 0.5 + 0.5;\n    float g = sin(u_time + offset)      * 0.5 + 0.5;\n    float b = sin(u_time + offset * 2.0) * 0.5 + 0.5;\n    return float4(r, g, b, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float u_time;\n\nstatic const float TAU = 6.28318;\nstatic const float offset = TAU / 3.0;\n\n[shader(\"fragment\")]\nfloat4 main() : SV_Target {\n    float r = sin(u_time)               * 0.5 + 0.5;\n    float g = sin(u_time + offset)      * 0.5 + 0.5;\n    float b = sin(u_time + offset * 2.0) * 0.5 + 0.5;\n    return float4(r, g, b, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "02-uniforms-time-c3",
+      "title": "Speed control",
+      "description": "Create a fast-bouncing pulse that snaps between dim and bright. Use `abs(sin(u_time * 3.0))` — the `abs` folds the negative half up so the pulse hits its peak three times per 2π seconds with no negative dip.",
+      "template": "uniform float u_time;\nout vec4 fragColor;\n\nvoid main() {\n    // Multiply u_time by 3.0 to increase frequency, then use abs() to fold\n    float brightness = /* ??? */;\n    fragColor = vec4(brightness, brightness * 0.6, brightness * 0.2, 1.0);\n}\n",
+      "solution": "uniform float u_time;\nout vec4 fragColor;\n\nvoid main() {\n    float brightness = abs(sin(u_time * 3.0));\n    fragColor = vec4(brightness, brightness * 0.6, brightness * 0.2, 1.0);\n}\n",
+      "hints": [
+        "Multiplying `u_time` by a constant scales the frequency: `sin(u_time * 3.0)` completes three cycles in the time `sin(u_time)` completes one.",
+        "`abs(x)` returns the absolute value, flipping negative numbers to positive. `abs(sin(...))` never goes below 0, giving a double-humped pulse."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "animated": true,
+        "note": "Validator checks brightness = abs(sin(u_time * 3.0)) and the warm tint ratios (1.0, 0.6, 0.2)."
+      },
+      "unlocks_theory": "Frequency and speed are controlled by multiplying the time argument. `abs()` is a cheap way to double the pulse frequency and ensure colors stay positive without clamping. These two techniques compose freely.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float u_time;\n};\n\nfloat4 main() : SV_Target {\n    float brightness = abs(sin(u_time * 3.0));\n    return float4(brightness, brightness * 0.6, brightness * 0.2, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float u_time;\n\n[shader(\"fragment\")]\nfloat4 main() : SV_Target {\n    float brightness = abs(sin(u_time * 3.0));\n    return float4(brightness, brightness * 0.6, brightness * 0.2, 1.0);\n}\n"
+        }
+      }
+    }
+  ]
+}

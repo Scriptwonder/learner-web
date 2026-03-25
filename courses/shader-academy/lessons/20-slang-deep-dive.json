@@ -1,0 +1,84 @@
+{
+  "id": "20-slang-deep-dive",
+  "title": "Slang Deep Dive",
+  "primer": "<p><a href='https://shader-slang.com' target='_blank'>Slang</a> is a modern shading language developed at NVIDIA and now an open-source project under Khronos. It cross-compiles to GLSL, HLSL, SPIR-V, DXIL, CUDA, and Metal from a single source — and adds language features that neither GLSL nor HLSL provide natively.</p><p>The four Slang features this lesson covers:</p><ul><li><strong>Generics and interfaces</strong> — Slang has a Rust/Swift-style interface (trait) system. You can write a generic material interface and have multiple material types implement it without runtime polymorphism overhead.</li><li><strong>Modules</strong> — Slang has an import system (<code>import myModule;</code>) that enables true shader library reuse across projects. GLSL has no equivalent; HLSL has limited <code>#include</code>-based sharing.</li><li><strong>Automatic differentiation (auto-diff)</strong> — Slang can automatically generate the derivative of a function with respect to its inputs, enabling gradient-based optimization and neural rendering directly in shader code.</li><li><strong>ParameterBlock</strong> — a Slang-specific binding abstraction that groups a shader's resources and uniform data into a single type-safe object, avoiding manual register assignment.</li></ul><p>In this lesson you will study Slang code and write the GLSL equivalent that achieves the same effect — understanding what Slang abstracts away and what must be expressed manually in GLSL.</p>",
+  "geometry": "quad",
+  "uniforms": ["u_time", "u_resolution"],
+  "challenges": [
+    {
+      "id": "20-slang-deep-dive-c1",
+      "title": "Interface dispatch → manual branching in GLSL",
+      "description": "Slang interfaces let you write generic shaders that work over any type satisfying the interface contract. The Slang code below defines an IMaterial interface and two implementations. In GLSL, you must emulate this with a uniform integer selector and manual branching.\n\nSlang to port:\n```slang\ninterface IMaterial {\n    float3 shade(float3 normal, float3 lightDir);\n};\n\nstruct LambertMaterial : IMaterial {\n    float3 albedo;\n    float3 shade(float3 normal, float3 lightDir) {\n        return albedo * max(dot(normal, lightDir), 0.0);\n    }\n};\n\nstruct EmissiveMaterial : IMaterial {\n    float3 emission;\n    float3 shade(float3 normal, float3 lightDir) {\n        return emission;\n    }\n};\n\n// Generic entry point — works for any IMaterial\n[shader(\"fragment\")]\nfloat4 main<M : IMaterial>(M material, float3 normal : TEXCOORD0) : SV_Target {\n    float3 light = normalize(float3(0.5, 1.0, 0.3));\n    return float4(material.shade(normal, light), 1.0);\n}\n```\n\nIn GLSL, represent the material type with `uniform int u_materialType` (0 = Lambert, 1 = Emissive) and hardcode the two material parameter sets.",
+      "template": "uniform int   u_materialType;\nuniform vec3  u_albedo;\nuniform vec3  u_emission;\nuniform vec2  u_resolution;\nout vec4 fragColor;\n\nvec3 shadeLambert(vec3 albedo, vec3 normal, vec3 lightDir) {\n    return albedo * max(dot(normal, lightDir), 0.0);\n}\n\nvec3 shadeEmissive(vec3 emission) {\n    return emission;\n}\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    // Fake a normal from UV for demo purposes\n    vec3 normal   = normalize(vec3(uv * 2.0 - 1.0, 1.0));\n    vec3 lightDir = normalize(vec3(0.5, 1.0, 0.3));\n\n    vec3 col;\n    // Branch on u_materialType: 0 = Lambert, 1 = Emissive\n    /* ??? */\n\n    fragColor = vec4(col, 1.0);\n}\n",
+      "solution": "uniform int   u_materialType;\nuniform vec3  u_albedo;\nuniform vec3  u_emission;\nuniform vec2  u_resolution;\nout vec4 fragColor;\n\nvec3 shadeLambert(vec3 albedo, vec3 normal, vec3 lightDir) {\n    return albedo * max(dot(normal, lightDir), 0.0);\n}\n\nvec3 shadeEmissive(vec3 emission) {\n    return emission;\n}\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec3 normal   = normalize(vec3(uv * 2.0 - 1.0, 1.0));\n    vec3 lightDir = normalize(vec3(0.5, 1.0, 0.3));\n\n    vec3 col;\n    if (u_materialType == 0) {\n        col = shadeLambert(u_albedo, normal, lightDir);\n    } else {\n        col = shadeEmissive(u_emission);\n    }\n\n    fragColor = vec4(col, 1.0);\n}\n",
+      "hints": [
+        "Call shadeLambert() when u_materialType is 0, shadeEmissive() when it is 1. A simple if/else covers both cases.",
+        "The normal and lightDir are already computed for you in the template — just pass them to the right function."
+      ],
+      "validation": "compiles",
+      "unlocks_theory": "Slang interfaces compile to static dispatch (monomorphization) — the compiler generates a specialized shader per material type with zero branching overhead. In GLSL you must write the branching yourself, and the driver may or may not optimize it away. For a small fixed set of material types this is fine; for larger material systems, ubershader branching overhead can be significant. Slang's approach is equivalent to C++ templates or Rust traits and is one of its biggest advantages over raw GLSL/HLSL.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "HLSL has no interface system; the closest equivalent is function overloading or a manual switch.",
+          "code": "cbuffer Params : register(b0) {\n    int   u_materialType;\n    float3 u_albedo;\n    float3 u_emission;\n};\n\nfloat3 shadeLambert(float3 albedo, float3 n, float3 l) {\n    return albedo * max(dot(n, l), 0.0);\n}\nfloat3 shadeEmissive(float3 emission) { return emission; }\n\nfloat4 main(float3 normal : TEXCOORD0) : SV_Target {\n    float3 light = normalize(float3(0.5, 1.0, 0.3));\n    float3 col;\n    if (u_materialType == 0) col = shadeLambert(u_albedo, normal, light);\n    else                      col = shadeEmissive(u_emission);\n    return float4(col, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "note": "Original Slang with interface generics — the IMaterial dispatch is monomorphized at compile time.",
+          "code": "interface IMaterial {\n    float3 shade(float3 normal, float3 lightDir);\n};\n\nstruct LambertMaterial : IMaterial {\n    float3 albedo;\n    float3 shade(float3 normal, float3 lightDir) {\n        return albedo * max(dot(normal, lightDir), 0.0);\n    }\n};\n\nstruct EmissiveMaterial : IMaterial {\n    float3 emission;\n    float3 shade(float3 normal, float3 lightDir) { return emission; }\n};\n\n[shader(\"fragment\")]\nfloat4 main<M : IMaterial>(M material, float3 normal : TEXCOORD0) : SV_Target {\n    float3 light = normalize(float3(0.5, 1.0, 0.3));\n    return float4(material.shade(normal, light), 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "20-slang-deep-dive-c2",
+      "title": "ParameterBlock → GLSL uniform block + sampler",
+      "description": "Slang's ParameterBlock bundles related resources (constants + textures + samplers) into a single type-safe binding. Port the Slang shader below to GLSL ES 3.0, splitting the ParameterBlock into a UBO + individual sampler uniforms.\n\nSlang to port:\n```slang\nstruct SceneParams {\n    float4x4 viewProj;\n    float3   sunDirection;\n    float    exposure;\n    Texture2D        skyTex;\n    SamplerState     skySampler;\n};\n\nuniform ParameterBlock<SceneParams> gScene;\n\n[shader(\"fragment\")]\nfloat4 main(float2 uv : TEXCOORD0) : SV_Target {\n    float3 dir = normalize(float3(uv * 2.0 - 1.0, 1.0));\n    float3 sky = gScene.skyTex.Sample(gScene.skySampler, uv).rgb;\n    float  sun = max(dot(dir, gScene.sunDirection), 0.0);\n    return float4(sky * gScene.exposure + float3(sun), 1.0);\n}\n```",
+      "template": "layout(std140) uniform SceneParams {\n    mat4  viewProj;\n    vec3  sunDirection;\n    float exposure;\n};\n\nuniform sampler2D u_skyTex;\nuniform vec2      u_resolution;\n\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv  = gl_FragCoord.xy / u_resolution;\n    // Port the Slang sky + sun shading below\n    /* ??? */\n    fragColor = vec4(col, 1.0);\n}\n",
+      "solution": "layout(std140) uniform SceneParams {\n    mat4  viewProj;\n    vec3  sunDirection;\n    float exposure;\n};\n\nuniform sampler2D u_skyTex;\nuniform vec2      u_resolution;\n\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv  = gl_FragCoord.xy / u_resolution;\n    vec3 dir = normalize(vec3(uv * 2.0 - 1.0, 1.0));\n    vec3 sky = texture(u_skyTex, uv).rgb;\n    float sun = max(dot(dir, sunDirection), 0.0);\n    vec3 col = sky * exposure + vec3(sun);\n    fragColor = vec4(col, 1.0);\n}\n",
+      "hints": [
+        "Members of the uniform block (viewProj, sunDirection, exposure) are accessed by their bare names in GLSL — no gScene prefix needed.",
+        "gScene.skyTex.Sample(gScene.skySampler, uv) becomes texture(u_skyTex, uv) in GLSL."
+      ],
+      "validation": "compiles",
+      "unlocks_theory": "Slang's ParameterBlock<T> is a first-class binding abstraction: the compiler automatically assigns register slots and generates the correct descriptor set layout for whatever API you target (Vulkan, D3D12, Metal). In GLSL you manage bindings manually via layout qualifiers. This is the main ergonomic advantage of Slang for large codebases — you describe relationships between resources, not raw hardware binding points.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "HLSL equivalent using explicit cbuffer + separate texture/sampler registers.",
+          "code": "cbuffer SceneParams : register(b0) {\n    float4x4 viewProj;\n    float3   sunDirection;\n    float    exposure;\n};\nTexture2D    g_skyTex    : register(t0);\nSamplerState g_skySampler : register(s0);\n\nfloat4 main(float2 uv : TEXCOORD0) : SV_Target {\n    float3 dir = normalize(float3(uv * 2.0 - 1.0, 1.0));\n    float3 sky = g_skyTex.Sample(g_skySampler, uv).rgb;\n    float  sun = max(dot(dir, sunDirection), 0.0);\n    return float4(sky * exposure + float3(sun, sun, sun), 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "note": "Original Slang with ParameterBlock — resources and constants grouped in one type.",
+          "code": "struct SceneParams {\n    float4x4     viewProj;\n    float3       sunDirection;\n    float        exposure;\n    Texture2D    skyTex;\n    SamplerState skySampler;\n};\n\nuniform ParameterBlock<SceneParams> gScene;\n\n[shader(\"fragment\")]\nfloat4 main(float2 uv : TEXCOORD0) : SV_Target {\n    float3 dir = normalize(float3(uv * 2.0 - 1.0, 1.0));\n    float3 sky = gScene.skyTex.Sample(gScene.skySampler, uv).rgb;\n    float  sun = max(dot(dir, gScene.sunDirection), 0.0);\n    return float4(sky * gScene.exposure + float3(sun, sun, sun), 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "20-slang-deep-dive-c3",
+      "title": "Auto-diff: understand the derivative",
+      "description": "Slang can automatically differentiate functions with respect to their inputs using the [Differentiable] attribute. This is used in neural rendering and gradient-based optimization. GLSL has no auto-diff; you must implement the derivative manually.\n\nSlang differentiable function:\n```slang\n[Differentiable]\nfloat sigmoid(float x) {\n    return 1.0 / (1.0 + exp(-x));\n}\n\n// Auto-generated by Slang: derivative of sigmoid\n// d/dx sigmoid(x) = sigmoid(x) * (1 - sigmoid(x))\n\n[shader(\"fragment\")]\nfloat4 main(float2 uv : TEXCOORD0) : SV_Target {\n    float x        = uv.x * 6.0 - 3.0;  // map [0,1] to [-3,3]\n    float s        = sigmoid(x);\n    // fwd-mode derivative with respect to x (dx = 1.0)\n    float dsdx     = __fwd_diff(sigmoid)(diffPair(x, 1.0)).d;\n    // visualize: red = sigmoid, green = derivative\n    return float4(s, dsdx, 0.0, 1.0);\n}\n```\n\nIn GLSL, implement sigmoid() and its analytic derivative ds_dx = s*(1-s) manually, then visualize them the same way.",
+      "template": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nfloat sigmoid(float x) {\n    return 1.0 / (1.0 + exp(-x));\n}\n\nfloat sigmoidDerivative(float x) {\n    // Implement: d/dx sigmoid(x) = sigmoid(x) * (1 - sigmoid(x))\n    /* ??? */\n}\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    float x    = uv.x * 6.0 - 3.0;\n    float s    = sigmoid(x);\n    float dsdx = sigmoidDerivative(x);\n    fragColor  = vec4(s, dsdx, 0.0, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nfloat sigmoid(float x) {\n    return 1.0 / (1.0 + exp(-x));\n}\n\nfloat sigmoidDerivative(float x) {\n    float s = sigmoid(x);\n    return s * (1.0 - s);\n}\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    float x    = uv.x * 6.0 - 3.0;\n    float s    = sigmoid(x);\n    float dsdx = sigmoidDerivative(x);\n    fragColor  = vec4(s, dsdx, 0.0, 1.0);\n}\n",
+      "hints": [
+        "The derivative of sigmoid(x) is sigma(x) * (1 - sigma(x)) — call sigmoid() again inside the derivative function.",
+        "This is a classic calculus result: d/dx [1/(1+e^-x)] = e^-x / (1+e^-x)^2 = s(x)(1-s(x))."
+      ],
+      "validation": "compiles",
+      "unlocks_theory": "Slang's automatic differentiation generates exact analytic derivatives at compile time — the same result you would get by applying calculus rules by hand, but without the error-prone manual work. It supports both forward-mode (JVP) and reverse-mode (VJP/backpropagation) differentiation. This is the foundation of neural radiance fields (NeRF) and differentiable rendering research. In GLSL you must derive and code all derivatives yourself; Slang makes gradient-based GPU programs as straightforward as writing the primal function.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "HLSL has no auto-diff; the derivative must be written manually, same as GLSL.",
+          "code": "float sigmoid(float x) {\n    return 1.0 / (1.0 + exp(-x));\n}\nfloat sigmoidDerivative(float x) {\n    float s = sigmoid(x);\n    return s * (1.0 - s);\n}\n\nfloat4 main(float2 uv : TEXCOORD0) : SV_Target {\n    float x    = uv.x * 6.0 - 3.0;\n    float s    = sigmoid(x);\n    float dsdx = sigmoidDerivative(x);\n    return float4(s, dsdx, 0.0, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "note": "Original Slang with [Differentiable] and __fwd_diff() for automatic JVP generation.",
+          "code": "[Differentiable]\nfloat sigmoid(float x) {\n    return 1.0 / (1.0 + exp(-x));\n}\n\n[shader(\"fragment\")]\nfloat4 main(float2 uv : TEXCOORD0) : SV_Target {\n    float x    = uv.x * 6.0 - 3.0;\n    float s    = sigmoid(x);\n    float dsdx = __fwd_diff(sigmoid)(diffPair(x, 1.0)).d;\n    return float4(s, dsdx, 0.0, 1.0);\n}\n"
+        }
+      }
+    }
+  ]
+}

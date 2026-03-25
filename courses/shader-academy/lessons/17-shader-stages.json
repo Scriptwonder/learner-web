@@ -1,0 +1,84 @@
+{
+  "id": "17-shader-stages",
+  "title": "Shader Stages",
+  "primer": "<p>Modern GPU pipelines split work across several programmable stages. The three you will encounter most often are the <strong>vertex shader</strong>, the <strong>fragment shader</strong>, and the <strong>compute shader</strong>.</p><ul><li><strong>Vertex shader</strong> — runs once per vertex. Its job is to transform a 3-D position into clip space and pass interpolated data (UVs, normals, colors) to the next stage.</li><li><strong>Fragment shader</strong> — runs once per rasterized pixel. It receives interpolated varyings from the vertex stage and outputs a color. All the challenges in Modules 1 and 2 were fragment shaders.</li><li><strong>Compute shader</strong> — not tied to rasterization at all. It runs arbitrary parallel work on the GPU (physics, particles, post-processing), writing results into buffers or textures.</li></ul><p>Each language expresses these stages differently. GLSL uses separate programs linked at the API level, with implicit <code>main()</code> entry points and built-in variables like <code>gl_Position</code> and <code>gl_FragCoord</code>. HLSL and Slang use semantic annotations (<code>: SV_Position</code>, <code>: SV_Target</code>) and explicit entry-point attributes to identify each stage in a single file.</p>",
+  "geometry": "quad",
+  "uniforms": ["u_time", "u_resolution"],
+  "challenges": [
+    {
+      "id": "17-shader-stages-c1",
+      "title": "Fragment shader: visualize interpolated varyings",
+      "description": "In the rasterization pipeline, the vertex shader writes `out` varyings which the rasterizer interpolates across the triangle. The fragment shader receives those interpolated values as `in` varyings. This course's quad renderer already runs a vertex shader that outputs `out vec2 v_uv;` — the UV coordinate for each pixel.\n\nWrite a GLSL ES 3.0 fragment shader that receives `v_uv` and visualizes which stage produced it. Output the UV as a color (red = u, green = v) with a blue tint of 0.3 to show the fragment stage is running.\n\nHLSL reference (fragment stage consuming a varying):\n```hlsl\nfloat4 frag(float2 uv : TEXCOORD0) : SV_Target {\n    return float4(uv.x, uv.y, 0.3, 1.0);\n}\n```\n\nKey differences:\n- GLSL uses `in vec2 v_uv;` to receive the varying (same name as the vertex shader's `out`).\n- Output goes to `out vec4 fragColor;`, not a return value with `: SV_Target`.\n- No semantic annotations — the link between stages is by variable name.",
+      "template": "in vec2 v_uv;\nout vec4 fragColor;\n\nvoid main() {\n    // Visualize the interpolated UV: red = v_uv.x, green = v_uv.y, blue = 0.3\n    /* ??? */\n}\n",
+      "solution": "in vec2 v_uv;\nout vec4 fragColor;\n\nvoid main() {\n    fragColor = vec4(v_uv.x, v_uv.y, 0.3, 1.0);\n}\n",
+      "hints": [
+        "The vertex shader already declared 'out vec2 v_uv;' — in the fragment shader declare 'in vec2 v_uv;' with the same name to receive it.",
+        "Construct a vec4 with v_uv.x as R, v_uv.y as G, 0.3 as B, and 1.0 as A. Assign it to fragColor."
+      ],
+      "validation": "compiles",
+      "unlocks_theory": "The rasterizer interpolates every 'out' varying from the vertex stage and delivers the interpolated value as the matching 'in' in the fragment stage. In GLSL the link is purely by variable name — the 'out' and 'in' declarations must match exactly. HLSL achieves this with matching semantic names in the VSOut struct and the fragment parameter list. Slang uses the same semantic approach as HLSL. The blue tint of 0.3 is a fragment-shader-only contribution — it is not part of the vertex output, demonstrating that the fragment stage can add its own computation on top of interpolated varyings.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "HLSL fragment stage consuming the TEXCOORD0 varying from the vertex shader.",
+          "code": "float4 frag(float2 uv : TEXCOORD0) : SV_Target {\n    return float4(uv.x, uv.y, 0.3, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "note": "Slang fragment stage with [shader(\"fragment\")] attribute.",
+          "code": "[shader(\"fragment\")]\nfloat4 frag(float2 uv : TEXCOORD0) : SV_Target {\n    return float4(uv.x, uv.y, 0.3, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "17-shader-stages-c2",
+      "title": "Fragment shader: consume a varying",
+      "description": "Write a GLSL ES 3.0 fragment shader that receives the UV varying from the quad vertex shader and outputs it as a color. The red channel should be v_uv.x and the green channel v_uv.y.\n\nHLSL reference:\n```hlsl\nfloat4 frag(float2 uv : TEXCOORD0) : SV_Target {\n    return float4(uv.x, uv.y, 0.0, 1.0);\n}\n```\n\nRemember: the quad vertex shader declares `out vec2 v_uv;` — in the fragment shader declare `in vec2 v_uv;` with the same name.",
+      "template": "in vec2 v_uv;\nout vec4 fragColor;\n\nvoid main() {\n    // Use v_uv.x as red, v_uv.y as green\n    /* ??? */\n}\n",
+      "solution": "in vec2 v_uv;\nout vec4 fragColor;\n\nvoid main() {\n    fragColor = vec4(v_uv.x, v_uv.y, 0.0, 1.0);\n}\n",
+      "hints": [
+        "The varying arrives as 'in vec2 v_uv' — just read its .x and .y components.",
+        "Construct a vec4 with v_uv.x as R, v_uv.y as G, 0.0 as B, and 1.0 as A."
+      ],
+      "validation": "compiles",
+      "unlocks_theory": "The rasterizer interpolates every 'out' varying from the vertex stage and delivers the interpolated value as the matching 'in' in the fragment stage. HLSL achieves this with matching semantic names in the VSOut struct and the fragment parameter list. In GLSL the link is purely by variable name — the 'out' and 'in' declarations must match exactly.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "HLSL fragment stage consuming the TEXCOORD0 varying.",
+          "code": "float4 frag(float2 uv : TEXCOORD0) : SV_Target {\n    return float4(uv.x, uv.y, 0.0, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "note": "Slang fragment stage with [shader(\"fragment\")] attribute.",
+          "code": "[shader(\"fragment\")]\nfloat4 frag(float2 uv : TEXCOORD0) : SV_Target {\n    return float4(uv.x, uv.y, 0.0, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "17-shader-stages-c3",
+      "title": "Compute-like pattern in a fragment shader",
+      "description": "Compute shaders process data in parallel workgroups — each thread knows its global index and works on one element independently. Fragment shaders are also massively parallel: each pixel is a thread, and `gl_FragCoord.xy` gives its position in the dispatch grid.\n\nSimulate a compute-style array-sum visualization in a fragment shader. Treat each column of pixels as a 'workgroup' and each row as a 'thread'. Compute a simple per-pixel value based on its UV position, then visualize whether this 'thread' would be in the first or second half of the dispatch.\n\nGLSL ES 3.0 fragment shader to write:\n- Derive `threadX` and `threadY` from `v_uv` scaled to a 64x64 virtual grid\n- Color the first half of columns (threadX < 32) red and the second half blue\n- Add a bright stripe every 8 threads to visualize workgroup boundaries\n\nHLSL reference (compute shader doing parallel work):\n```hlsl\n[numthreads(64, 1, 1)]\nvoid csMain(uint3 id : SV_DispatchThreadID,\n            RWBuffer<float> bufA : register(u0),\n            RWBuffer<float> bufOut : register(u1)) {\n    uint i = id.x;\n    bufOut[i] = bufA[i] * 2.0;  // each thread processes one element\n}\n```",
+      "template": "in vec2 v_uv;\nout vec4 fragColor;\n\nvoid main() {\n    // Simulate a 64x64 compute dispatch grid using UV coordinates\n    float threadX = floor(v_uv.x * 64.0);\n    float threadY = floor(v_uv.y * 64.0);\n\n    // Color first half of columns red, second half blue\n    // Add a bright stripe every 8 threads (workgroup boundary)\n    /* ??? */\n}\n",
+      "solution": "in vec2 v_uv;\nout vec4 fragColor;\n\nvoid main() {\n    // Simulate a 64x64 compute dispatch grid using UV coordinates\n    float threadX = floor(v_uv.x * 64.0);\n    float threadY = floor(v_uv.y * 64.0);\n\n    // Color first half of columns red, second half blue\n    vec3 col = threadX < 32.0 ? vec3(0.8, 0.2, 0.1) : vec3(0.1, 0.3, 0.8);\n\n    // Bright stripe every 8 threads to show workgroup boundaries\n    if (mod(threadX, 8.0) < 1.0 || mod(threadY, 8.0) < 1.0) {\n        col = vec3(1.0);\n    }\n\n    fragColor = vec4(col, 1.0);\n}\n",
+      "hints": [
+        "Use floor(v_uv.x * 64.0) to get an integer thread index in [0, 63]. Compare threadX < 32.0 to split the dispatch into two halves.",
+        "mod(threadX, 8.0) < 1.0 is true for every 8th column — use this to draw workgroup boundary lines."
+      ],
+      "validation": "compiles",
+      "unlocks_theory": "Every fragment shader invocation is implicitly a parallel thread — gl_FragCoord.xy is that thread's position in the 2D dispatch grid. Compute shaders make this explicit with gl_GlobalInvocationID and workgroup declarations (layout(local_size_x=N) in GLSL, [numthreads(N,1,1)] in HLSL). The parallel execution model is identical; the difference is that fragment shaders are constrained to write one color per pixel, while compute shaders can write to arbitrary buffer locations. HLSL compute uses SV_DispatchThreadID; GLSL compute uses gl_GlobalInvocationID. Slang supports [shader(\"compute\")] with the same semantics as HLSL.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "HLSL pixel shader simulating the same grid visualization (compute dispatch shown in description).",
+          "code": "float4 main(float2 uv : TEXCOORD0) : SV_Target {\n    float threadX = floor(uv.x * 64.0);\n    float threadY = floor(uv.y * 64.0);\n    float3 col = threadX < 32.0 ? float3(0.8, 0.2, 0.1) : float3(0.1, 0.3, 0.8);\n    if (fmod(threadX, 8.0) < 1.0 || fmod(threadY, 8.0) < 1.0) {\n        col = float3(1.0, 1.0, 1.0);\n    }\n    return float4(col, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "note": "Slang fragment shader version of the grid visualization.",
+          "code": "[shader(\"fragment\")]\nfloat4 main(float2 uv : TEXCOORD0) : SV_Target {\n    float threadX = floor(uv.x * 64.0);\n    float threadY = floor(uv.y * 64.0);\n    float3 col = threadX < 32.0 ? float3(0.8, 0.2, 0.1) : float3(0.1, 0.3, 0.8);\n    if (fmod(threadX, 8.0) < 1.0 || fmod(threadY, 8.0) < 1.0) {\n        col = float3(1.0, 1.0, 1.0);\n    }\n    return float4(col, 1.0);\n}\n"
+        }
+      }
+    }
+  ]
+}

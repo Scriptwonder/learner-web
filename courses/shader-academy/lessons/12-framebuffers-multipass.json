@@ -1,0 +1,101 @@
+{
+  "id": "12-framebuffers-multipass",
+  "title": "Framebuffers & Multi-Pass Rendering",
+  "description": "Real post-processing pipelines work by rendering a scene to an offscreen <strong>framebuffer object (FBO)</strong>, then reading that texture in a second pass to apply blur, bloom, or tone mapping. This renderer runs single-pass only, so the challenges below approximate multi-pass effects using neighbor sampling within one shader — giving you the intuition for what a real FBO pipeline does under the hood.",
+  "theory": {
+    "fbo_concept": "A framebuffer object (FBO) is an offscreen render target: instead of writing to the screen, the GPU writes pixel colors into a texture. A subsequent draw call samples that texture as input, enabling effects that require reading neighboring pixels from a completed previous frame.",
+    "why_two_pass": "A separable Gaussian blur needs two passes: one horizontal, one vertical. Each pass reads from the previous output. Doing both in a single pass would require a 2D kernel (NxN samples) and produce slightly incorrect results — true multi-pass is the correct approach in production.",
+    "single_pass_approximation": "In a single pass, you can approximate blur by sampling the current input texture at several UV offsets and averaging the results. This is a box blur approximation — correct if the input is already fully rendered, which in a real pipeline means sampling from an FBO color attachment.",
+    "bloom": "Bloom is typically: (1) render scene to FBO, (2) threshold bright areas into a second FBO, (3) blur the threshold buffer, (4) add it back to the original. In a single pass on a static texture you can simulate it with a smoothstep glow around bright regions."
+  },
+  "geometry": "quad",
+  "uniforms": ["u_time", "u_resolution", "u_texture0"],
+  "challenges": [
+    {
+      "id": "12-framebuffers-multipass-c1",
+      "title": "Box Blur via Neighbor Sampling",
+      "description": "Simulate a blur pass by sampling the checkerboard texture at the current UV plus 8 neighboring offsets (a 3×3 box kernel minus the center), averaging all 9 samples. This mimics reading from a completed previous render, as a real multi-pass blur would do.",
+      "template": "uniform vec2 u_resolution;\nuniform sampler2D u_texture0;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 texel = 1.0 / u_resolution;\n\n    // Sample the 3x3 neighborhood and average\n    vec4 col = vec4(0.0);\n    for (int x = -1; x <= 1; x++) {\n        for (int y = -1; y <= 1; y++) {\n            col += /* ??? */;\n        }\n    }\n    col /= /* ??? */;\n\n    fragColor = col;\n}\n",
+      "solution": "uniform vec2 u_resolution;\nuniform sampler2D u_texture0;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 texel = 1.0 / u_resolution;\n\n    vec4 col = vec4(0.0);\n    for (int x = -1; x <= 1; x++) {\n        for (int y = -1; y <= 1; y++) {\n            col += texture(u_texture0, uv + vec2(float(x), float(y)) * texel * 3.0);\n        }\n    }\n    col /= 9.0;\n\n    fragColor = col;\n}\n",
+      "hints": [
+        "Inside the loop, sample `texture(u_texture0, uv + vec2(float(x), float(y)) * texel)`. `texel` is one pixel in UV space — `1.0 / u_resolution`. Multiply by a blur radius (3.0) to widen the effect.",
+        "After the nested loops, divide `col` by 9.0 (the number of samples in a 3×3 grid) to get the average. In a real multi-pass pipeline, `u_texture0` would be replaced by the FBO color attachment from the previous pass."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [0.5, 0.5, 0.5, 1.0], "tolerance": 0.3 }
+        ]
+      },
+      "unlocks_theory": "This 3×3 box filter is functionally identical to what a first blur pass does in a real FBO pipeline — the only difference is that in a true multi-pass setup, the input texture contains a completed rendered image rather than a static asset. The separability trick (one horizontal + one vertical pass) reduces O(N²) samples to O(2N) and is how real-time Gaussian blur achieves its performance.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "HLSL loop variables must be explicitly cast to float for arithmetic.",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n};\n\nTexture2D u_texture0 : register(t0);\nSamplerState u_sampler : register(s0);\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 texel = 1.0 / u_resolution;\n\n    float4 col = float4(0.0, 0.0, 0.0, 0.0);\n    for (int x = -1; x <= 1; x++) {\n        for (int y = -1; y <= 1; y++) {\n            col += u_texture0.Sample(u_sampler, uv + float2((float)x, (float)y) * texel * 3.0);\n        }\n    }\n    return col / 9.0;\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\nuniform Texture2D u_texture0;\nuniform SamplerState u_sampler;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 texel = 1.0 / u_resolution;\n\n    float4 col = float4(0.0, 0.0, 0.0, 0.0);\n    for (int x = -1; x <= 1; x++) {\n        for (int y = -1; y <= 1; y++) {\n            col += u_texture0.Sample(u_sampler, uv + float2(float(x), float(y)) * texel * 3.0);\n        }\n    }\n    return col / 9.0;\n}\n"
+        }
+      }
+    },
+    {
+      "id": "12-framebuffers-multipass-c2",
+      "title": "Fake Bloom with Smoothstep Glow",
+      "description": "Create a glowing bright spot in the center of the canvas using a single-pass bloom approximation. Use the radial distance from the center to define a brightness falloff, then add a `smoothstep`-based glow halo around a bright core. This mimics what a bloom pass adds on top of a rendered scene.",
+      "template": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = (gl_FragCoord.xy / u_resolution) * 2.0 - 1.0;\n    uv.x *= u_resolution.x / u_resolution.y;\n\n    float dist = length(uv);\n\n    // Core: sharp bright center\n    float core = /* ??? */;\n\n    // Bloom halo: soft glow around the core using smoothstep\n    float bloom = /* ??? */;\n\n    vec3 col = vec3(1.0, 0.7, 0.3) * core + vec3(1.0, 0.4, 0.1) * bloom;\n    fragColor = vec4(col, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = (gl_FragCoord.xy / u_resolution) * 2.0 - 1.0;\n    uv.x *= u_resolution.x / u_resolution.y;\n\n    float dist = length(uv);\n\n    float core = 1.0 - smoothstep(0.0, 0.08, dist);\n\n    float bloom = (1.0 - smoothstep(0.0, 0.6, dist)) * 0.4;\n\n    vec3 col = vec3(1.0, 0.7, 0.3) * core + vec3(1.0, 0.4, 0.1) * bloom;\n    fragColor = vec4(col, 1.0);\n}\n",
+      "hints": [
+        "Core: `1.0 - smoothstep(0.0, 0.08, dist)` creates a tight white circle of radius ~0.08.",
+        "Bloom halo: `(1.0 - smoothstep(0.0, 0.6, dist)) * 0.4` is a large, dim radial falloff. Adding it to the core creates the soft glow you'd see from a real bloom post-process pass."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [1.0, 0.7, 0.3, 1.0], "tolerance": 0.15 },
+          { "x": 0.0, "y": 0.0, "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.1 }
+        ]
+      },
+      "unlocks_theory": "This single-pass approximation captures the essential look of bloom but lacks the frequency separation of a true multi-pass pipeline. Real bloom thresholds pixels above a luminance value, blurs only those bright regions in a separate buffer, then additively composites the result. The additive blend — core + bloom — is unchanged between both approaches.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n    float u_time;\n};\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = (pos.xy / u_resolution) * 2.0 - 1.0;\n    uv.x *= u_resolution.x / u_resolution.y;\n\n    float dist = length(uv);\n    float core = 1.0 - smoothstep(0.0, 0.08, dist);\n    float bloom = (1.0 - smoothstep(0.0, 0.6, dist)) * 0.4;\n\n    float3 col = float3(1.0, 0.7, 0.3) * core + float3(1.0, 0.4, 0.1) * bloom;\n    return float4(col, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\nuniform float u_time;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = (pos.xy / u_resolution) * 2.0 - 1.0;\n    uv.x *= u_resolution.x / u_resolution.y;\n\n    float dist = length(uv);\n    float core = 1.0 - smoothstep(0.0, 0.08, dist);\n    float bloom = (1.0 - smoothstep(0.0, 0.6, dist)) * 0.4;\n\n    float3 col = float3(1.0, 0.7, 0.3) * core + float3(1.0, 0.4, 0.1) * bloom;\n    return float4(col, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "12-framebuffers-multipass-c3",
+      "title": "Chromatic Aberration",
+      "description": "Simulate chromatic aberration — a lens artifact where different wavelengths focus at slightly different points — by sampling the red, green, and blue channels at slightly offset UVs. This is a classic single-pass post-process effect that would normally read from an FBO.",
+      "template": "uniform vec2 u_resolution;\nuniform float u_time;\nuniform sampler2D u_texture0;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n\n    // Offset each channel from center by a small amount\n    vec2 dir = uv - 0.5;\n    float strength = 0.015;\n\n    float r = texture(u_texture0, uv + /* ??? */).r;\n    float g = texture(u_texture0, uv).g;\n    float b = texture(u_texture0, uv - /* ??? */).b;\n\n    fragColor = vec4(r, g, b, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nuniform float u_time;\nuniform sampler2D u_texture0;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n\n    vec2 dir = uv - 0.5;\n    float strength = 0.015;\n\n    float r = texture(u_texture0, uv + dir * strength).r;\n    float g = texture(u_texture0, uv).g;\n    float b = texture(u_texture0, uv - dir * strength).b;\n\n    fragColor = vec4(r, g, b, 1.0);\n}\n",
+      "hints": [
+        "The red channel is sampled at `uv + dir * strength` — pushed outward from center. Blue is pushed in the opposite direction: `uv - dir * strength`. Green stays at the original UV.",
+        "`dir = uv - 0.5` gives a vector pointing outward from the center of the canvas. Scaling by `strength` (0.01–0.03) keeps the effect subtle. On a real post-process pipeline, this reads from the full rendered frame in an FBO."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [0.5, 0.5, 0.5, 1.0], "tolerance": 0.3 }
+        ]
+      },
+      "unlocks_theory": "Chromatic aberration is a staple post-process effect in modern game engines. In a real FBO pipeline each channel sample draws from the same frame texture — the aberration emerges because each RGB sample reads from a slightly different location in that completed frame. The math you wrote here is identical to production implementations.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n    float u_time;\n};\n\nTexture2D u_texture0 : register(t0);\nSamplerState u_sampler : register(s0);\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 dir = uv - 0.5;\n    float strength = 0.015;\n\n    float r = u_texture0.Sample(u_sampler, uv + dir * strength).r;\n    float g = u_texture0.Sample(u_sampler, uv).g;\n    float b = u_texture0.Sample(u_sampler, uv - dir * strength).b;\n\n    return float4(r, g, b, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\nuniform float u_time;\nuniform Texture2D u_texture0;\nuniform SamplerState u_sampler;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 dir = uv - 0.5;\n    float strength = 0.015;\n\n    float r = u_texture0.Sample(u_sampler, uv + dir * strength).r;\n    float g = u_texture0.Sample(u_sampler, uv).g;\n    float b = u_texture0.Sample(u_sampler, uv - dir * strength).b;\n\n    return float4(r, g, b, 1.0);\n}\n"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "id": "09-signed-distance-functions",
+  "title": "Signed Distance Functions",
+  "description": "A signed distance function (SDF) returns the distance from any point to the nearest surface of a shape — negative inside, positive outside, zero on the boundary. Because every pixel independently evaluates the same math, SDFs give you crisp, resolution-independent shapes with a single formula and no texture memory.",
+  "theory": {
+    "key_concept": "For a circle of radius r centered at the origin, `sdfCircle(p, r) = length(p) - r` returns 0 on the edge, negative inside, and positive outside. Feeding this into `smoothstep` anti-aliases the boundary without any rasterization tricks.",
+    "boolean_ops": "Shapes combine with simple math. `min(a, b)` is a union (keep the closer surface), `max(a, b)` is an intersection (keep only where both overlap), and `-a` flips a shape inside-out for subtraction. These are the building blocks of SDF-based constructive solid geometry.",
+    "smooth_blend": "`smin(a, b, k)` — smooth minimum with blend radius k — interpolates between two shapes near their boundary, producing organic merging rather than a hard seam. It's computed as `min(a,b) - k * max(0, k - abs(a-b))^2 / (4*k)`, though many polynomial variants exist.",
+    "coloring": "Once you have the distance field, use `smoothstep(0.0, fwidth(d), d)` for a pixel-perfect anti-aliased mask, or visualise the field itself as a gradient to debug your geometry."
+  },
+  "geometry": "quad",
+  "uniforms": ["u_time", "u_resolution"],
+  "challenges": [
+    {
+      "id": "09-signed-distance-functions-c1",
+      "title": "Circle SDF",
+      "description": "Use a signed distance function to draw a crisp white circle on a black background. Center the circle at the middle of the canvas and give it a radius of 0.3 in UV space. Use `smoothstep` to anti-alias the edge.",
+      "template": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nfloat sdfCircle(vec2 p, float r) {\n    return /* ??? */;\n}\n\nvoid main() {\n    vec2 uv = (gl_FragCoord.xy / u_resolution) * 2.0 - 1.0;\n    uv.x *= u_resolution.x / u_resolution.y; // correct aspect\n\n    float d = sdfCircle(uv, 0.3);\n\n    // Use smoothstep to make a white circle on black\n    float shape = /* ??? */;\n    fragColor = vec4(vec3(shape), 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nfloat sdfCircle(vec2 p, float r) {\n    return length(p) - r;\n}\n\nvoid main() {\n    vec2 uv = (gl_FragCoord.xy / u_resolution) * 2.0 - 1.0;\n    uv.x *= u_resolution.x / u_resolution.y;\n\n    float d = sdfCircle(uv, 0.3);\n\n    float shape = 1.0 - smoothstep(0.0, 0.005, d);\n    fragColor = vec4(vec3(shape), 1.0);\n}\n",
+      "hints": [
+        "`length(p) - r` gives 0 on the circle boundary, negative inside, positive outside. No branches needed.",
+        "`smoothstep(0.0, 0.005, d)` returns 0 when d < 0 (inside), and ramps up across the tiny 0.005 band at the edge. Subtract from 1.0 to get white inside, black outside."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [1.0, 1.0, 1.0, 1.0], "tolerance": 0.05 },
+          { "x": 0.0, "y": 0.0, "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.05 },
+          { "x": 1.0, "y": 0.0, "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.05 }
+        ]
+      },
+      "unlocks_theory": "The SDF formula `length(p) - r` is the foundation of all SDF-based rendering. Every primitive — box, capsule, torus, hexagon — is just a different way of measuring distance from a point to a surface. Once you have the signed distance, coloring, anti-aliasing, and animation are all trivial add-ons.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "HLSL uses float2/float3/float4 and length() works identically.",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n};\n\nfloat sdfCircle(float2 p, float r) {\n    return length(p) - r;\n}\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = (pos.xy / u_resolution) * 2.0 - 1.0;\n    uv.x *= u_resolution.x / u_resolution.y;\n\n    float d = sdfCircle(uv, 0.3);\n    float shape = 1.0 - smoothstep(0.0, 0.005, d);\n    return float4(shape, shape, shape, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\n\nfloat sdfCircle(float2 p, float r) {\n    return length(p) - r;\n}\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = (pos.xy / u_resolution) * 2.0 - 1.0;\n    uv.x *= u_resolution.x / u_resolution.y;\n\n    float d = sdfCircle(uv, 0.3);\n    float shape = 1.0 - smoothstep(0.0, 0.005, d);\n    return float4(shape, shape, shape, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "09-signed-distance-functions-c2",
+      "title": "Boolean Union",
+      "description": "Draw two overlapping circles — one centered at (-0.35, 0) and one at (0.35, 0), both with radius 0.3 — and combine them with a union operation so they appear as a single merged white shape.",
+      "template": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nfloat sdfCircle(vec2 p, float r) {\n    return length(p) - r;\n}\n\nvoid main() {\n    vec2 uv = (gl_FragCoord.xy / u_resolution) * 2.0 - 1.0;\n    uv.x *= u_resolution.x / u_resolution.y;\n\n    float d1 = sdfCircle(uv - vec2(-0.35, 0.0), 0.3);\n    float d2 = sdfCircle(uv - vec2( 0.35, 0.0), 0.3);\n\n    // Union: keep the closer (smaller) distance\n    float d = /* ??? */;\n\n    float shape = 1.0 - smoothstep(0.0, 0.005, d);\n    fragColor = vec4(vec3(shape), 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nfloat sdfCircle(vec2 p, float r) {\n    return length(p) - r;\n}\n\nvoid main() {\n    vec2 uv = (gl_FragCoord.xy / u_resolution) * 2.0 - 1.0;\n    uv.x *= u_resolution.x / u_resolution.y;\n\n    float d1 = sdfCircle(uv - vec2(-0.35, 0.0), 0.3);\n    float d2 = sdfCircle(uv - vec2( 0.35, 0.0), 0.3);\n\n    float d = min(d1, d2);\n\n    float shape = 1.0 - smoothstep(0.0, 0.005, d);\n    fragColor = vec4(vec3(shape), 1.0);\n}\n",
+      "hints": [
+        "Union means 'inside either shape'. A point is inside the union when its distance to at least one shape is negative — i.e., the minimum of the two distances.",
+        "In SDF space: `min(d1, d2)` is the union. The smaller value wins: if you're inside circle 1, d1 < 0 and `min` correctly identifies you as inside."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [1.0, 1.0, 1.0, 1.0], "tolerance": 0.05 },
+          { "x": 0.0, "y": 0.5, "expected": [1.0, 1.0, 1.0, 1.0], "tolerance": 0.05 },
+          { "x": 0.0, "y": 0.0, "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.05 }
+        ]
+      },
+      "unlocks_theory": "The three boolean SDF operations — `min` (union), `max` (intersection), and `max(a, -b)` (subtraction) — let you build arbitrarily complex shapes purely through algebra. There are no polygon meshes, no vertex buffers: just math evaluated per-pixel.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n};\n\nfloat sdfCircle(float2 p, float r) { return length(p) - r; }\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = (pos.xy / u_resolution) * 2.0 - 1.0;\n    uv.x *= u_resolution.x / u_resolution.y;\n\n    float d1 = sdfCircle(uv - float2(-0.35, 0.0), 0.3);\n    float d2 = sdfCircle(uv - float2( 0.35, 0.0), 0.3);\n    float d = min(d1, d2);\n\n    float shape = 1.0 - smoothstep(0.0, 0.005, d);\n    return float4(shape, shape, shape, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\n\nfloat sdfCircle(float2 p, float r) { return length(p) - r; }\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = (pos.xy / u_resolution) * 2.0 - 1.0;\n    uv.x *= u_resolution.x / u_resolution.y;\n\n    float d1 = sdfCircle(uv - float2(-0.35, 0.0), 0.3);\n    float d2 = sdfCircle(uv - float2( 0.35, 0.0), 0.3);\n    float d = min(d1, d2);\n\n    float shape = 1.0 - smoothstep(0.0, 0.005, d);\n    return float4(shape, shape, shape, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "09-signed-distance-functions-c3",
+      "title": "Smooth Blend",
+      "description": "Replace the hard `min` union with a smooth-minimum blend so the two circles melt into each other organically. Use `smin` with a blend factor k = 0.15, and animate the circles moving toward and away from each other using `u_time`.",
+      "template": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nfloat sdfCircle(vec2 p, float r) { return length(p) - r; }\n\nfloat smin(float a, float b, float k) {\n    float h = max(k - abs(a - b), 0.0) / k;\n    return min(a, b) - h * h * k * 0.25;\n}\n\nvoid main() {\n    vec2 uv = (gl_FragCoord.xy / u_resolution) * 2.0 - 1.0;\n    uv.x *= u_resolution.x / u_resolution.y;\n\n    // Animate offset between 0.1 and 0.4\n    float offset = 0.25 + 0.15 * sin(u_time);\n\n    float d1 = sdfCircle(uv - vec2(-offset, 0.0), 0.28);\n    float d2 = sdfCircle(uv - vec2( offset, 0.0), 0.28);\n\n    // Blend with smin instead of min\n    float d = /* ??? */;\n\n    float shape = 1.0 - smoothstep(0.0, 0.005, d);\n    fragColor = vec4(vec3(shape), 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nfloat sdfCircle(vec2 p, float r) { return length(p) - r; }\n\nfloat smin(float a, float b, float k) {\n    float h = max(k - abs(a - b), 0.0) / k;\n    return min(a, b) - h * h * k * 0.25;\n}\n\nvoid main() {\n    vec2 uv = (gl_FragCoord.xy / u_resolution) * 2.0 - 1.0;\n    uv.x *= u_resolution.x / u_resolution.y;\n\n    float offset = 0.25 + 0.15 * sin(u_time);\n\n    float d1 = sdfCircle(uv - vec2(-offset, 0.0), 0.28);\n    float d2 = sdfCircle(uv - vec2( offset, 0.0), 0.28);\n\n    float d = smin(d1, d2, 0.15);\n\n    float shape = 1.0 - smoothstep(0.0, 0.005, d);\n    fragColor = vec4(vec3(shape), 1.0);\n}\n",
+      "hints": [
+        "Just replace `min(d1, d2)` with `smin(d1, d2, 0.15)`. The k parameter controls how far the blend region extends.",
+        "Watch the shape animate: when the circles are far apart, `smin` behaves like regular `min`. As they approach, the merge zone grows, creating a liquid-like metaball effect."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [1.0, 1.0, 1.0, 1.0], "tolerance": 0.1 },
+          { "x": 0.0, "y": 0.0, "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.05 }
+        ]
+      },
+      "unlocks_theory": "Smooth-minimum is what makes metaballs and organic creature silhouettes possible in real-time. The same `smin` trick extends to 3D: blob-like SDF scenes in raymarchers use it to make surfaces flow and merge as they animate. The blend radius k is your artistic control over how 'sticky' shapes appear.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n    float u_time;\n};\n\nfloat sdfCircle(float2 p, float r) { return length(p) - r; }\n\nfloat smin(float a, float b, float k) {\n    float h = max(k - abs(a - b), 0.0) / k;\n    return min(a, b) - h * h * k * 0.25;\n}\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = (pos.xy / u_resolution) * 2.0 - 1.0;\n    uv.x *= u_resolution.x / u_resolution.y;\n\n    float offset = 0.25 + 0.15 * sin(u_time);\n    float d1 = sdfCircle(uv - float2(-offset, 0.0), 0.28);\n    float d2 = sdfCircle(uv - float2( offset, 0.0), 0.28);\n    float d = smin(d1, d2, 0.15);\n\n    float shape = 1.0 - smoothstep(0.0, 0.005, d);\n    return float4(shape, shape, shape, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\nuniform float u_time;\n\nfloat sdfCircle(float2 p, float r) { return length(p) - r; }\n\nfloat smin(float a, float b, float k) {\n    float h = max(k - abs(a - b), 0.0) / k;\n    return min(a, b) - h * h * k * 0.25;\n}\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = (pos.xy / u_resolution) * 2.0 - 1.0;\n    uv.x *= u_resolution.x / u_resolution.y;\n\n    float offset = 0.25 + 0.15 * sin(u_time);\n    float d1 = sdfCircle(uv - float2(-offset, 0.0), 0.28);\n    float d2 = sdfCircle(uv - float2( offset, 0.0), 0.28);\n    float d = smin(d1, d2, 0.15);\n\n    float shape = 1.0 - smoothstep(0.0, 0.005, d);\n    return float4(shape, shape, shape, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "09-signed-distance-functions-c4",
+      "title": "SDF Distance Field Visualization",
+      "description": "Render the SDF of a circle not as a binary mask but as a full distance field: color the interior with a cool blue tint, the exterior with concentric rings showing distance, and the boundary with a bright white highlight.",
+      "template": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nfloat sdfCircle(vec2 p, float r) { return length(p) - r; }\n\nvoid main() {\n    vec2 uv = (gl_FragCoord.xy / u_resolution) * 2.0 - 1.0;\n    uv.x *= u_resolution.x / u_resolution.y;\n\n    float d = sdfCircle(uv, 0.35);\n\n    // Interior: blue tint based on depth inside\n    // Exterior: concentric rings using fract\n    // Edge: bright white band\n    vec3 col = /* ??? */;\n\n    fragColor = vec4(col, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nfloat sdfCircle(vec2 p, float r) { return length(p) - r; }\n\nvoid main() {\n    vec2 uv = (gl_FragCoord.xy / u_resolution) * 2.0 - 1.0;\n    uv.x *= u_resolution.x / u_resolution.y;\n\n    float d = sdfCircle(uv, 0.35);\n\n    // Exterior rings\n    float rings = 0.5 + 0.5 * sin(d * 40.0);\n    vec3 exterior = vec3(0.1, 0.3, 0.5) * rings;\n\n    // Interior blue fill\n    vec3 interior = vec3(0.05, 0.15, 0.4) * (1.0 + d * 2.0);\n\n    // Blend interior/exterior by sign of d\n    vec3 col = mix(interior, exterior, step(0.0, d));\n\n    // Edge highlight\n    float edge = 1.0 - smoothstep(0.0, 0.01, abs(d));\n    col = mix(col, vec3(1.0), edge);\n\n    fragColor = vec4(col, 1.0);\n}\n",
+      "hints": [
+        "Use `step(0.0, d)` to separate interior (d < 0) from exterior (d > 0). Then `mix` between two color expressions.",
+        "For concentric rings, `sin(d * frequency)` oscillates with the distance. Use `abs(d)` to catch the zero boundary, and `smoothstep(0.0, 0.01, abs(d))` for the white edge highlight."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [0.05, 0.15, 0.4, 1.0], "tolerance": 0.2 },
+          { "x": 0.0, "y": 0.0, "expected": [0.1, 0.3, 0.5, 1.0], "tolerance": 0.3 }
+        ]
+      },
+      "unlocks_theory": "Visualizing the full distance field is essential for debugging SDF scenes and understanding how smooth-minimum, offsets, and boolean ops change the field. Production raymarchers often display field values as colored bands during development. The same field you use for coloring can drive AO, soft shadows, and material transitions.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n    float u_time;\n};\n\nfloat sdfCircle(float2 p, float r) { return length(p) - r; }\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = (pos.xy / u_resolution) * 2.0 - 1.0;\n    uv.x *= u_resolution.x / u_resolution.y;\n\n    float d = sdfCircle(uv, 0.35);\n\n    float rings = 0.5 + 0.5 * sin(d * 40.0);\n    float3 exterior = float3(0.1, 0.3, 0.5) * rings;\n    float3 interior = float3(0.05, 0.15, 0.4) * (1.0 + d * 2.0);\n    float3 col = lerp(interior, exterior, step(0.0, d));\n\n    float edge = 1.0 - smoothstep(0.0, 0.01, abs(d));\n    col = lerp(col, float3(1.0, 1.0, 1.0), edge);\n\n    return float4(col, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\nuniform float u_time;\n\nfloat sdfCircle(float2 p, float r) { return length(p) - r; }\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = (pos.xy / u_resolution) * 2.0 - 1.0;\n    uv.x *= u_resolution.x / u_resolution.y;\n\n    float d = sdfCircle(uv, 0.35);\n\n    float rings = 0.5 + 0.5 * sin(d * 40.0);\n    float3 exterior = float3(0.1, 0.3, 0.5) * rings;\n    float3 interior = float3(0.05, 0.15, 0.4) * (1.0 + d * 2.0);\n    float3 col = lerp(interior, exterior, step(0.0, d));\n\n    float edge = 1.0 - smoothstep(0.0, 0.01, abs(d));\n    col = lerp(col, float3(1.0, 1.0, 1.0), edge);\n\n    return float4(col, 1.0);\n}\n"
+        }
+      }
+    }
+  ]
+}

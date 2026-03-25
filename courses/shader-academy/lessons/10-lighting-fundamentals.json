@@ -1,0 +1,134 @@
+{
+  "id": "10-lighting-fundamentals",
+  "title": "Lighting Fundamentals",
+  "description": "Lighting is what transforms a flat colored surface into something that reads as three-dimensional. This lesson builds the classic Blinn-Phong model from scratch: starting with the surface normal, computing the diffuse N·L term, and adding a specular highlight using the half-vector. The sphere geometry provides real interpolated normals to work with.",
+  "theory": {
+    "key_concept": "The fragment shader on a sphere receives `v_normal` — the interpolated surface normal in world space — and `v_position` — the world-space position of the fragment. These come from the vertex shader and are declared as `in vec3` varyings.",
+    "normal_viz": "Visualizing normals as RGB (mapping [-1,1] to [0,1]) is the universal first debugging step. A normal pointing +X is red, +Y is green, +Z is blue. If the sphere shows a smooth color gradient from dark red at left to bright red at right, the normals are correct.",
+    "diffuse": "Lambertian diffuse intensity is `max(0.0, dot(N, L))` where N is the normalized surface normal and L is the normalized direction toward the light. It is zero on surfaces facing away from the light and peaks at 1.0 on surfaces directly facing the light.",
+    "blinn_phong": "Blinn-Phong adds a specular highlight using the half-vector H = normalize(L + V), where V is the view direction (toward the camera). Specular intensity is `pow(max(0, dot(N, H)), shininess)`. Higher shininess values produce tighter, sharper highlights."
+  },
+  "geometry": "sphere",
+  "uniforms": ["u_time", "u_resolution", "u_light"],
+  "uniform_defaults": {
+    "u_light": [0.577, 0.577, 0.289]
+  },
+  "challenges": [
+    {
+      "id": "10-lighting-fundamentals-c1",
+      "title": "Normal Visualization",
+      "description": "Visualize the sphere's surface normals as colors. Map the normal components from [-1, 1] to [0, 1] and output them as RGB. The sphere should display a smooth rainbow-like gradient that reveals its 3D curvature.",
+      "template": "uniform vec2 u_resolution;\nin vec3 v_normal;\nin vec3 v_position;\nout vec4 fragColor;\n\nvoid main() {\n    vec3 N = normalize(v_normal);\n\n    // Map normal from [-1,1] to [0,1] for visualization\n    vec3 col = /* ??? */;\n\n    fragColor = vec4(col, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nin vec3 v_normal;\nin vec3 v_position;\nout vec4 fragColor;\n\nvoid main() {\n    vec3 N = normalize(v_normal);\n\n    vec3 col = N * 0.5 + 0.5;\n\n    fragColor = vec4(col, 1.0);\n}\n",
+      "hints": [
+        "Normals are in [-1, 1]. To display them as colors (which live in [0, 1]) use `N * 0.5 + 0.5`. This maps -1 to 0 and +1 to 1.",
+        "The left side of the sphere has normals pointing toward -X (negative red), so that region should appear dark red. The top points toward +Y — bright green. The center face points toward +Z — blue."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [0.5, 0.5, 1.0, 1.0], "tolerance": 0.1 }
+        ]
+      },
+      "unlocks_theory": "Normal visualization is the first thing professional shader developers do when setting up a new mesh or lighting rig. It confirms that normals are in the right space (world, view, or tangent) and pointing in the right direction. If your lighting looks wrong later, visualizing N is almost always the first debugging step.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "Varyings become struct members with semantics in HLSL.",
+          "code": "struct PSInput {\n    float4 pos   : SV_Position;\n    float3 normal : NORMAL;\n    float3 worldPos : TEXCOORD0;\n};\n\nfloat4 main(PSInput input) : SV_Target {\n    float3 N = normalize(input.normal);\n    float3 col = N * 0.5 + 0.5;\n    return float4(col, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "struct PSInput {\n    float4 pos   : SV_Position;\n    float3 normal : NORMAL;\n    float3 worldPos : TEXCOORD0;\n};\n\n[shader(\"fragment\")]\nfloat4 main(PSInput input) : SV_Target {\n    float3 N = normalize(input.normal);\n    float3 col = N * 0.5 + 0.5;\n    return float4(col, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "10-lighting-fundamentals-c2",
+      "title": "Lambertian Diffuse",
+      "description": "Implement Lambertian diffuse shading. The surface color should be proportional to `max(0.0, dot(N, L))` where L is the light direction from `u_light`. Give the sphere a warm orange base color and let the lighting dim it on surfaces facing away from the light.",
+      "template": "uniform vec3 u_light;\nin vec3 v_normal;\nin vec3 v_position;\nout vec4 fragColor;\n\nvoid main() {\n    vec3 N = normalize(v_normal);\n    vec3 L = normalize(u_light);\n\n    // Lambertian diffuse: N dot L, clamped to 0\n    float diff = /* ??? */;\n\n    vec3 baseColor = vec3(1.0, 0.5, 0.1); // orange\n    vec3 col = baseColor * diff;\n\n    fragColor = vec4(col, 1.0);\n}\n",
+      "solution": "uniform vec3 u_light;\nin vec3 v_normal;\nin vec3 v_position;\nout vec4 fragColor;\n\nvoid main() {\n    vec3 N = normalize(v_normal);\n    vec3 L = normalize(u_light);\n\n    float diff = max(0.0, dot(N, L));\n\n    vec3 baseColor = vec3(1.0, 0.5, 0.1);\n    vec3 col = baseColor * diff;\n\n    fragColor = vec4(col, 1.0);\n}\n",
+      "hints": [
+        "`dot(N, L)` returns the cosine of the angle between the normal and the light direction. When they point the same way (surface faces the light), the result is 1.0. When perpendicular, 0.0. When facing away, negative — clamp it to 0.",
+        "Use `max(0.0, dot(N, L))` to prevent negative light contribution from behind-facing surfaces."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [0.577, 0.289, 0.058, 1.0], "tolerance": 0.15 },
+          { "x": 0.1, "y": 0.5, "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.1 }
+        ]
+      },
+      "unlocks_theory": "Lambertian diffuse is physically motivated: it models perfectly rough (matte) surfaces that scatter incoming light equally in all directions. The N·L dot product is a direct application of Lambert's cosine law — the same law that explains why the sun heats the equator more than the poles.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float3 u_light;\n};\n\nstruct PSInput {\n    float4 pos    : SV_Position;\n    float3 normal : NORMAL;\n    float3 worldPos : TEXCOORD0;\n};\n\nfloat4 main(PSInput input) : SV_Target {\n    float3 N = normalize(input.normal);\n    float3 L = normalize(u_light);\n\n    float diff = max(0.0, dot(N, L));\n    float3 baseColor = float3(1.0, 0.5, 0.1);\n    return float4(baseColor * diff, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float3 u_light;\n\nstruct PSInput {\n    float4 pos    : SV_Position;\n    float3 normal : NORMAL;\n    float3 worldPos : TEXCOORD0;\n};\n\n[shader(\"fragment\")]\nfloat4 main(PSInput input) : SV_Target {\n    float3 N = normalize(input.normal);\n    float3 L = normalize(u_light);\n\n    float diff = max(0.0, dot(N, L));\n    float3 baseColor = float3(1.0, 0.5, 0.1);\n    return float4(baseColor * diff, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "10-lighting-fundamentals-c3",
+      "title": "Ambient + Diffuse",
+      "description": "Add an ambient term so surfaces that face away from the light aren't completely black. Combine a small ambient constant (0.08) with the Lambertian diffuse, keeping the orange base color.",
+      "template": "uniform vec3 u_light;\nin vec3 v_normal;\nin vec3 v_position;\nout vec4 fragColor;\n\nvoid main() {\n    vec3 N = normalize(v_normal);\n    vec3 L = normalize(u_light);\n\n    float ambient = 0.08;\n    float diff = max(0.0, dot(N, L));\n\n    // Combine ambient and diffuse\n    float light = /* ??? */;\n\n    vec3 baseColor = vec3(1.0, 0.5, 0.1);\n    fragColor = vec4(baseColor * light, 1.0);\n}\n",
+      "solution": "uniform vec3 u_light;\nin vec3 v_normal;\nin vec3 v_position;\nout vec4 fragColor;\n\nvoid main() {\n    vec3 N = normalize(v_normal);\n    vec3 L = normalize(u_light);\n\n    float ambient = 0.08;\n    float diff = max(0.0, dot(N, L));\n\n    float light = ambient + diff;\n\n    vec3 baseColor = vec3(1.0, 0.5, 0.1);\n    fragColor = vec4(baseColor * light, 1.0);\n}\n",
+      "hints": [
+        "Ambient is a flat minimum light level that represents indirect illumination from the environment. Just add it to the diffuse term: `ambient + diff`.",
+        "A value around 0.05–0.15 is typical. Too high and shadows disappear; too low and unlit areas go pure black, which rarely looks natural."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [0.66, 0.33, 0.065, 1.0], "tolerance": 0.15 },
+          { "x": 0.05, "y": 0.5, "expected": [0.08, 0.04, 0.008, 1.0], "tolerance": 0.1 }
+        ]
+      },
+      "unlocks_theory": "Ambient light is a crude but effective approximation of global illumination — the bounced, scattered light that reaches even surfaces not directly facing any light source. In production, ambient is often replaced by an ambient occlusion map or an irradiance environment map (a blurred cube map), but the concept of a base light floor remains the same.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float3 u_light;\n};\n\nstruct PSInput {\n    float4 pos    : SV_Position;\n    float3 normal : NORMAL;\n    float3 worldPos : TEXCOORD0;\n};\n\nfloat4 main(PSInput input) : SV_Target {\n    float3 N = normalize(input.normal);\n    float3 L = normalize(u_light);\n\n    float ambient = 0.08;\n    float diff = max(0.0, dot(N, L));\n    float light = ambient + diff;\n\n    float3 baseColor = float3(1.0, 0.5, 0.1);\n    return float4(baseColor * light, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float3 u_light;\n\nstruct PSInput {\n    float4 pos    : SV_Position;\n    float3 normal : NORMAL;\n    float3 worldPos : TEXCOORD0;\n};\n\n[shader(\"fragment\")]\nfloat4 main(PSInput input) : SV_Target {\n    float3 N = normalize(input.normal);\n    float3 L = normalize(u_light);\n\n    float ambient = 0.08;\n    float diff = max(0.0, dot(N, L));\n    float light = ambient + diff;\n\n    float3 baseColor = float3(1.0, 0.5, 0.1);\n    return float4(baseColor * light, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "10-lighting-fundamentals-c4",
+      "title": "Blinn-Phong Specular",
+      "description": "Add a Blinn-Phong specular highlight to complete the lighting model. The camera is at (0, 0, 3). Compute the half-vector H = normalize(L + V) and use `pow(max(0, dot(N, H)), 64.0)` for a tight white specular highlight. Combine ambient (0.08) + diffuse + specular.",
+      "template": "uniform vec3 u_light;\nin vec3 v_normal;\nin vec3 v_position;\nout vec4 fragColor;\n\nvoid main() {\n    vec3 N = normalize(v_normal);\n    vec3 L = normalize(u_light);\n    vec3 V = normalize(vec3(0.0, 0.0, 3.0) - v_position);\n\n    float ambient = 0.08;\n    float diff = max(0.0, dot(N, L));\n\n    // Blinn-Phong half vector and specular\n    vec3 H = /* ??? */;\n    float spec = /* ??? */;\n\n    vec3 baseColor = vec3(1.0, 0.5, 0.1);\n    vec3 col = baseColor * (ambient + diff) + vec3(1.0) * spec;\n    fragColor = vec4(col, 1.0);\n}\n",
+      "solution": "uniform vec3 u_light;\nin vec3 v_normal;\nin vec3 v_position;\nout vec4 fragColor;\n\nvoid main() {\n    vec3 N = normalize(v_normal);\n    vec3 L = normalize(u_light);\n    vec3 V = normalize(vec3(0.0, 0.0, 3.0) - v_position);\n\n    float ambient = 0.08;\n    float diff = max(0.0, dot(N, L));\n\n    vec3 H = normalize(L + V);\n    float spec = pow(max(0.0, dot(N, H)), 64.0);\n\n    vec3 baseColor = vec3(1.0, 0.5, 0.1);\n    vec3 col = baseColor * (ambient + diff) + vec3(1.0) * spec;\n    fragColor = vec4(col, 1.0);\n}\n",
+      "hints": [
+        "The half-vector H bisects the angle between the light direction L and the view direction V: `H = normalize(L + V)`. It's cheaper than computing the true reflection vector.",
+        "`pow(max(0, dot(N, H)), shininess)` — higher shininess (64, 128, 256) gives a tighter, more mirror-like highlight. Lower values (8, 16) give broad, plastic-like gloss."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [1.0, 0.5, 0.1, 1.0], "tolerance": 0.3 },
+          { "x": 0.1, "y": 0.5, "expected": [0.08, 0.04, 0.008, 1.0], "tolerance": 0.1 }
+        ]
+      },
+      "unlocks_theory": "Blinn-Phong dominated real-time rendering for decades and is still used in mobile games and stylized renderers today. The key insight is that all three terms — ambient, diffuse, specular — are computed per-fragment using only dot products, making them trivially parallel on GPU. The next step up is physically-based rendering (PBR), which replaces these empirical terms with energy-conserving BRDFs.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float3 u_light;\n};\n\nstruct PSInput {\n    float4 pos    : SV_Position;\n    float3 normal : NORMAL;\n    float3 worldPos : TEXCOORD0;\n};\n\nfloat4 main(PSInput input) : SV_Target {\n    float3 N = normalize(input.normal);\n    float3 L = normalize(u_light);\n    float3 V = normalize(float3(0.0, 0.0, 3.0) - input.worldPos);\n\n    float ambient = 0.08;\n    float diff = max(0.0, dot(N, L));\n\n    float3 H = normalize(L + V);\n    float spec = pow(max(0.0, dot(N, H)), 64.0);\n\n    float3 baseColor = float3(1.0, 0.5, 0.1);\n    float3 col = baseColor * (ambient + diff) + float3(1.0, 1.0, 1.0) * spec;\n    return float4(col, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float3 u_light;\n\nstruct PSInput {\n    float4 pos    : SV_Position;\n    float3 normal : NORMAL;\n    float3 worldPos : TEXCOORD0;\n};\n\n[shader(\"fragment\")]\nfloat4 main(PSInput input) : SV_Target {\n    float3 N = normalize(input.normal);\n    float3 L = normalize(u_light);\n    float3 V = normalize(float3(0.0, 0.0, 3.0) - input.worldPos);\n\n    float ambient = 0.08;\n    float diff = max(0.0, dot(N, L));\n\n    float3 H = normalize(L + V);\n    float spec = pow(max(0.0, dot(N, H)), 64.0);\n\n    float3 baseColor = float3(1.0, 0.5, 0.1);\n    float3 col = baseColor * (ambient + diff) + float3(1.0, 1.0, 1.0) * spec;\n    return float4(col, 1.0);\n}\n"
+        }
+      }
+    }
+  ]
+}

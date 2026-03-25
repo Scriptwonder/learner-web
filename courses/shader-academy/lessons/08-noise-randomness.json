@@ -1,0 +1,122 @@
+{
+  "id": "08-noise-randomness",
+  "title": "Noise and Randomness",
+  "primer": "GPUs have no built-in random number generator, so shader programmers use deterministic <em>hash functions</em> that look random but are perfectly reproducible. From a simple hash you can build <em>value noise</em> (smooth random values on a grid), and from multiple octaves of noise you get <em>fractal Brownian motion (fBm)</em> — the mathematical pattern behind clouds, terrain, fire, and most natural textures. This lesson builds all three layers from scratch.",
+  "geometry": "quad",
+  "uniforms": ["u_time", "u_resolution"],
+  "challenges": [
+    {
+      "id": "08-noise-randomness-c1",
+      "title": "Hash function (TV static)",
+      "description": "Implement a 2D hash function that maps any integer grid coordinate to a pseudo-random value in [0, 1]. Apply it to every pixel's tile coordinate to produce TV-static noise that changes every frame.",
+      "template": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\n// Hash: map a vec2 to a pseudo-random float in [0,1]\nfloat hash(vec2 p) {\n    p = fract(p * vec2(127.1, 311.7));\n    p += dot(p, p + 19.19);\n    return /* fract(p.x * p.y) */;\n}\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n\n    // Add time so the static changes each frame\n    vec2 p = uv * 200.0 + floor(u_time * 30.0);\n\n    float n = hash(/* ??? */);\n\n    fragColor = vec4(n, n, n, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nfloat hash(vec2 p) {\n    p = fract(p * vec2(127.1, 311.7));\n    p += dot(p, p + 19.19);\n    return fract(p.x * p.y);\n}\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n\n    vec2 p = uv * 200.0 + floor(u_time * 30.0);\n\n    float n = hash(p);\n\n    fragColor = vec4(n, n, n, 1.0);\n}\n",
+      "hints": [
+        "Complete the hash by returning `fract(p.x * p.y)` — multiplying two well-scrambled floats and taking the fractional part produces values that pass a visual randomness test.",
+        "Pass `p` (the scaled + time-offset UV) into `hash(p)`. The large scale (200.0) ensures adjacent pixels have very different integer coordinates, giving uncorrelated noise values."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [0.5, 0.5, 0.5, 1.0], "tolerance": 0.5 }
+        ]
+      },
+      "unlocks_theory": "This hash works by exploiting floating-point arithmetic: multiplying by large primes scrambles the bits of the input, and `fract` discards the integer part to produce a value in [0,1]. The result is deterministic (same input always gives the same output) but aperiodic within the visible range — the two properties that define a good shader hash. Quality can be improved with extra mixing rounds at the cost of GPU instructions.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "HLSL uses `frac` instead of `fract`.",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n    float  u_time;\n};\n\nfloat hash(float2 p) {\n    p = frac(p * float2(127.1, 311.7));\n    p += dot(p, p + 19.19);\n    return frac(p.x * p.y);\n}\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n\n    float2 p = uv * 200.0 + floor(u_time * 30.0);\n    float n = hash(p);\n\n    return float4(n, n, n, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\nuniform float  u_time;\n\nfloat hash(float2 p) {\n    p = frac(p * float2(127.1, 311.7));\n    p += dot(p, p + 19.19);\n    return frac(p.x * p.y);\n}\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n\n    float2 p = uv * 200.0 + floor(u_time * 30.0);\n    float n = hash(p);\n\n    return float4(n, n, n, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "08-noise-randomness-c2",
+      "title": "Value noise (smooth noise)",
+      "description": "Build smooth value noise by sampling a hash at the four corners of each grid cell and interpolating with <code>smoothstep</code>. The result is continuous smooth blobs instead of per-pixel static.",
+      "template": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nfloat hash(vec2 p) {\n    p = fract(p * vec2(127.1, 311.7));\n    p += dot(p, p + 19.19);\n    return fract(p.x * p.y);\n}\n\nfloat valueNoise(vec2 p) {\n    vec2 i = floor(p);   // integer cell\n    vec2 f = fract(p);   // local position within cell [0,1]\n\n    // Sample hash at the four corners\n    float a = hash(i + vec2(0.0, 0.0));\n    float b = hash(i + vec2(1.0, 0.0));\n    float c = hash(i + vec2(0.0, 1.0));\n    float d = hash(i + vec2(1.0, 1.0));\n\n    // Smooth the interpolant (cubic Hermite)\n    vec2 u = /* smoothstep(0.0, 1.0, f) */;\n\n    // Bilinear interpolation\n    return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);\n}\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 p  = uv * 6.0 + u_time * 0.2;\n\n    float n = valueNoise(/* ??? */);\n\n    fragColor = vec4(n, n, n, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nfloat hash(vec2 p) {\n    p = fract(p * vec2(127.1, 311.7));\n    p += dot(p, p + 19.19);\n    return fract(p.x * p.y);\n}\n\nfloat valueNoise(vec2 p) {\n    vec2 i = floor(p);\n    vec2 f = fract(p);\n\n    float a = hash(i + vec2(0.0, 0.0));\n    float b = hash(i + vec2(1.0, 0.0));\n    float c = hash(i + vec2(0.0, 1.0));\n    float d = hash(i + vec2(1.0, 1.0));\n\n    vec2 u = smoothstep(0.0, 1.0, f);\n\n    return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);\n}\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 p  = uv * 6.0 + u_time * 0.2;\n\n    float n = valueNoise(p);\n\n    fragColor = vec4(n, n, n, 1.0);\n}\n",
+      "hints": [
+        "`vec2 u = smoothstep(0.0, 1.0, f)` applies a cubic Hermite curve to the local fractional position, giving C1-continuous interpolation. Plain `mix` with a linear `f` would produce visible gradient discontinuities at cell borders.",
+        "The bilinear interpolation `mix(mix(a, b, u.x), mix(c, d, u.x), u.y)` first interpolates along x on both rows, then interpolates those two results along y. Pass `p` into `valueNoise(p)` in `main`."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [0.5, 0.5, 0.5, 1.0], "tolerance": 0.5 }
+        ]
+      },
+      "unlocks_theory": "Value noise interpolates random values defined on a grid. The key to smoothness is using a cubic (C1-continuous) interpolant — `smoothstep` or the quintic `6t⁵-15t⁴+10t³` — instead of plain linear `mix`. The cubic interpolant guarantees that the derivative is zero at grid points, eliminating the faceted look of linear interpolation. This is essentially the algorithm Ken Perlin used in his original 1985 paper (though Perlin noise uses gradient vectors rather than scalar values for even smoother results).",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n    float  u_time;\n};\n\nfloat hash(float2 p) {\n    p = frac(p * float2(127.1, 311.7));\n    p += dot(p, p + 19.19);\n    return frac(p.x * p.y);\n}\n\nfloat valueNoise(float2 p) {\n    float2 i = floor(p);\n    float2 f = frac(p);\n\n    float a = hash(i + float2(0.0, 0.0));\n    float b = hash(i + float2(1.0, 0.0));\n    float c = hash(i + float2(0.0, 1.0));\n    float d = hash(i + float2(1.0, 1.0));\n\n    float2 u = smoothstep(0.0, 1.0, f);\n    return lerp(lerp(a, b, u.x), lerp(c, d, u.x), u.y);\n}\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 p  = uv * 6.0 + u_time * 0.2;\n\n    float n = valueNoise(p);\n    return float4(n, n, n, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\nuniform float  u_time;\n\nfloat hash(float2 p) {\n    p = frac(p * float2(127.1, 311.7));\n    p += dot(p, p + 19.19);\n    return frac(p.x * p.y);\n}\n\nfloat valueNoise(float2 p) {\n    float2 i = floor(p);\n    float2 f = frac(p);\n\n    float a = hash(i + float2(0.0, 0.0));\n    float b = hash(i + float2(1.0, 0.0));\n    float c = hash(i + float2(0.0, 1.0));\n    float d = hash(i + float2(1.0, 1.0));\n\n    float2 u = smoothstep(0.0, 1.0, f);\n    return lerp(lerp(a, b, u.x), lerp(c, d, u.x), u.y);\n}\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 p  = uv * 6.0 + u_time * 0.2;\n\n    float n = valueNoise(p);\n    return float4(n, n, n, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "08-noise-randomness-c3",
+      "title": "Fractal Brownian Motion (fBm)",
+      "description": "Stack multiple octaves of value noise at increasing frequencies and decreasing amplitudes to produce fBm — the mathematical pattern behind clouds and terrain. Each octave doubles the frequency and halves the amplitude.",
+      "template": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nfloat hash(vec2 p) {\n    p = fract(p * vec2(127.1, 311.7));\n    p += dot(p, p + 19.19);\n    return fract(p.x * p.y);\n}\n\nfloat valueNoise(vec2 p) {\n    vec2 i = floor(p);\n    vec2 f = fract(p);\n    float a = hash(i + vec2(0.0, 0.0));\n    float b = hash(i + vec2(1.0, 0.0));\n    float c = hash(i + vec2(0.0, 1.0));\n    float d = hash(i + vec2(1.0, 1.0));\n    vec2 u = smoothstep(0.0, 1.0, f);\n    return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);\n}\n\nfloat fbm(vec2 p) {\n    float value = 0.0;\n    float amplitude = 0.5;\n    float frequency = 1.0;\n\n    // 5 octaves\n    for (int i = 0; i < 5; i++) {\n        value     += /* amplitude * valueNoise(p * frequency) */;\n        amplitude *= /* 0.5 */;\n        frequency *= /* 2.0 */;\n    }\n    return value;\n}\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 p  = uv * 3.0 + u_time * 0.05;\n\n    float n = fbm(p);\n\n    // Map to cloud-like grayscale\n    vec3 color = mix(vec3(0.2, 0.3, 0.5), vec3(1.0), smoothstep(0.3, 0.8, n));\n    fragColor = vec4(color, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nfloat hash(vec2 p) {\n    p = fract(p * vec2(127.1, 311.7));\n    p += dot(p, p + 19.19);\n    return fract(p.x * p.y);\n}\n\nfloat valueNoise(vec2 p) {\n    vec2 i = floor(p);\n    vec2 f = fract(p);\n    float a = hash(i + vec2(0.0, 0.0));\n    float b = hash(i + vec2(1.0, 0.0));\n    float c = hash(i + vec2(0.0, 1.0));\n    float d = hash(i + vec2(1.0, 1.0));\n    vec2 u = smoothstep(0.0, 1.0, f);\n    return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);\n}\n\nfloat fbm(vec2 p) {\n    float value = 0.0;\n    float amplitude = 0.5;\n    float frequency = 1.0;\n    for (int i = 0; i < 5; i++) {\n        value     += amplitude * valueNoise(p * frequency);\n        amplitude *= 0.5;\n        frequency *= 2.0;\n    }\n    return value;\n}\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 p  = uv * 3.0 + u_time * 0.05;\n\n    float n = fbm(p);\n\n    vec3 color = mix(vec3(0.2, 0.3, 0.5), vec3(1.0), smoothstep(0.3, 0.8, n));\n    fragColor = vec4(color, 1.0);\n}\n",
+      "hints": [
+        "Each octave adds `amplitude * valueNoise(p * frequency)` to the accumulated value. After each octave, halve the amplitude (`*= 0.5`) and double the frequency (`*= 2.0`).",
+        "With amplitude starting at 0.5 and halving each octave, the maximum possible sum across 5 octaves is 0.5 + 0.25 + 0.125 + 0.0625 + 0.03125 = ~0.97, so the output stays naturally in [0,1] — no clamping needed."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [0.5, 0.5, 0.75, 1.0], "tolerance": 0.5 }
+        ]
+      },
+      "unlocks_theory": "fBm (fractal Brownian motion) is a self-similar signal: it looks the same at any scale because each zoom level contributes the same relative amount of detail. The ratio of amplitude decay to frequency doubling is called the *Hurst exponent* — 0.5 (halving amplitude per octave) gives a natural H=0.5 which matches many real-world surfaces. Increasing the amplitude multiplier above 0.5 makes the surface rougher; decreasing it makes it smoother.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n    float  u_time;\n};\n\nfloat hash(float2 p) {\n    p = frac(p * float2(127.1, 311.7));\n    p += dot(p, p + 19.19);\n    return frac(p.x * p.y);\n}\n\nfloat valueNoise(float2 p) {\n    float2 i = floor(p);\n    float2 f = frac(p);\n    float a = hash(i + float2(0.0, 0.0));\n    float b = hash(i + float2(1.0, 0.0));\n    float c = hash(i + float2(0.0, 1.0));\n    float d = hash(i + float2(1.0, 1.0));\n    float2 u = smoothstep(0.0, 1.0, f);\n    return lerp(lerp(a, b, u.x), lerp(c, d, u.x), u.y);\n}\n\nfloat fbm(float2 p) {\n    float value = 0.0;\n    float amplitude = 0.5;\n    float frequency = 1.0;\n    for (int i = 0; i < 5; i++) {\n        value     += amplitude * valueNoise(p * frequency);\n        amplitude *= 0.5;\n        frequency *= 2.0;\n    }\n    return value;\n}\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 p  = uv * 3.0 + u_time * 0.05;\n\n    float n = fbm(p);\n    float3 color = lerp(float3(0.2, 0.3, 0.5), float3(1.0, 1.0, 1.0), smoothstep(0.3, 0.8, n));\n    return float4(color, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\nuniform float  u_time;\n\nfloat hash(float2 p) {\n    p = frac(p * float2(127.1, 311.7));\n    p += dot(p, p + 19.19);\n    return frac(p.x * p.y);\n}\n\nfloat valueNoise(float2 p) {\n    float2 i = floor(p);\n    float2 f = frac(p);\n    float a = hash(i + float2(0.0, 0.0));\n    float b = hash(i + float2(1.0, 0.0));\n    float c = hash(i + float2(0.0, 1.0));\n    float d = hash(i + float2(1.0, 1.0));\n    float2 u = smoothstep(0.0, 1.0, f);\n    return lerp(lerp(a, b, u.x), lerp(c, d, u.x), u.y);\n}\n\nfloat fbm(float2 p) {\n    float value = 0.0;\n    float amplitude = 0.5;\n    float frequency = 1.0;\n    for (int i = 0; i < 5; i++) {\n        value     += amplitude * valueNoise(p * frequency);\n        amplitude *= 0.5;\n        frequency *= 2.0;\n    }\n    return value;\n}\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 p  = uv * 3.0 + u_time * 0.05;\n\n    float n = fbm(p);\n    float3 color = lerp(float3(0.2, 0.3, 0.5), float3(1.0, 1.0, 1.0), smoothstep(0.3, 0.8, n));\n    return float4(color, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "08-noise-randomness-c4",
+      "title": "Domain-warped cloud texture",
+      "description": "Apply domain warping to fBm: compute a first pass of noise and use it to distort the input coordinates of a second pass. This creates the swirling, organic shapes found in clouds and lava. Combine with the animated cosine palette for a vivid result.",
+      "template": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nfloat hash(vec2 p) {\n    p = fract(p * vec2(127.1, 311.7));\n    p += dot(p, p + 19.19);\n    return fract(p.x * p.y);\n}\n\nfloat valueNoise(vec2 p) {\n    vec2 i = floor(p); vec2 f = fract(p);\n    float a = hash(i + vec2(0.0,0.0)), b = hash(i + vec2(1.0,0.0));\n    float c = hash(i + vec2(0.0,1.0)), d = hash(i + vec2(1.0,1.0));\n    vec2 u = smoothstep(0.0, 1.0, f);\n    return mix(mix(a,b,u.x), mix(c,d,u.x), u.y);\n}\n\nfloat fbm(vec2 p) {\n    float v = 0.0, a = 0.5, fr = 1.0;\n    for (int i = 0; i < 5; i++) { v += a * valueNoise(p * fr); a *= 0.5; fr *= 2.0; }\n    return v;\n}\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 p  = uv * 3.0;\n\n    // First noise pass: distort coordinates\n    vec2 warp = vec2(\n        fbm(p + vec2(0.0, 0.0) + u_time * 0.1),\n        fbm(p + vec2(5.2, 1.3) + u_time * 0.1)\n    );\n\n    // Second pass: sample fbm at warped coordinates\n    float n = fbm(/* p + warp * 1.5 */);\n\n    // Cosine palette: vivid clouds\n    vec3 color = 0.5 + 0.5 * cos(/* vec3 with n-based offsets */);\n\n    fragColor = vec4(color, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nfloat hash(vec2 p) {\n    p = fract(p * vec2(127.1, 311.7));\n    p += dot(p, p + 19.19);\n    return fract(p.x * p.y);\n}\n\nfloat valueNoise(vec2 p) {\n    vec2 i = floor(p); vec2 f = fract(p);\n    float a = hash(i + vec2(0.0,0.0)), b = hash(i + vec2(1.0,0.0));\n    float c = hash(i + vec2(0.0,1.0)), d = hash(i + vec2(1.0,1.0));\n    vec2 u = smoothstep(0.0, 1.0, f);\n    return mix(mix(a,b,u.x), mix(c,d,u.x), u.y);\n}\n\nfloat fbm(vec2 p) {\n    float v = 0.0, a = 0.5, fr = 1.0;\n    for (int i = 0; i < 5; i++) { v += a * valueNoise(p * fr); a *= 0.5; fr *= 2.0; }\n    return v;\n}\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 p  = uv * 3.0;\n\n    vec2 warp = vec2(\n        fbm(p + vec2(0.0, 0.0) + u_time * 0.1),\n        fbm(p + vec2(5.2, 1.3) + u_time * 0.1)\n    );\n\n    float n = fbm(p + warp * 1.5);\n\n    vec3 color = 0.5 + 0.5 * cos(6.28318 * vec3(n, n + 0.33, n + 0.67));\n\n    fragColor = vec4(color, 1.0);\n}\n",
+      "hints": [
+        "Domain warping: use `warp` (a vec2 of two independent noise values) to offset `p` before the final fBm call: `float n = fbm(p + warp * 1.5);`. The offset magnitude (1.5) controls how twisted the result looks.",
+        "For the cosine palette: `0.5 + 0.5 * cos(6.28318 * vec3(n, n + 0.33, n + 0.67))` cycles through hues by phase-shifting the three color channels. Larger phase differences make more colorful, less monochromatic output."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.5, "expected": [0.5, 0.5, 0.5, 1.0], "tolerance": 0.5 }
+        ]
+      },
+      "unlocks_theory": "Domain warping (also called 'feedback noise' or 'warp noise') was popularized by Inigo Quilez. Instead of evaluating noise at the raw coordinates, you first compute a noise-derived offset and add it to the coordinates. The result has swirling, turbulent structures that look nothing like the underlying grid. Multiple warp passes create increasingly complex organic patterns — used in production for everything from VFX fire to procedural terrain texturing.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n    float  u_time;\n};\n\nfloat hash(float2 p) {\n    p = frac(p * float2(127.1, 311.7));\n    p += dot(p, p + 19.19);\n    return frac(p.x * p.y);\n}\n\nfloat valueNoise(float2 p) {\n    float2 i = floor(p); float2 f = frac(p);\n    float a = hash(i + float2(0.0,0.0)), b = hash(i + float2(1.0,0.0));\n    float c = hash(i + float2(0.0,1.0)), d = hash(i + float2(1.0,1.0));\n    float2 u = smoothstep(0.0, 1.0, f);\n    return lerp(lerp(a,b,u.x), lerp(c,d,u.x), u.y);\n}\n\nfloat fbm(float2 p) {\n    float v = 0.0, a = 0.5, fr = 1.0;\n    for (int i = 0; i < 5; i++) { v += a * valueNoise(p * fr); a *= 0.5; fr *= 2.0; }\n    return v;\n}\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 p  = uv * 3.0;\n\n    float2 warp = float2(\n        fbm(p + float2(0.0, 0.0) + u_time * 0.1),\n        fbm(p + float2(5.2, 1.3) + u_time * 0.1)\n    );\n\n    float n = fbm(p + warp * 1.5);\n\n    float3 color = 0.5 + 0.5 * cos(6.28318 * float3(n, n + 0.33, n + 0.67));\n    return float4(color, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\nuniform float  u_time;\n\nfloat hash(float2 p) {\n    p = frac(p * float2(127.1, 311.7));\n    p += dot(p, p + 19.19);\n    return frac(p.x * p.y);\n}\n\nfloat valueNoise(float2 p) {\n    float2 i = floor(p); float2 f = frac(p);\n    float a = hash(i + float2(0.0,0.0)), b = hash(i + float2(1.0,0.0));\n    float c = hash(i + float2(0.0,1.0)), d = hash(i + float2(1.0,1.0));\n    float2 u = smoothstep(0.0, 1.0, f);\n    return lerp(lerp(a,b,u.x), lerp(c,d,u.x), u.y);\n}\n\nfloat fbm(float2 p) {\n    float v = 0.0, a = 0.5, fr = 1.0;\n    for (int i = 0; i < 5; i++) { v += a * valueNoise(p * fr); a *= 0.5; fr *= 2.0; }\n    return v;\n}\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 p  = uv * 3.0;\n\n    float2 warp = float2(\n        fbm(p + float2(0.0, 0.0) + u_time * 0.1),\n        fbm(p + float2(5.2, 1.3) + u_time * 0.1)\n    );\n\n    float n = fbm(p + warp * 1.5);\n\n    float3 color = 0.5 + 0.5 * cos(6.28318 * float3(n, n + 0.33, n + 0.67));\n    return float4(color, 1.0);\n}\n"
+        }
+      }
+    }
+  ]
+}

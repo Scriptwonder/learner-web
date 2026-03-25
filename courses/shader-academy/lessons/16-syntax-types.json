@@ -1,0 +1,84 @@
+{
+  "id": "16-syntax-types",
+  "title": "Syntax & Types",
+  "primer": "<p>Every shading language shares the same mathematical heart — vectors, matrices, and scalar arithmetic — but each spells those ideas differently. GLSL uses <code>vec2/vec3/vec4</code>; HLSL uses <code>float2/float3/float4</code>; Slang follows HLSL style but adds modern language features on top.</p><p>Beyond type names, two common operations trip up language switchers: <strong>interpolation</strong> (<code>mix</code> in GLSL, <code>lerp</code> in HLSL/Slang) and <strong>swizzles</strong> — the shorthand that lets you reorder or select vector components. Swizzles work identically across all three languages, but the coordinate-set letter choices can differ in meaning by convention.</p><p>In this lesson you will translate small HLSL snippets to idiomatic GLSL ES 3.0, fixing type names and function calls as you go. The goal is pattern recognition: once you can sight-read the rename table, cross-language porting becomes mechanical.</p>",
+  "geometry": "quad",
+  "uniforms": ["u_time", "u_resolution"],
+  "challenges": [
+    {
+      "id": "16-syntax-types-c1",
+      "title": "float3 → vec3 and lerp → mix",
+      "description": "Translate the HLSL snippet below to GLSL ES 3.0. Replace every type name and every function call with its GLSL equivalent, then wire the result into fragColor.\n\nHLSL reference:\n```hlsl\nfloat3 a = float3(1.0, 0.0, 0.0);\nfloat3 b = float3(0.0, 0.0, 1.0);\nfloat3 c = lerp(a, b, 0.5);\n// output c as RGB, alpha = 1.0\n```",
+      "template": "out vec4 fragColor;\n\nvoid main() {\n    // Translate the HLSL above to GLSL\n    /* ??? */\n    fragColor = vec4(c, 1.0);\n}\n",
+      "solution": "out vec4 fragColor;\n\nvoid main() {\n    vec3 a = vec3(1.0, 0.0, 0.0);\n    vec3 b = vec3(0.0, 0.0, 1.0);\n    vec3 c = mix(a, b, 0.5);\n    fragColor = vec4(c, 1.0);\n}\n",
+      "hints": [
+        "HLSL's float3 maps directly to GLSL's vec3 — same four-letter pattern, different prefix.",
+        "HLSL's lerp(a, b, t) is GLSL's mix(a, b, t) — same argument order, different name."
+      ],
+      "validation": "compiles",
+      "unlocks_theory": "GLSL and HLSL share identical vector math semantics; only the spelling differs. The rename table is: float2→vec2, float3→vec3, float4→vec4, lerp→mix, saturate→clamp(x,0,1), frac→fract. Swizzles (.xyz, .rgb, .xy) work identically in both languages.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "Original HLSL snippet the user is translating FROM.",
+          "code": "float4 main() : SV_Target {\n    float3 a = float3(1.0, 0.0, 0.0);\n    float3 b = float3(0.0, 0.0, 1.0);\n    float3 c = lerp(a, b, 0.5);\n    return float4(c, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "note": "Slang follows HLSL naming; lerp is also available as mix via the standard library.",
+          "code": "[shader(\"fragment\")]\nfloat4 main() : SV_Target {\n    float3 a = float3(1.0, 0.0, 0.0);\n    float3 b = float3(0.0, 0.0, 1.0);\n    float3 c = lerp(a, b, 0.5);\n    return float4(c, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "16-syntax-types-c2",
+      "title": "Swizzles and constructors",
+      "description": "Swizzles are one of the most powerful (and syntax-identical) features across shader languages. The HLSL below uses swizzles and a 4→3 constructor chain. Translate it to GLSL.\n\nHLSL reference:\n```hlsl\nfloat2 uv = float2(0.3, 0.7);\nfloat4 color = float4(uv, 0.0, 1.0);  // (r=0.3, g=0.7, b=0, a=1)\nfloat3 rgb   = color.rgb;              // swizzle: take first 3 components\nfloat3 bgr   = color.bgr;             // swizzle: reverse to blue-green-red\n// output bgr as the final color\n```",
+      "template": "out vec4 fragColor;\n\nvoid main() {\n    // Translate the HLSL above to GLSL\n    /* ??? */\n    fragColor = vec4(bgr, 1.0);\n}\n",
+      "solution": "out vec4 fragColor;\n\nvoid main() {\n    vec2 uv = vec2(0.3, 0.7);\n    vec4 color = vec4(uv, 0.0, 1.0);\n    vec3 rgb = color.rgb;\n    vec3 bgr = color.bgr;\n    fragColor = vec4(bgr, 1.0);\n}\n",
+      "hints": [
+        "Swizzle syntax (.rgb, .bgr, .xy, .zw) is identical in GLSL and HLSL — no change needed there.",
+        "Only the type names change: float2→vec2, float4→vec4, float3→vec3."
+      ],
+      "validation": "compiles",
+      "unlocks_theory": "Swizzles are syntactic sugar built into all major shading languages and compile to zero-cost register reordering on the GPU. The letter sets .xyzw (geometry) and .rgba (color) are interchangeable in both GLSL and HLSL — .r and .x refer to the same component. Slang inherits this from HLSL unchanged.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "Original HLSL — swizzle syntax is identical, only constructor type names differ.",
+          "code": "float4 main() : SV_Target {\n    float2 uv = float2(0.3, 0.7);\n    float4 color = float4(uv, 0.0, 1.0);\n    float3 rgb = color.rgb;\n    float3 bgr = color.bgr;\n    return float4(bgr, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "note": "Slang follows HLSL swizzle rules exactly.",
+          "code": "[shader(\"fragment\")]\nfloat4 main() : SV_Target {\n    float2 uv = float2(0.3, 0.7);\n    float4 color = float4(uv, 0.0, 1.0);\n    float3 rgb = color.rgb;\n    float3 bgr = color.bgr;\n    return float4(bgr, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "16-syntax-types-c3",
+      "title": "Animated gradient with type fixes",
+      "description": "The snippet below is broken HLSL-inside-GLSL — someone copied HLSL types and functions into a GLSL file. Fix every type name and function name so it compiles as valid GLSL ES 3.0. Use u_time and u_resolution.\n\nBroken code to fix:\n```\nuniform float2 u_resolution;  // wrong type name\nuniform float  u_time;\nout float4 fragColor;          // wrong type name\n\nvoid main() {\n    float2 uv = gl_FragCoord.xy / u_resolution;  // wrong type name\n    float3 col = lerp(                             // wrong function\n        float3(0.2, 0.4, 0.9),                    // wrong type name\n        float3(0.9, 0.3, 0.1),                    // wrong type name\n        uv.x + 0.3 * sin(u_time)\n    );\n    fragColor = float4(col, 1.0);                 // wrong type name\n}\n```",
+      "template": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nvoid main() {\n    // Fix the broken lines below (type names and function names)\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec3 col = /* ??? */(\n        /* ??? */,\n        /* ??? */,\n        uv.x + 0.3 * sin(u_time)\n    );\n    fragColor = vec4(col, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec3 col = mix(\n        vec3(0.2, 0.4, 0.9),\n        vec3(0.9, 0.3, 0.1),\n        uv.x + 0.3 * sin(u_time)\n    );\n    fragColor = vec4(col, 1.0);\n}\n",
+      "hints": [
+        "Count the broken identifiers: float2→vec2, float3→vec3, float4→vec4. That covers all the type errors.",
+        "lerp(a, b, t) becomes mix(a, b, t) in GLSL — same arguments, different name."
+      ],
+      "validation": "compiles",
+      "unlocks_theory": "When porting HLSL to GLSL, a global find-and-replace handles most type names: float2/3/4→vec2/3/4, matrix float4x4→mat4, lerp→mix, saturate(x)→clamp(x,0.0,1.0), frac→fract, ddx/ddy→dFdx/dFdy. Semantic annotations like : SV_Target and : SV_Position have no GLSL equivalent and are simply removed.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "Correct HLSL version of the animated gradient.",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n    float  u_time;\n};\n\nfloat4 main() : SV_Target {\n    float2 uv = float2(0.5, 0.5); // no gl_FragCoord in simple HLSL example\n    float3 col = lerp(\n        float3(0.2, 0.4, 0.9),\n        float3(0.9, 0.3, 0.1),\n        uv.x + 0.3 * sin(u_time)\n    );\n    return float4(col, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "note": "Slang can use lerp or mix; here we use lerp to match HLSL style.",
+          "code": "uniform float2 u_resolution;\nuniform float  u_time;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float3 col = lerp(\n        float3(0.2, 0.4, 0.9),\n        float3(0.9, 0.3, 0.1),\n        uv.x + 0.3 * sin(u_time)\n    );\n    return float4(col, 1.0);\n}\n"
+        }
+      }
+    }
+  ]
+}

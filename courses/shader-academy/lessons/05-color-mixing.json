@@ -1,0 +1,126 @@
+{
+  "id": "05-color-mixing",
+  "title": "Color Mixing",
+  "primer": "Color in a shader is just a <code>vec3</code> or <code>vec4</code> — three or four floats you can manipulate with ordinary arithmetic. The three workhorses are <code>mix(a, b, t)</code> (linear interpolation), <code>clamp(x, lo, hi)</code> (keep values in range), and <code>step</code>/<code>smoothstep</code> (binary or smooth thresholds). For richer palettes, converting from HSV (hue, saturation, value) lets you cycle through the full spectrum with a single floating-point parameter.",
+  "geometry": "quad",
+  "uniforms": ["u_time", "u_resolution"],
+  "challenges": [
+    {
+      "id": "05-color-mixing-c1",
+      "title": "Sunset gradient",
+      "description": "Create a vertical gradient that blends from deep blue at the bottom to warm orange at the top. Use <code>mix()</code> with <code>uv.y</code> as the blend factor.",
+      "template": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n\n    vec3 bottom = vec3(0.05, 0.05, 0.3);   // deep blue\n    vec3 top    = vec3(1.0,  0.45, 0.1);   // warm orange\n\n    // Blend bottom -> top using uv.y\n    vec3 color = /* ??? */;\n\n    fragColor = vec4(color, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n\n    vec3 bottom = vec3(0.05, 0.05, 0.3);\n    vec3 top    = vec3(1.0,  0.45, 0.1);\n\n    vec3 color = mix(bottom, top, uv.y);\n\n    fragColor = vec4(color, 1.0);\n}\n",
+      "hints": [
+        "`mix(a, b, t)` returns `a * (1.0 - t) + b * t`. When t = 0.0 you get `a`; when t = 1.0 you get `b`.",
+        "Pass `uv.y` as the blend factor `t`. Remember that in OpenGL, uv.y = 0 is at the bottom and uv.y = 1 is at the top."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5, "y": 0.0, "expected": [0.05, 0.05, 0.3,  1.0], "tolerance": 0.05 },
+          { "x": 0.5, "y": 1.0, "expected": [1.0,  0.45, 0.1,  1.0], "tolerance": 0.05 }
+        ]
+      },
+      "unlocks_theory": "`mix(a, b, t)` is GLSL's linear interpolation (lerp) function. It works component-wise on any vector type — `mix(vec3, vec3, float)` interpolates all three channels simultaneously. The blend factor `t` can itself be a gradient, a noise value, or any other signal, making `mix` the universal connector between color values.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "HLSL uses `lerp` instead of `mix`.",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n};\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n\n    float3 bottom = float3(0.05, 0.05, 0.3);\n    float3 top    = float3(1.0,  0.45, 0.1);\n\n    float3 color = lerp(bottom, top, uv.y);\n    return float4(color, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n\n    float3 bottom = float3(0.05, 0.05, 0.3);\n    float3 top    = float3(1.0,  0.45, 0.1);\n\n    float3 color = lerp(bottom, top, uv.y);\n    return float4(color, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "05-color-mixing-c2",
+      "title": "Clamped tinted circle",
+      "description": "Draw a red circle (radius 0.3, center 0.5) that brightens toward the center using a radial gradient. Use <code>clamp()</code> to ensure the brightness stays in [0, 1] before assigning it as the red channel.",
+      "template": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    float d = distance(uv, vec2(0.5));\n\n    // Circle mask\n    float mask = smoothstep(0.31, 0.29, d);\n\n    // Brightness: 1.0 at center (d=0), falling off. Multiply to over-brighten, then clamp.\n    float brightness = clamp(/* ??? */, 0.0, 1.0);\n\n    // Red channel = brightness * mask, other channels dark\n    vec3 color = vec3(brightness * mask, 0.0, 0.0);\n\n    fragColor = vec4(color, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    float d = distance(uv, vec2(0.5));\n\n    float mask = smoothstep(0.31, 0.29, d);\n\n    float brightness = clamp(1.0 - d * 2.5, 0.0, 1.0);\n\n    vec3 color = vec3(brightness * mask, 0.0, 0.0);\n\n    fragColor = vec4(color, 1.0);\n}\n",
+      "hints": [
+        "A simple radial brightness is `1.0 - d * someScale`. Using a scale > 2.0 means the value goes negative before the edge — `clamp` keeps it from going below 0.0.",
+        "Try `clamp(1.0 - d * 2.5, 0.0, 1.0)`. Multiplying by the circle `mask` afterwards ensures the glow is cut off at the shape boundary."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5,  "y": 0.5,  "expected": [1.0, 0.0, 0.0, 1.0], "tolerance": 0.08 },
+          { "x": 0.0,  "y": 0.0,  "expected": [0.0, 0.0, 0.0, 1.0], "tolerance": 0.05 }
+        ]
+      },
+      "unlocks_theory": "`clamp(x, lo, hi)` is essential for keeping computed values within valid color ranges. Intermediate calculations often produce values outside [0, 1] — especially when combining multiple signals — and failing to clamp results in unwanted wrap-around or GPU-vendor-specific undefined behavior. Always clamp before writing to `fragColor`.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n};\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float d = distance(uv, float2(0.5, 0.5));\n\n    float mask = smoothstep(0.31, 0.29, d);\n    float brightness = clamp(1.0 - d * 2.5, 0.0, 1.0);\n\n    float3 color = float3(brightness * mask, 0.0, 0.0);\n    return float4(color, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float d = distance(uv, float2(0.5, 0.5));\n\n    float mask = smoothstep(0.31, 0.29, d);\n    float brightness = clamp(1.0 - d * 2.5, 0.0, 1.0);\n\n    float3 color = float3(brightness * mask, 0.0, 0.0);\n    return float4(color, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "05-color-mixing-c3",
+      "title": "HSV color wheel",
+      "description": "Implement an HSV-to-RGB conversion and use the angle around the canvas center as the hue. The result is a full color wheel: hue varies with angle, saturation increases with distance from center, value is constant at 1.0.",
+      "template": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\n// Convert Hue [0,1], Saturation [0,1], Value [0,1] to RGB\nvec3 hsv2rgb(float h, float s, float v) {\n    vec3 rgb = clamp(abs(mod(h * 6.0 + vec3(0.0, 4.0, 2.0), 6.0) - 3.0) - 1.0, 0.0, 1.0);\n    return v * mix(vec3(1.0), rgb, s);\n}\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 p = uv - vec2(0.5);  // center at origin\n\n    // angle in [0, 1] from atan2\n    float angle = /* atan(p.y, p.x) mapped to [0,1] */;\n\n    // distance from center, capped at 1 for saturation\n    float sat = /* ??? */;\n\n    vec3 color = hsv2rgb(angle, sat, 1.0);\n\n    fragColor = vec4(color, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nout vec4 fragColor;\n\nvec3 hsv2rgb(float h, float s, float v) {\n    vec3 rgb = clamp(abs(mod(h * 6.0 + vec3(0.0, 4.0, 2.0), 6.0) - 3.0) - 1.0, 0.0, 1.0);\n    return v * mix(vec3(1.0), rgb, s);\n}\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n    vec2 p = uv - vec2(0.5);\n\n    float angle = atan(p.y, p.x) / (2.0 * 3.14159265) + 0.5;\n    float sat   = clamp(length(p) * 2.0, 0.0, 1.0);\n\n    vec3 color = hsv2rgb(angle, sat, 1.0);\n\n    fragColor = vec4(color, 1.0);\n}\n",
+      "hints": [
+        "`atan(y, x)` returns the angle in radians from -π to π. Divide by `2π` to normalize to [-0.5, 0.5], then add 0.5 to shift to [0, 1]. This is your hue.",
+        "Saturation increases with distance: `clamp(length(p) * 2.0, 0.0, 1.0)` gives 0 at the center (white) and 1 at the edges (full color)."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.5,  "y": 0.5,  "expected": [1.0, 1.0, 1.0, 1.0], "tolerance": 0.08 }
+        ]
+      },
+      "unlocks_theory": "HSV separates color into perceptually meaningful axes: hue (which color), saturation (how vivid), and value (how bright). This makes it far easier to generate pleasing palettes programmatically than working in RGB. Animating the hue with `u_time` produces smooth, never-clashing color cycles — a staple technique in demo scene shaders.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "note": "HLSL uses `fmod` instead of `mod`.",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n};\n\nfloat3 hsv2rgb(float h, float s, float v) {\n    float3 rgb = clamp(abs(fmod(h * 6.0 + float3(0.0, 4.0, 2.0), 6.0) - 3.0) - 1.0, 0.0, 1.0);\n    return v * lerp(float3(1.0, 1.0, 1.0), rgb, s);\n}\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 p = uv - float2(0.5, 0.5);\n\n    float angle = atan2(p.y, p.x) / (2.0 * 3.14159265) + 0.5;\n    float sat   = clamp(length(p) * 2.0, 0.0, 1.0);\n\n    float3 color = hsv2rgb(angle, sat, 1.0);\n    return float4(color, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\n\nfloat3 hsv2rgb(float h, float s, float v) {\n    float3 rgb = clamp(abs(fmod(h * 6.0 + float3(0.0, 4.0, 2.0), 6.0) - 3.0) - 1.0, 0.0, 1.0);\n    return v * lerp(float3(1.0, 1.0, 1.0), rgb, s);\n}\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float2 p = uv - float2(0.5, 0.5);\n\n    float angle = atan2(p.y, p.x) / (2.0 * 3.14159265) + 0.5;\n    float sat   = clamp(length(p) * 2.0, 0.0, 1.0);\n\n    float3 color = hsv2rgb(angle, sat, 1.0);\n    return float4(color, 1.0);\n}\n"
+        }
+      }
+    },
+    {
+      "id": "05-color-mixing-c4",
+      "title": "Animated color palette",
+      "description": "Use the cosine palette formula to generate a smoothly animated, infinitely varied color from UV position and time. The formula is: <code>color = a + b * cos(2π * (c * t + d))</code> where a, b, c, d are vec3 palette coefficients.",
+      "template": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\n// Inigo Quilez cosine palette\nvec3 palette(float t, vec3 a, vec3 b, vec3 c, vec3 d) {\n    return /* ??? */;\n}\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n\n    // Drive palette with uv.x + animated offset\n    float t = uv.x + u_time * 0.3;\n\n    vec3 color = palette(t,\n        vec3(0.5, 0.5, 0.5),\n        vec3(0.5, 0.5, 0.5),\n        vec3(1.0, 1.0, 1.0),\n        vec3(0.0, 0.33, 0.67));\n\n    fragColor = vec4(color, 1.0);\n}\n",
+      "solution": "uniform vec2 u_resolution;\nuniform float u_time;\nout vec4 fragColor;\n\nvec3 palette(float t, vec3 a, vec3 b, vec3 c, vec3 d) {\n    return a + b * cos(6.28318 * (c * t + d));\n}\n\nvoid main() {\n    vec2 uv = gl_FragCoord.xy / u_resolution;\n\n    float t = uv.x + u_time * 0.3;\n\n    vec3 color = palette(t,\n        vec3(0.5, 0.5, 0.5),\n        vec3(0.5, 0.5, 0.5),\n        vec3(1.0, 1.0, 1.0),\n        vec3(0.0, 0.33, 0.67));\n\n    fragColor = vec4(color, 1.0);\n}\n",
+      "hints": [
+        "The formula is `a + b * cos(2π * (c * t + d))`. In GLSL use `6.28318` (2π) as the constant. The `cos` and `*` operations work component-wise on `vec3`.",
+        "With `a = vec3(0.5)` and `b = vec3(0.5)`, the cosine oscillates between 0 and 1 per channel — producing colors that always stay in the valid range without any `clamp`."
+      ],
+      "validation": "pixel-match",
+      "validation_config": {
+        "sample_points": [
+          { "x": 0.0,  "y": 0.5,  "expected": [1.0, 0.5, 0.0,  1.0], "tolerance": 0.12 },
+          { "x": 1.0,  "y": 0.5,  "expected": [0.0, 1.0, 0.5,  1.0], "tolerance": 0.12 }
+        ]
+      },
+      "unlocks_theory": "The cosine palette is a compact, powerful technique by Inigo Quilez. Because cosine is bounded to [-1, 1], choosing a=0.5 and b=0.5 guarantees all RGB channels stay in [0, 1]. The four coefficient vectors give you precise control over brightness, contrast, frequency, and phase offset per channel — effectively a parameterized Fourier approximation of any smooth color ramp.",
+      "translations": {
+        "hlsl": {
+          "language": "HLSL",
+          "code": "cbuffer Uniforms : register(b0) {\n    float2 u_resolution;\n    float  u_time;\n};\n\nfloat3 palette(float t, float3 a, float3 b, float3 c, float3 d) {\n    return a + b * cos(6.28318 * (c * t + d));\n}\n\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float t = uv.x + u_time * 0.3;\n\n    float3 color = palette(t,\n        float3(0.5, 0.5, 0.5),\n        float3(0.5, 0.5, 0.5),\n        float3(1.0, 1.0, 1.0),\n        float3(0.0, 0.33, 0.67));\n\n    return float4(color, 1.0);\n}\n"
+        },
+        "slang": {
+          "language": "Slang",
+          "code": "uniform float2 u_resolution;\nuniform float  u_time;\n\nfloat3 palette(float t, float3 a, float3 b, float3 c, float3 d) {\n    return a + b * cos(6.28318 * (c * t + d));\n}\n\n[shader(\"fragment\")]\nfloat4 main(float4 pos : SV_Position) : SV_Target {\n    float2 uv = pos.xy / u_resolution;\n    float t = uv.x + u_time * 0.3;\n\n    float3 color = palette(t,\n        float3(0.5, 0.5, 0.5),\n        float3(0.5, 0.5, 0.5),\n        float3(1.0, 1.0, 1.0),\n        float3(0.0, 0.33, 0.67));\n\n    return float4(color, 1.0);\n}\n"
+        }
+      }
+    }
+  ]
+}

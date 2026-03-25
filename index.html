@@ -195,6 +195,7 @@
 
   <div id="shader-editor-screen" class="screen" role="main" aria-label="Shader Editor">
     <div class="shader-editor">
+      <!-- Left: Code Editor -->
       <div class="se-editor-panel">
         <div class="se-editor-tabs">
           <button class="se-tab active" data-lang="glsl">GLSL</button>
@@ -204,24 +205,27 @@
         <div class="se-editor-wrap" id="se-editor-wrap"></div>
         <div class="se-error-bar" id="se-error-bar"></div>
       </div>
+      <!-- Right: Vis + Challenge -->
       <div class="se-side-panel">
+        <!-- Hero canvas: user output fills the space -->
         <div class="se-preview">
-          <div class="se-canvas-row">
-            <div class="se-canvas-box">
-              <div class="se-canvas-label">Yours</div>
-              <canvas id="se-canvas-user" width="256" height="256"></canvas>
-            </div>
-            <div class="se-canvas-box">
-              <div class="se-canvas-label">Target</div>
+          <div class="se-canvas-hero">
+            <canvas id="se-canvas-user" width="256" height="256"></canvas>
+            <!-- Target as overlay thumbnail -->
+            <div class="se-target-overlay">
+              <div class="se-target-label">TARGET</div>
               <canvas id="se-canvas-target" width="256" height="256"></canvas>
             </div>
+            <!-- Match badge floating on canvas -->
+            <div class="se-match" id="se-match">Match: —</div>
           </div>
-          <div class="se-match" id="se-match">Match: —</div>
         </div>
+        <!-- Compact challenge bar -->
         <div class="se-challenge" id="se-challenge">
           <div class="se-challenge-header">
             <span class="se-challenge-num" id="se-challenge-num">Challenge 1/3</span>
             <span class="se-challenge-title" id="se-challenge-title"></span>
+            <div class="se-dots" id="se-dots"></div>
           </div>
           <div class="se-challenge-desc" id="se-challenge-desc"></div>
           <div class="se-hints" id="se-hints"></div>
@@ -231,16 +235,17 @@
           </div>
           <div class="se-primer" id="se-primer" style="display:none;"></div>
           <div class="se-theory" id="se-theory" style="display:none;"></div>
-          <div class="se-actions">
-            <button class="se-btn se-btn-reset" id="se-btn-reset">Reset</button>
-            <button class="se-btn se-btn-submit" id="se-btn-submit">Submit</button>
+          <div class="se-challenge-footer">
+            <div class="se-actions">
+              <button class="se-btn se-btn-reset" id="se-btn-reset">Reset</button>
+              <button class="se-btn se-btn-submit" id="se-btn-submit">Submit</button>
+            </div>
+            <div class="se-nav">
+              <button class="se-nav-btn" id="se-nav-prev" disabled>&#9664;</button>
+              <button class="se-nav-btn" id="se-nav-next">&#9654;</button>
+            </div>
+            <button class="se-btn se-btn-back" id="se-btn-back">&#8592; Course</button>
           </div>
-          <div class="se-nav">
-            <button class="se-nav-btn" id="se-nav-prev" disabled>&#9664; Prev</button>
-            <div class="se-dots" id="se-dots"></div>
-            <button class="se-nav-btn" id="se-nav-next">Next &#9654;</button>
-          </div>
-          <button class="se-btn se-btn-back" id="se-btn-back">Back to Course</button>
         </div>
       </div>
     </div>
@@ -252,10 +257,10 @@
   <script src="js/study.js"></script>
   <script src="js/quiz.js"></script>
   <script src="js/course-browser.js"></script>
-  <script src="js/shader-translator.js"></script>
-  <script src="js/shader-renderer.js"></script>
-  <script src="js/shader-challenges.js"></script>
-  <script type="module" src="js/shader-editor.js"></script>
+  <script src="js/shader-translator.js?v=2"></script>
+  <script src="js/shader-renderer.js?v=2"></script>
+  <script src="js/shader-challenges.js?v=2"></script>
+  <script type="module" src="js/shader-editor.js?v=2"></script>
   <script type="module" src="js/visualizer.js"></script>
 </body>
 </html>
