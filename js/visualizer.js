@@ -80,8 +80,23 @@ function createScene() {
   camera.position.set(3, 2.5, 4);
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
-  controls.dampingFactor = 0.08;
-  controls.target.set(0, 0, 0);
+  controls.dampingFactor = 0.12;
+  controls.rotateSpeed = 0.8;
+  controls.target.set(0, 0.5, 0);
+
+  // Prevent going flat or directly overhead
+  controls.minPolarAngle = Math.PI * 0.1;   // ~18° from top
+  controls.maxPolarAngle = Math.PI * 0.45;  // ~81° from top
+
+  // Constrain zoom distance
+  controls.minDistance = 3;
+  controls.maxDistance = 12;
+
+  // Limit panning range
+  controls.enablePan = true;
+  controls.panSpeed = 0.5;
+  controls.maxTargetRadius = 3;
+
   controls.update();
 }
 
