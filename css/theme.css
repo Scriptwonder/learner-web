@@ -538,11 +538,57 @@ body {
 .viz-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
   padding: 10px 14px;
   background: rgba(255, 255, 255, 0.025);
   border-bottom: 1px solid rgba(212, 160, 74, 0.07);
   flex-shrink: 0;
+}
+
+.viz-header .viz-logo { flex: 1; }
+
+/* Theme toggle inside viz header */
+.viz-theme-toggle {
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.viz-theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.viz-theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  color: var(--accent);
+}
+
+.viz-theme-toggle .icon-moon { display: none; }
+[data-theme="light"] .viz-theme-toggle .icon-sun { display: none; }
+[data-theme="light"] .viz-theme-toggle .icon-moon { display: block; }
+
+[data-theme="light"] .viz-theme-toggle {
+  border-color: rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .viz-theme-toggle:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* Hide global theme toggle when viz panel is open (toggled by JS) */
+.theme-toggle.viz-hidden {
+  display: none;
 }
 
 .viz-logo {

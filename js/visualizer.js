@@ -13,10 +13,19 @@ const controlsDiv = document.getElementById('viz-controls');
 const infoDiv = document.getElementById('viz-info');
 const tab3d = document.getElementById('viz-tab-3d');
 const tabCode = document.getElementById('viz-tab-code');
+const globalThemeToggle = document.getElementById('theme-toggle');
+const vizThemeToggle = document.getElementById('viz-theme-toggle');
 
 let renderer, scene, camera, controls, animId;
 let currentViz = null;
 let currentCodeSnippet = '';
+
+// Wire viz header theme toggle to the same behavior as the global one
+if (vizThemeToggle) {
+  vizThemeToggle.addEventListener('click', () => {
+    if (globalThemeToggle) globalThemeToggle.click();
+  });
+}
 
 // === TAB TOGGLE ===
 tab3d.addEventListener('click', () => {
@@ -58,9 +67,7 @@ function resize() {
   const w = canvasWrap.clientWidth;
   const h = canvasWrap.clientHeight;
   if (w === 0 || h === 0) return;
-  renderer.setSize(w, h, false);
-  renderer.domElement.style.width = w + 'px';
-  renderer.domElement.style.height = h + 'px';
+  renderer.setSize(w, h);
   if (camera) {
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
@@ -152,16 +159,21 @@ function addAxes(size = 3) {
 }
 
 function makeTextSprite(text, color = '#f0ece4', size = 64) {
+  const dpr = Math.min(window.devicePixelRatio, 2);
+  const res = size * dpr;
   const canvas = document.createElement('canvas');
-  canvas.width = size;
-  canvas.height = size;
+  canvas.width = res;
+  canvas.height = res;
   const ctx = canvas.getContext('2d');
-  ctx.font = `bold ${size * 0.6}px 'Plus Jakarta Sans', sans-serif`;
+  ctx.scale(dpr, dpr);
+  ctx.font = `bold ${size * 0.6}px 'Inter', system-ui, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = color;
   ctx.fillText(text, size / 2, size / 2);
   const tex = new THREE.CanvasTexture(canvas);
+  tex.minFilter = THREE.LinearFilter;
+  tex.magFilter = THREE.LinearFilter;
   const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false });
   const sprite = new THREE.Sprite(mat);
   sprite.scale.set(0.4, 0.4, 1);
@@ -1431,6 +1443,7 @@ window.Visualizer = {
     const vizFn = vizRegistry[key];
     if (vizFn) {
       panel.classList.add('active');
+      if (globalThemeToggle) globalThemeToggle.classList.add('viz-hidden');
       vizFn();
       // Set code snippet if not already set by the viz function
       if (!currentCodeSnippet && codeSnippets[key]) {
@@ -1440,6 +1453,7 @@ window.Visualizer = {
       animate();
     } else {
       panel.classList.remove('active');
+      if (globalThemeToggle) globalThemeToggle.classList.remove('viz-hidden');
       stopAnimation();
     }
     resize();
@@ -1447,6 +1461,7 @@ window.Visualizer = {
 
   hide() {
     panel.classList.remove('active');
+    if (globalThemeToggle) globalThemeToggle.classList.remove('viz-hidden');
     disposeScene();
     currentCodeSnippet = '';
   }
