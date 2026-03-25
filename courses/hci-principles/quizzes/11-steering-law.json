@@ -1,0 +1,209 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What type of interaction does the Steering Law govern?",
+    "hint": "Think about moving through a path, not clicking a single target.",
+    "options": ["A) Clicking a stationary button", "B) Typing text on a keyboard", "C) Continuously moving through a constrained tunnel or path", "D) Scrolling through a document"],
+    "answer_key": "C",
+    "explanation": "The Steering Law applies to tasks where the user must continuously guide the cursor through a constrained path (tunnel), staying within its boundaries for the entire traversal — unlike Fitts's Law, which governs discrete point-and-click movements."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "How does steering time $T$ relate to the length-to-width ratio $D/W$ for a straight tunnel?",
+    "hint": "Unlike Fitts's Law, the relationship is not logarithmic.",
+    "options": ["A) Logarithmically: $T = a + b \\cdot \\log_2(D/W)$", "B) Linearly: $T = a + b \\cdot (D/W)$", "C) Quadratically: $T = a + b \\cdot (D/W)^2$", "D) Exponentially: $T = a + b \\cdot 2^{D/W}$"],
+    "answer_key": "B",
+    "explanation": "The Steering Law is linear in $D/W$: $T = a + b \\cdot (D/W)$. Doubling the tunnel length (or halving its width) doubles the steering difficulty. This is much steeper than Fitts's logarithmic scaling."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Why are cascading dropdown menus notoriously difficult to use?",
+    "hint": "Think about what happens when you move the cursor from a parent menu item to its submenu.",
+    "options": ["A) They use too many colors", "B) They require steering through narrow horizontal and vertical paths without leaving the active region", "C) They contain too many options for Hick's Law", "D) They load too slowly"],
+    "answer_key": "B",
+    "explanation": "Cascading menus force the user to steer through the parent menu item's height (a narrow horizontal tunnel) to reach the submenu. Any deviation closes the submenu. This steering task has a high $D/W$ ratio, making it slow and error-prone."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the most effective way to eliminate the Steering Law penalty in hierarchical navigation?",
+    "hint": "Think about replacing the constrained path with a single open panel.",
+    "options": ["A) Use smaller fonts to fit more items", "B) Add animated transitions between menu levels", "C) Replace cascading submenus with a mega-menu that shows all options in a single panel", "D) Increase the number of menu levels to reduce items per level"],
+    "answer_key": "C",
+    "explanation": "A mega-menu replaces the steering task (linear cost) with a single Fitts's Law pointing task (logarithmic cost). The user clicks a top-level item and then clicks directly on the desired option in the open panel, without needing to steer through a constrained path."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A tunnel narrows from 40px to 10px for a short segment near the end. According to the integral form of the Steering Law, what effect does this bottleneck have?",
+    "hint": "The integral $\\int ds/W(s)$ weights narrow segments more heavily.",
+    "options": ["A) No effect — only the average width matters", "B) The narrow segment contributes disproportionately to total steering time because $1/W$ is large when $W$ is small", "C) The narrow segment only matters if it is longer than 50% of the tunnel", "D) The bottleneck reduces total time by forcing the user to slow down early"],
+    "answer_key": "B",
+    "explanation": "In the integral $T = a + b \\int ds/W(s)$, each segment contributes $ds/W(s)$ to the total difficulty. When $W$ is small, $1/W$ is large, so even a short narrow segment can dominate the total steering time."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What technique do macOS and Amazon use to make diagonal cursor movement toward a submenu more forgiving?",
+    "hint": "It involves creating a safe zone between the parent item and the submenu.",
+    "options": ["A) They make the cursor invisible during the transition", "B) They define a triangular safe zone between the parent item and submenu that keeps the submenu open", "C) They increase the cursor speed when moving diagonally", "D) They close and reopen the submenu automatically"],
+    "answer_key": "B",
+    "explanation": "A triangular safe zone (or \"aim corridor\") extends from the cursor position to the corners of the submenu. While the cursor is within this triangle, the submenu remains open, effectively creating an infinitely wide steering tunnel along the user's intended path."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why does the Steering Law predict a linear relationship with $D/W$ instead of the logarithmic relationship in Fitts's Law?",
+    "hint": "Think about continuous control versus a single aimed movement.",
+    "options": ["A) Steering uses a different hand muscle group", "B) Steering is modeled as a sequence of infinitesimal Fitts's Law tasks integrated over the path, and the integration of logarithms yields a linear sum", "C) The Steering Law was derived from a different experiment", "D) Linear models are always more accurate than logarithmic ones"],
+    "answer_key": "B",
+    "explanation": "A steering movement can be decomposed into many tiny Fitts's Law subtasks along the path. Each infinitesimal segment requires the cursor to stay within width $W$. When these are integrated over the path length $D$, the result is a linear function of $D/W$."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Accot and Zhai (2003) extended the Steering Law to curved tunnels. They found that the integral form $T = a + b \\int ds/W(s)$ worked well for smooth curves, but what additional cost was needed for paths with sharp corners?",
+    "hint": "Think about what happens to the cursor movement at a sudden direction change.",
+    "options": ["A) A penalty for visual scanning at each corner", "B) An additional corner cost for deceleration, reorientation, and reacceleration", "C) A Hick's Law decision cost at each corner", "D) No additional cost — the integral accounts for corners automatically"],
+    "answer_key": "B",
+    "explanation": "At sharp corners, the user must decelerate, change direction, and reaccelerate. This decelerate-reorient-accelerate process incurs a cost not captured by the width-based integral alone, requiring an additive corner penalty in the model."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "A straight tunnel is 300px long and 30px wide. What is the difficulty index $D/W$?",
+    "hint": "Simply divide the length by the width.",
+    "answer_key": "10",
+    "explanation": "$D/W = 300/30 = 10$. This is a linear ratio, unlike the logarithmic ID in Fitts's Law."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Using the Steering Law $T = a + b \\cdot (D/W)$ with $a = 100$ ms and $b = 130$ ms, what is the predicted steering time (in ms) for a tunnel of length 400px and width 20px?",
+    "hint": "First compute $D/W$, then plug into the equation.",
+    "answer_key": "2700",
+    "explanation": "$D/W = 400/20 = 20$. $T = 100 + 130 \\times 20 = 100 + 2600 = 2700$ ms."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A scrollbar has a track length of 600px and a width of 15px. What is the $D/W$ ratio for a full-length drag?",
+    "hint": "Divide the track length by the scrollbar width.",
+    "answer_key": "40",
+    "explanation": "$D/W = 600/15 = 40$. This high ratio explains why thin scrollbars are notoriously difficult to use for long-distance scrolling."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "A tunnel has two segments: 200px at width 40px, then 100px at width 10px. What is the total effective $D/W$ (sum of each segment's $D_i/W_i$)?",
+    "hint": "Apply the integral form as a discrete sum: $\\sum D_i / W_i$.",
+    "answer_key": "15",
+    "explanation": "Segment 1: $200/40 = 5$. Segment 2: $100/10 = 10$. Total: $5 + 10 = 15$. The narrow segment contributes twice as much despite being half as long."
+  },
+  {
+    "id": 13,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A cascading dropdown menu has a parent item 120px wide and 32px tall. The submenu appears to the right. The user must steer horizontally through the parent item, then point to the 4th submenu item (each 200px wide, 32px tall). Compare the total time to a mega-menu where the same target is a single 250px diagonal Fitts's Law movement to an 80px-wide target. Use $a = 100$ ms, $b_{steer} = 130$ ms, $b_{Fitts} = 150$ ms/bit.",
+    "hint": "The cascading menu involves a steering task plus a Fitts pointing task. The mega-menu is just one Fitts task.",
+    "steps": [
+      {
+        "prompt": "What is the steering time to traverse the parent menu item horizontally? The tunnel length is 120px and width is 32px.",
+        "answer_key": "587.5 ms or 588 ms",
+        "explanation": "$T_{steer} = 100 + 130 \\times (120/32) = 100 + 130 \\times 3.75 = 100 + 487.5 = 587.5$ ms."
+      },
+      {
+        "prompt": "What is the Fitts pointing time to reach the 4th submenu item ($D = 3.5 \\times 32 = 112$ px, $W = 32$ px)?",
+        "answer_key": "426 ms",
+        "explanation": "$ID = \\log_2(112/32 + 1) = \\log_2(4.5) \\approx 2.17$ bits. $MT = 100 + 150 \\times 2.17 = 425.5 \\approx 426$ ms."
+      },
+      {
+        "prompt": "What is the total time for the mega-menu alternative ($D = 250$ px, $W = 80$ px, single Fitts's pointing task)?",
+        "answer_key": "406 ms",
+        "explanation": "$ID = \\log_2(250/80 + 1) = \\log_2(4.125) \\approx 2.04$ bits. $MT = 100 + 150 \\times 2.04 = 406$ ms. The mega-menu avoids the steering penalty entirely."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A design team is debating scrollbar width. The current design has a 10px-wide scrollbar with 500px of vertical travel. A proposed redesign widens it to 20px. Use $a = 80$ ms, $b = 130$ ms.",
+    "hint": "Compute $D/W$ and steering time for both designs, then find the improvement.",
+    "steps": [
+      {
+        "prompt": "What is the steering time for the current 10px-wide scrollbar (in ms)?",
+        "answer_key": "6580",
+        "explanation": "$T = 80 + 130 \\times (500/10) = 80 + 130 \\times 50 = 80 + 6500 = 6580$ ms."
+      },
+      {
+        "prompt": "What is the steering time for the proposed 20px-wide scrollbar (in ms)?",
+        "answer_key": "3330",
+        "explanation": "$T = 80 + 130 \\times (500/20) = 80 + 130 \\times 25 = 80 + 3250 = 3330$ ms."
+      },
+      {
+        "prompt": "By what percentage did steering time decrease?",
+        "answer_key": "49%",
+        "explanation": "$(6580 - 3330) / 6580 \\approx 0.494 = 49\\%$. Doubling the width nearly halved the steering time, consistent with the linear $D/W$ relationship."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "A nested 3-level cascading menu requires steering through two horizontal tunnels (each 100px long, 28px tall) to reach a final submenu. A mega-menu alternative shows all options in a single panel, requiring one Fitts movement ($D = 300$ px, $W = 100$ px). Compare using $a = 100$ ms, $b_{steer} = 130$ ms, $b_{Fitts} = 150$ ms/bit.",
+    "hint": "The cascading menu has two steering tasks in sequence. The mega-menu has one Fitts task.",
+    "steps": [
+      {
+        "prompt": "What is the total steering time for the two horizontal tunnel traversals?",
+        "answer_key": "1128 ms",
+        "explanation": "Each tunnel: $T = 100 + 130 \\times (100/28) = 100 + 130 \\times 3.57 \\approx 100 + 464 = 564$ ms. Two tunnels: $2 \\times 564 = 1128$ ms."
+      },
+      {
+        "prompt": "What is the Fitts movement time for the mega-menu alternative?",
+        "answer_key": "400 ms",
+        "explanation": "$ID = \\log_2(300/100 + 1) = \\log_2(4) = 2.0$ bits. $MT = 100 + 150 \\times 2.0 = 400$ ms."
+      },
+      {
+        "prompt": "How many times faster is the mega-menu compared to the cascading approach?",
+        "answer_key": "2.82 times",
+        "explanation": "$1128 / 400 = 2.82$. The mega-menu is nearly 3 times faster because it replaces two linear-cost steering tasks with a single logarithmic-cost pointing task."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "Pastel (2006) found that adding a 300ms delay before closing parent menu items reduced errors by 40%. Analyze why this works in terms of the Steering Law.",
+    "hint": "Think about what the delay does to the effective tunnel width during diagonal movement.",
+    "steps": [
+      {
+        "prompt": "Without the delay, what must the user do when moving diagonally from a parent item to a submenu?",
+        "answer_key": "The user must stay within the parent item's height (narrow tunnel) during the entire horizontal traversal, or the submenu closes",
+        "explanation": "Without a delay, any vertical deviation that leaves the parent item's boundaries immediately closes the submenu. The user is confined to steering through a tunnel defined by the item's height."
+      },
+      {
+        "prompt": "How does the 300ms delay change the effective steering constraint?",
+        "answer_key": "The delay allows the cursor to leave the parent item briefly without closing the submenu, effectively widening the tunnel and reducing the D/W ratio",
+        "explanation": "The delay creates a grace period during which the cursor can stray outside the parent item. This effectively widens the acceptable movement corridor, especially for the diagonal path to the submenu, dramatically reducing the $D/W$ ratio and thus the steering difficulty."
+      }
+    ]
+  }
+]

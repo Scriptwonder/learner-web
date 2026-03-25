@@ -1,0 +1,31 @@
+{
+  "id": "hci-principles",
+  "title": "Human-Computer Interaction Principles",
+  "description": "Foundational HCI principles, the experiments that established them, and methods for evaluating interaction design.",
+  "modules": [
+    {
+      "title": "Perception",
+      "lessons": ["01-webers-law", "02-preattentive-processing", "03-gestalt-principles"]
+    },
+    {
+      "title": "Cognition & Memory",
+      "lessons": ["04-working-memory", "05-cognitive-load", "06-mental-models", "07-recognition-vs-recall", "08-information-foraging"]
+    },
+    {
+      "title": "Motor Performance",
+      "lessons": ["09-hicks-law", "10-fitts-law", "11-steering-law"]
+    },
+    {
+      "title": "Design Principles & Error",
+      "lessons": ["12-design-principles", "13-slips-and-mistakes", "14-error-prevention-recovery", "15-feedback-response-time"]
+    },
+    {
+      "title": "Evaluation Methods",
+      "lessons": ["16-heuristic-evaluation", "17-keystroke-level-model", "18-usability-testing"]
+    },
+    {
+      "title": "Research Methods",
+      "lessons": ["19-experimental-design", "20-data-collection-metrics"]
+    }
+  ]
+}

@@ -1,0 +1,204 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does a SUS score of 68 represent?",
+    "hint": "Think percentile, not a pass/fail threshold.",
+    "options": ["A) An excellent usability score", "B) A 'good' usability score", "C) The 50th percentile — an average score", "D) A failing usability score"],
+    "answer_key": "C",
+    "explanation": "A SUS score of 68 is the 50th percentile, meaning half of all tested systems score higher. It is average, not 'good.' Scores above 80.3 are in the top quartile."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which statistical test is most appropriate for comparing task completion times between two conditions in a within-subjects design with normally distributed data?",
+    "hint": "The data is paired because the same participants appear in both conditions.",
+    "options": ["A) Independent t-test", "B) Paired t-test", "C) One-way ANOVA", "D) Chi-square test"],
+    "answer_key": "B",
+    "explanation": "A paired t-test is used for comparing two conditions when the same participants contribute data to both (within-subjects). The pairing accounts for individual differences."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does Cohen's $d = 0.8$ indicate?",
+    "hint": "Cohen defined three benchmarks: 0.2, 0.5, and 0.8.",
+    "options": ["A) A small effect size", "B) A medium effect size", "C) A large effect size", "D) A non-significant result"],
+    "answer_key": "C",
+    "explanation": "Cohen's benchmarks classify $d = 0.2$ as small, $d = 0.5$ as medium, and $d = 0.8$ as large. A $d$ of 0.8 means the means differ by 0.8 standard deviations — a large, practically meaningful difference."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "You are comparing 3 navigation styles in a within-subjects design, but the task-time data is heavily skewed and non-normal. Which test should you use?",
+    "hint": "You need a non-parametric alternative to repeated-measures ANOVA.",
+    "options": ["A) Independent t-test", "B) Kruskal-Wallis test", "C) Friedman test", "D) Mann-Whitney U test"],
+    "answer_key": "C",
+    "explanation": "The Friedman test is the non-parametric alternative to repeated-measures ANOVA. It is appropriate for 3+ conditions, within-subjects, with non-normal data. Kruskal-Wallis would be correct for between-subjects."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "The NASA-TLX measures perceived workload across how many subscales?",
+    "hint": "Think Mental Demand, Physical Demand, Temporal Demand, Performance, Effort, and one more.",
+    "options": ["A) 4", "B) 5", "C) 6", "D) 10"],
+    "answer_key": "C",
+    "explanation": "NASA-TLX has 6 subscales: Mental Demand, Physical Demand, Temporal Demand, Performance, Effort, and Frustration. Each is rated 0-100."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A researcher compares two interfaces with 200 participants per group and finds $p = 0.04$ with Cohen's $d = 0.12$. What is the most appropriate interpretation?",
+    "hint": "Consider what a very small effect size means even when it is statistically significant.",
+    "options": ["A) The result is both statistically and practically significant", "B) The result is statistically significant but the effect is too small to be practically meaningful", "C) The result is not significant because $d$ is small", "D) The large sample size invalidates the finding"],
+    "answer_key": "B",
+    "explanation": "With $d = 0.12$, the effect is tiny — barely noticeable in practice. The large sample size (200 per group) gave enough power to detect this trivial difference. Statistical significance does not imply practical importance."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the primary advantage of concurrent think-aloud over retrospective think-aloud?",
+    "hint": "One happens in real time, the other relies on recollection.",
+    "options": ["A) It does not affect task performance", "B) It captures thoughts as they occur, avoiding memory distortion", "C) It produces quantitative data", "D) It requires fewer participants"],
+    "answer_key": "B",
+    "explanation": "Concurrent think-aloud captures the participant's reasoning in real time, avoiding the memory biases and confabulation that can occur in retrospective reports. The trade-off is that verbalizing can slow performance and alter behavior (reactivity)."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "For a pointing device evaluation following ISO 9241-9, throughput is calculated as $TP = ID_e / MT$. What does $W_e$ in the effective index of difficulty represent?",
+    "hint": "It is computed from the observed spread of movement endpoints, not the nominal target width.",
+    "options": ["A) The nominal target width set by the experimenter", "B) The effective target width based on the observed standard deviation of endpoints ($4.133 \\times SD_x$)", "C) The width of the cursor", "D) The Fitts's Law intercept parameter"],
+    "answer_key": "B",
+    "explanation": "$W_e = 4.133 \\times SD_x$ is the effective target width, computed from the actual spread of endpoint positions. It captures each participant's real accuracy rather than assuming they used the full target width, making throughput a fairer comparison across speed-accuracy tradeoffs."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the range of possible SUS scores?",
+    "hint": "The raw sum (0-40) is multiplied by 2.5.",
+    "answer_key": "0 to 100",
+    "explanation": "SUS scores range from 0 to 100. Each of the 10 items contributes 0-4 points (sum range 0-40), multiplied by 2.5 to scale to 0-100."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What Cohen's $d$ value is the conventional benchmark for a 'medium' effect size?",
+    "hint": "It sits between small (0.2) and large (0.8).",
+    "answer_key": "0.5",
+    "explanation": "Cohen's benchmarks: $d = 0.2$ (small), $d = 0.5$ (medium), $d = 0.8$ (large). A medium effect means the two group means differ by half a standard deviation."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In the SUS scoring algorithm, what do you do with the rating for a negatively worded (even-numbered) item before summing?",
+    "hint": "You need to reverse-score it so that higher values always mean better usability.",
+    "answer_key": "Subtract the rating from 5",
+    "explanation": "For even-numbered (negatively worded) SUS items, the contribution is $5 - \\text{rating}$. This reverses the scale so that strong disagreement with a negative statement (rating of 1) contributes 4 points, indicating good usability."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "You compare 4 interface variants pairwise at $\\alpha = 0.05$ each. How many pairwise comparisons are there, and what is the approximate family-wise error rate without correction?",
+    "hint": "$\\binom{4}{2}$ comparisons; use $1 - (1 - \\alpha)^k$ for the family-wise rate.",
+    "answer_key": "6 comparisons, approximately 26%",
+    "explanation": "$\\binom{4}{2} = 6$ comparisons. Family-wise error rate $\\approx 1 - (1 - 0.05)^6 = 1 - 0.735 \\approx 0.265$, or about 26%. This is why multiple comparison corrections (Bonferroni, Holm, Tukey) are essential."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "A within-subjects study with two conditions finds a mean paired difference of 3.0 seconds with $SD_d = 6.0$ seconds. What is Cohen's $d$ for this paired comparison?",
+    "hint": "For paired designs, $d = \\bar{d} / SD_d$.",
+    "answer_key": "0.5",
+    "explanation": "$d = \\bar{d} / SD_d = 3.0 / 6.0 = 0.5$. This is a medium effect by Cohen's benchmarks."
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "You ran a within-subjects study comparing a gesture interface (A) to a button interface (B) with 16 participants. Mean task time: A = 12.0 s ($SD = 4.0$), B = 15.0 s ($SD = 5.0$). The mean of paired differences is 3.0 s with $SD_d = 3.5$ s. Analyze the results.",
+    "hint": "Use a paired t-test, then compute effect size and confidence interval.",
+    "steps": [
+      {
+        "prompt": "Compute the paired t-statistic. Give your answer to two decimal places.",
+        "answer_key": "3.43",
+        "explanation": "$t = \\bar{d} / (SD_d / \\sqrt{n}) = 3.0 / (3.5 / \\sqrt{16}) = 3.0 / 0.875 = 3.43$."
+      },
+      {
+        "prompt": "With $df = 15$ and $t = 3.43$, is the result significant at $\\alpha = 0.05$? (The critical value is approximately 2.131.)",
+        "answer_key": "Yes",
+        "explanation": "Since $t = 3.43 > 2.131$, the result is statistically significant at $\\alpha = 0.05$. The button interface is significantly slower than the gesture interface."
+      },
+      {
+        "prompt": "Compute Cohen's $d$ for this paired comparison. Give your answer to two decimal places.",
+        "answer_key": "0.86",
+        "explanation": "$d = \\bar{d} / SD_d = 3.0 / 3.5 = 0.857 \\approx 0.86$. This is a large effect by Cohen's benchmarks ($d \\geq 0.8$)."
+      },
+      {
+        "prompt": "Compute the 95% confidence interval for the mean difference. Use $t_{crit} = 2.131$. Give bounds to two decimal places.",
+        "answer_key": "[1.14, 4.86]",
+        "explanation": "$CI = \\bar{d} \\pm t_{crit} \\times SE = 3.0 \\pm 2.131 \\times 0.875 = 3.0 \\pm 1.86 = [1.14, 4.86]$. The interval excludes zero, confirming significance."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "A participant rates the 10 SUS items as: 4, 2, 4, 1, 5, 2, 4, 1, 3, 3. Compute the SUS score.",
+    "hint": "Odd items: subtract 1 from rating. Even items: subtract rating from 5. Sum all contributions, multiply by 2.5.",
+    "steps": [
+      {
+        "prompt": "What are the contributions from the odd-numbered items (items 1, 3, 5, 7, 9)?",
+        "answer_key": "3, 3, 4, 3, 2 (sum = 15)",
+        "explanation": "Odd items: $(4-1) + (4-1) + (5-1) + (4-1) + (3-1) = 3 + 3 + 4 + 3 + 2 = 15$."
+      },
+      {
+        "prompt": "What are the contributions from the even-numbered items (items 2, 4, 6, 8, 10)?",
+        "answer_key": "3, 4, 3, 4, 2 (sum = 16)",
+        "explanation": "Even items: $(5-2) + (5-1) + (5-2) + (5-1) + (5-3) = 3 + 4 + 3 + 4 + 2 = 16$."
+      },
+      {
+        "prompt": "What is the final SUS score?",
+        "answer_key": "77.5",
+        "explanation": "Total contributions = $15 + 16 = 31$. SUS score = $31 \\times 2.5 = 77.5$. This is a Grade B score — above average but below the top quartile (80.3)."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A study compares 3 dashboard layouts using a within-subjects design with 18 participants. Task time data is non-normal (Shapiro-Wilk $p = 0.01$). Select and justify the appropriate test, then interpret the result: test statistic $= 14.2$, $p = 0.001$.",
+    "hint": "Non-normal data with 3+ repeated conditions requires a specific non-parametric test.",
+    "steps": [
+      {
+        "prompt": "Which statistical test should you use? Name both the test and why.",
+        "answer_key": "Friedman test, because the data is non-normal, within-subjects, and has 3 conditions",
+        "explanation": "The Friedman test is the non-parametric alternative to repeated-measures ANOVA. It is appropriate here because: (1) there are 3+ conditions, (2) the design is within-subjects, and (3) the normality assumption is violated ($p = 0.01$ on Shapiro-Wilk)."
+      },
+      {
+        "prompt": "The Friedman test yields $\\chi^2(2) = 14.2$, $p = 0.001$. What does this tell you?",
+        "answer_key": "At least one layout differs significantly from the others in task time",
+        "explanation": "The Friedman test is an omnibus test — it tells you that the three layouts are not all equal, but not which specific pairs differ. You need post-hoc pairwise comparisons to identify which layouts differ."
+      },
+      {
+        "prompt": "You now run pairwise Wilcoxon signed-rank tests for the 3 pairs. What correction should you apply to control the family-wise error rate?",
+        "answer_key": "Bonferroni correction (divide alpha by 3)",
+        "explanation": "With 3 pairwise comparisons, the Bonferroni correction adjusts the significance threshold to $\\alpha / 3 = 0.05 / 3 \\approx 0.017$. Only comparisons with $p < 0.017$ are considered significant. Holm-Bonferroni is a less conservative alternative."
+      }
+    ]
+  }
+]

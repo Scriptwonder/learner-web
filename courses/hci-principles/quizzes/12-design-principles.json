@@ -1,0 +1,195 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the key distinction Norman (2013) draws between affordances and signifiers?",
+    "hint": "One is about capability, the other is about communication.",
+    "options": ["A) Affordances are visual; signifiers are physical", "B) Affordances are what you can do; signifiers are what tells you about it", "C) Affordances apply to software; signifiers apply to hardware", "D) Affordances are learned; signifiers are innate"],
+    "answer_key": "B",
+    "explanation": "An affordance is the action possibility that exists between a user and an object (what you CAN do). A signifier is the perceptible cue that communicates the affordance (what TELLS you about it). A flat touchscreen affords tapping everywhere, but only a visible button provides a signifier for where to tap."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "A settings panel has a toggle switch with no label, no tooltip, and no visible indication of what it controls. Which Norman principle is violated?",
+    "hint": "Can the user see what the control does?",
+    "options": ["A) Mapping", "B) Consistency", "C) Visibility", "D) Constraints"],
+    "answer_key": "C",
+    "explanation": "Visibility requires that the relevant parts of a system — including what actions are available and what state the system is in — are visible to the user. An unlabeled toggle with no context violates visibility because the user cannot see what the control does."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "A flat, borderless text element on a webpage turns out to be a clickable link, but nothing in its visual design suggests this. In Gaver's taxonomy, what is this?",
+    "hint": "The affordance exists but the user cannot perceive it.",
+    "options": ["A) A perceptible affordance", "B) A false affordance", "C) A hidden affordance", "D) A cultural constraint"],
+    "answer_key": "C",
+    "explanation": "A hidden affordance is one where the action possibility exists (the element is clickable) but there is no signifier communicating this to the user. The user has no way to discover the clickability without accidentally hovering or clicking."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A stove has four burners in a 2x2 grid but four control knobs in a straight horizontal row. Users frequently turn on the wrong burner. Which principle is violated?",
+    "hint": "The spatial relationship between controls and their effects is the issue.",
+    "options": ["A) Feedback", "B) Affordance", "C) Mapping", "D) Consistency"],
+    "answer_key": "C",
+    "explanation": "Mapping refers to the relationship between controls and their effects. Natural mapping leverages spatial correspondence — the knob layout should mirror the burner layout. A linear knob arrangement for a 2x2 burner grid creates an ambiguous mapping, leading to errors."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A form's \"Submit\" button looks identical to its \"Cancel\" button — same size, color, and style. Users frequently click Cancel when they mean Submit. Which principle is most directly violated?",
+    "hint": "Should similar-looking elements produce such different outcomes?",
+    "options": ["A) Visibility", "B) Constraints", "C) Feedback", "D) Consistency"],
+    "answer_key": "D",
+    "explanation": "Consistency dictates that similar things should look and behave similarly — and conversely, that things with very different effects should look different. A destructive action (Cancel, losing form data) should be visually distinct from a constructive action (Submit). Making them identical violates the expectation that visual similarity implies functional similarity."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A date picker that grays out all past dates when booking a future appointment is an example of which design principle?",
+    "hint": "The design limits what the user can select.",
+    "options": ["A) Feedback", "B) Mapping", "C) Constraints", "D) Visibility"],
+    "answer_key": "C",
+    "explanation": "Constraints limit the actions available at any given moment to prevent errors. By graying out invalid past dates, the date picker makes it impossible to select them, preventing the error before it occurs rather than catching it after."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A user clicks \"Save\" but sees no confirmation, no animation, and no status change. They click again three more times, creating duplicate saves. Which principle failure caused this?",
+    "hint": "The system did not acknowledge the user's action.",
+    "options": ["A) Mapping", "B) Constraints", "C) Consistency", "D) Feedback"],
+    "answer_key": "D",
+    "explanation": "Feedback requires that every action produce an immediate, perceptible response. Without feedback after clicking Save, the user cannot confirm their action was received, leading to repeated clicks and duplicate operations."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "A decorative banner image at the top of a webpage has a hand cursor on hover and a subtle shadow, making it look like a clickable card. Users click it expecting navigation, but nothing happens. In Gaver's taxonomy, this is a:",
+    "hint": "A signifier suggests an action that does not actually exist.",
+    "options": ["A) Hidden affordance", "B) Perceptible affordance", "C) Cultural constraint", "D) False affordance"],
+    "answer_key": "D",
+    "explanation": "A false affordance exists when a signifier suggests an action possibility that is not actually available. The hand cursor and shadow act as signifiers for clickability, but the element is not interactive. This actively misleads users and is worse than a hidden affordance."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Who introduced the concept of affordances in ecological psychology in 1979?",
+    "hint": "An American psychologist known for ecological perception.",
+    "answer_key": "Gibson",
+    "explanation": "James J. Gibson introduced affordances in 'The Ecological Approach to Visual Perception' (1979), defining them as the actionable properties between an object and an actor."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Name the three categories in Gaver's (1991) affordance taxonomy.",
+    "hint": "They describe the relationship between whether an affordance exists and whether it is perceived.",
+    "answer_key": "perceptible, hidden, false",
+    "explanation": "Gaver (1991) identified three types: perceptible affordances (the affordance exists and is perceived), hidden affordances (the affordance exists but is not perceived), and false affordances (no affordance exists but a signifier suggests one)."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In Norman's framework, what is the term for the perceptible cue that communicates an affordance to the user?",
+    "hint": "Norman introduced this term in the 2013 revised edition to resolve confusion.",
+    "answer_key": "signifier",
+    "explanation": "Norman (2013) introduced 'signifier' to mean the perceptible indicator that communicates an affordance. This resolved the widespread confusion where 'affordance' was being used to mean 'visual cue' rather than its Gibsonian sense of action possibility."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A volume slider that moves upward to increase volume and downward to decrease it exploits which of Norman's six principles?",
+    "hint": "The spatial arrangement of the control corresponds to its effect.",
+    "answer_key": "mapping",
+    "explanation": "Natural mapping leverages spatial analogies and cultural conventions. Moving a slider 'up' to increase volume exploits the universal metaphor that 'more = higher,' creating an intuitive relationship between the control and its effect."
+  },
+  {
+    "id": 13,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "You are auditing a checkout page that has the following issues: (1) the 'Place Order' button is the same gray color as 'Clear Cart', (2) there is no order summary visible before confirming, (3) after clicking 'Place Order' nothing happens for 3 seconds with no indicator. Identify the violated principle for each issue, then prioritize which to fix first.",
+    "hint": "Map each issue to one of Norman's six principles, then consider which violation has the worst user impact.",
+    "steps": [
+      {
+        "prompt": "Which principle does issue 1 violate — the 'Place Order' and 'Clear Cart' buttons looking identical?",
+        "answer_key": "consistency",
+        "explanation": "Consistency (and its corollary: things with different effects should look different). A constructive action (Place Order) and a destructive action (Clear Cart) should be visually distinct. Making them identical violates the principle that visual similarity implies functional similarity."
+      },
+      {
+        "prompt": "Which principle does issue 2 violate — no order summary visible before confirming?",
+        "answer_key": "visibility",
+        "explanation": "Visibility requires that the current state of the system is visible to the user. Before committing to a purchase, the user should be able to see what they are buying, the total cost, and shipping details. Hiding this information violates visibility."
+      },
+      {
+        "prompt": "Which principle does issue 3 violate — no response for 3 seconds after clicking?",
+        "answer_key": "feedback",
+        "explanation": "Feedback requires that every action produce an immediate, perceptible response. A 3-second delay with no visual indicator leaves the user uncertain whether their click was registered, likely causing repeated clicks or abandonment."
+      },
+      {
+        "prompt": "Which issue should be fixed first, and why? Answer with the issue number.",
+        "answer_key": "1",
+        "explanation": "Issue 1 (button similarity) should be fixed first because it can cause users to accidentally clear their cart when intending to place an order — a destructive, hard-to-recover-from error. Issues 2 and 3 cause confusion and frustration, but issue 1 can cause direct data loss."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A new smart home app controls lights, thermostat, and locks from a single screen. Users report frequently adjusting the wrong device. Walk through diagnosing and fixing the problem using Norman's principles.",
+    "hint": "Consider how the controls are arranged relative to the devices they control.",
+    "steps": [
+      {
+        "prompt": "Which principle is most likely being violated if users are adjusting the wrong device?",
+        "answer_key": "mapping",
+        "explanation": "If controls are not spatially or logically mapped to the devices they affect, users cannot tell which control corresponds to which device. This is a mapping failure — the spatial relationship between controls and effects is unclear."
+      },
+      {
+        "prompt": "Name one additional principle you would apply to help users distinguish between device controls.",
+        "answer_key": "visibility",
+        "explanation": "Improving visibility — for example, showing a live preview of each device's state next to its control, using distinct icons, or grouping controls by room — would help users see which control affects which device. (Constraints or consistency would also be valid answers.)"
+      },
+      {
+        "prompt": "Describe one specific design change that applies both principles. Keep your answer to one sentence.",
+        "answer_key": "Show a floor plan with controls positioned at each device's physical location",
+        "explanation": "A floor plan layout maps controls to device locations spatially (mapping) and makes device states visible in context (visibility). This eliminates the ambiguity of a flat list of controls by leveraging the user's spatial knowledge of their home."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "Hartson (2003) proposed four types of affordances for interaction design. For each description, identify the affordance type.",
+    "hint": "The four types are: cognitive, physical, sensory, and functional.",
+    "steps": [
+      {
+        "prompt": "A tooltip that explains what a button does provides what type of affordance?",
+        "answer_key": "cognitive",
+        "explanation": "A cognitive affordance helps the user know something. The tooltip provides information about the button's function, supporting the user's understanding."
+      },
+      {
+        "prompt": "A drag handle that allows a user to resize a panel provides what type of affordance?",
+        "answer_key": "physical",
+        "explanation": "A physical affordance helps the user do something. The drag handle enables the physical action of resizing."
+      },
+      {
+        "prompt": "A high-contrast color scheme that makes text readable provides what type of affordance?",
+        "answer_key": "sensory",
+        "explanation": "A sensory affordance helps the user perceive something. High contrast ensures the text is visually detectable and readable."
+      }
+    ]
+  }
+]

@@ -1,0 +1,190 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "According to Nielsen's (1993) three-threshold model, below what response time does an interaction feel instantaneous?",
+    "hint": "It matches the perceptual processor cycle time.",
+    "options": ["A) 0.01 seconds", "B) 0.1 seconds", "C) 1.0 seconds", "D) 0.5 seconds"],
+    "answer_key": "B",
+    "explanation": "Below 0.1 seconds (100ms), the response feels instantaneous. This threshold corresponds to the perceptual processor cycle time (~100ms) from Card, Moran & Newell's (1983) Model Human Processor."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "At what threshold does the user's attention shift away from the task, according to Nielsen (1993)?",
+    "hint": "It is the upper limit of sustained focus on a single waiting task.",
+    "options": ["A) 1 second", "B) 5 seconds", "C) 10 seconds", "D) 30 seconds"],
+    "answer_key": "C",
+    "explanation": "At 10 seconds, users' attention shifts away. This is approximately the limit of short-term memory for maintaining focus on a single task. Beyond this, users will context-switch or abandon the task entirely."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "A button takes 300ms to show any visual response after being clicked. How does this feel to the user?",
+    "hint": "Compare 300ms to the 100ms instantaneity threshold.",
+    "options": ["A) Instantaneous — the user notices no delay", "B) Slightly sluggish — the user notices a delay but maintains flow", "C) Broken — the user thinks the click did not register", "D) Unacceptable — the user will abandon the task"],
+    "answer_key": "B",
+    "explanation": "At 300ms, the response exceeds the 100ms instantaneity threshold, so the user notices a delay. However, it is still under 1 second, so they maintain their flow of thought. The interaction feels sluggish but functional."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A server call takes approximately 3 seconds. What is the most appropriate feedback mechanism?",
+    "hint": "The delay is between the 1-second and 10-second thresholds.",
+    "options": ["A) No feedback needed — 3 seconds is within the flow threshold", "B) A spinner or activity indicator", "C) A determinate progress bar with percentage", "D) A skeleton screen with estimated time remaining"],
+    "answer_key": "B",
+    "explanation": "For delays between 1 and 10 seconds, a spinner or activity indicator is appropriate. It communicates 'the system is working' without requiring a precise duration estimate. A progress bar would be excessive for a 3-second wait, while no feedback would leave the user uncertain."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Which technique shows the layout structure of a page (gray placeholder boxes) before actual content loads?",
+    "hint": "It was popularized by Facebook and LinkedIn.",
+    "options": ["A) Optimistic UI", "B) Progressive enhancement", "C) Skeleton screen", "D) Lazy loading"],
+    "answer_key": "C",
+    "explanation": "Skeleton screens show the structural layout (gray boxes where content will appear) before actual content loads. This creates the perception that the page loaded quickly and content is 'filling in,' reducing perceived wait time even when total load time is unchanged."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A social media app shows a 'like' as toggled immediately when tapped, then rolls back if the server rejects it. This is called:",
+    "hint": "The interface assumes success and corrects on failure.",
+    "options": ["A) Skeleton screen", "B) Graceful degradation", "C) Optimistic UI", "D) Progressive disclosure"],
+    "answer_key": "C",
+    "explanation": "Optimistic UI assumes the action will succeed and shows the result immediately, then corrects if the server rejects it. This works for low-risk, high-probability-of-success actions and makes the interface feel instantaneous."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Dabrowski & Munson (2011) found that progress bars that accelerate toward the end are perceived as:",
+    "hint": "The acceleration creates a sense of momentum.",
+    "options": ["A) Slower than linear progress bars", "B) Faster than linear progress bars, even at the same total duration", "C) The same speed as linear progress bars", "D) More frustrating than indeterminate spinners"],
+    "answer_key": "B",
+    "explanation": "Progress bars that start slow and accelerate toward the end are perceived as faster than linear ones, even when total duration is identical. The acceleration creates a sense of momentum and imminent completion, improving the user's subjective experience of waiting."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "In Card, Moran & Newell's (1983) Model Human Processor, which processor has the longest cycle time?",
+    "hint": "One processor needs about 100ms per cycle.",
+    "options": ["A) Motor processor (~100ms)", "B) Cognitive processor (~100ms)", "C) Perceptual processor (~100ms)", "D) All three have approximately equal cycle times (~70-100ms)"],
+    "answer_key": "C",
+    "explanation": "The perceptual processor has the longest cycle time at approximately 100ms. The cognitive processor cycles at ~70ms and the motor processor at ~70ms. The 100ms perceptual cycle is why responses below this threshold feel instantaneous — the delay is below the resolution of perceptual processing."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What are the three response-time thresholds in Nielsen's (1993) model? Give the values in seconds.",
+    "hint": "Instantaneous, flow, and attention limits.",
+    "answer_key": "0.1, 1.0, 10",
+    "explanation": "Nielsen's three thresholds: 0.1 seconds (feels instantaneous), 1.0 seconds (flow of thought maintained), and 10 seconds (attention limit — user will context-switch beyond this)."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Who conducted the pioneering 1968 study on computer terminal response-time thresholds?",
+    "hint": "He worked at MIT studying man-computer conversational transactions.",
+    "answer_key": "Miller",
+    "explanation": "Robert B. Miller (1968) published 'Response Time in Man-Computer Conversational Transactions,' identifying the behavioral breakpoints that Nielsen later refined into the three-threshold model."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In a 2009 experiment, Google found that adding how many milliseconds of latency to search results caused a measurable drop in search volume?",
+    "hint": "Less than half a second.",
+    "answer_key": "400",
+    "explanation": "Brutlag (2009) found that adding 400ms of artificial latency to Google search results reduced search volume by 0.59%. This demonstrated that even sub-second delays have measurable behavioral and business impact."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What are the three processor cycle times in Card, Moran & Newell's (1983) Model Human Processor? Name the three processors.",
+    "hint": "They model perception, thinking, and movement.",
+    "answer_key": "perceptual, cognitive, motor",
+    "explanation": "The Model Human Processor describes three subsystems: the perceptual processor (~100ms cycle), the cognitive processor (~70ms cycle), and the motor processor (~70ms cycle). These cycle times explain why specific response-time thresholds exist."
+  },
+  {
+    "id": 13,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A user clicks 'Export Data' in a dashboard. The export involves three stages: querying the database (1.5s), generating a CSV (4s), and compressing the file (6s). Design the feedback strategy for each stage.",
+    "hint": "Match each stage's duration to the appropriate threshold and feedback type.",
+    "steps": [
+      {
+        "prompt": "Stage 1 takes 1.5 seconds. Which threshold does this exceed, and what feedback should you show?",
+        "answer_key": "exceeds the 1.0s flow threshold; show a spinner with label like 'Fetching data...'",
+        "explanation": "At 1.5 seconds, the delay exceeds the 1.0-second flow threshold. The user needs feedback to maintain their train of thought. A spinner with a descriptive label ('Fetching data...') confirms the system is working and communicates what is happening."
+      },
+      {
+        "prompt": "By the end of stage 2, the cumulative wait is 5.5 seconds. What feedback change should occur at this point?",
+        "answer_key": "transition to a determinate progress bar showing percentage, since the cumulative time approaches the 10s threshold",
+        "explanation": "At 5.5 seconds cumulative, the user is past the halfway point of the 10-second attention threshold. A determinate progress bar with percentage and stage label ('Generating CSV... 50%') gives the user an expectation of remaining time and prevents attention drift."
+      },
+      {
+        "prompt": "The total export takes 11.5 seconds. This exceeds the 10-second attention threshold. What additional element should you include?",
+        "answer_key": "estimated time remaining (e.g., '~6 seconds left') or allow the user to continue working while the export completes in the background",
+        "explanation": "Beyond 10 seconds, users lose focus. Two strategies: (1) show estimated time remaining so users can decide whether to wait, or (2) run the export in the background with a notification on completion. Option 2 is preferable because it lets users remain productive during the wait."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A web page takes 4 seconds to fully load. The team is debating three approaches: (A) show a blank white page until everything loads, (B) show a full-page spinner, (C) show a skeleton screen. Evaluate each approach.",
+    "hint": "Consider perceived performance, not just actual load time.",
+    "steps": [
+      {
+        "prompt": "Why is approach A (blank white page) the worst option?",
+        "answer_key": "It provides no feedback, so users may think the page failed to load and navigate away or refresh",
+        "explanation": "A blank white page violates the feedback principle entirely. At 4 seconds (past the 1-second threshold), users need confirmation that the system is working. Without feedback, many users will refresh the page or abandon — potentially doubling the load time or losing the user entirely."
+      },
+      {
+        "prompt": "Approach B (spinner) is better than A. Why is approach C (skeleton screen) better than B?",
+        "answer_key": "Skeleton screens show the page structure immediately, creating a perception of fast loading and providing a reference frame for incoming content",
+        "explanation": "A spinner communicates 'working' but gives no information about what is loading or how the page will look. A skeleton screen shows the structural layout immediately, so when content fills in it feels like 'progressive completion' rather than 'sudden appearance.' Research (Harrison et al. 2007) shows users rate skeleton-screen pages as loading faster even at identical total load times."
+      },
+      {
+        "prompt": "The team also considers loading text before images. Why does this improve perceived performance?",
+        "answer_key": "Text is smaller and renders faster, giving users something to read and engage with while images load progressively",
+        "explanation": "Text content loads in milliseconds while images may take seconds. By rendering text first, users can begin reading and engaging with content immediately. This shifts the perception from 'waiting for the page' to 'reading while images fill in,' making the total wait feel shorter and more productive."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "For each interaction, determine which response-time threshold applies and prescribe the appropriate feedback type.",
+    "hint": "Match each delay to the 0.1s, 1.0s, or 10s threshold.",
+    "steps": [
+      {
+        "prompt": "A hover tooltip appears after a 200ms delay. Is this within the instantaneous threshold?",
+        "answer_key": "no, 200ms exceeds the 100ms threshold",
+        "explanation": "At 200ms, the delay exceeds the 100ms instantaneity threshold. The user will perceive a slight lag. For hover effects, the tooltip should appear within 100ms to feel instantaneous. A 200ms delay is still within the 1-second flow threshold, so it does not break concentration, but it feels sluggish."
+      },
+      {
+        "prompt": "A search API returns results in 800ms. What feedback, if any, is needed?",
+        "answer_key": "no spinner needed, but provide immediate acknowledgment such as graying the old results or showing a subtle loading indicator",
+        "explanation": "At 800ms, the delay is under the 1-second flow threshold. A full spinner is not necessary, but some acknowledgment (dimming old results, showing a subtle loading state on the search bar) helps the user know the search is processing. This is the gray zone where minimal feedback is beneficial but a spinner would feel excessive."
+      },
+      {
+        "prompt": "A file upload takes 25 seconds. What feedback strategy is required?",
+        "answer_key": "determinate progress bar with percentage and estimated time remaining",
+        "explanation": "At 25 seconds, the delay far exceeds the 10-second attention threshold. A determinate progress bar with percentage is mandatory. Adding estimated time remaining helps users decide whether to wait or context-switch. Ideally, allow the upload to continue in the background with a notification on completion."
+      }
+    ]
+  }
+]

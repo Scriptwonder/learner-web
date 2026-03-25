@@ -1,0 +1,190 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What are the three levels of error management in interface design?",
+    "hint": "They form a sequence: stop the error, catch the error, or fix the error.",
+    "options": ["A) Prevention, detection, recovery", "B) Analysis, design, testing", "C) Input, processing, output", "D) Warning, error, fatal"],
+    "answer_key": "A",
+    "explanation": "The three levels are prevention (stop the error from occurring), detection (catch the error before it takes effect), and recovery (restore the system after the error has occurred). Effective interfaces layer all three."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "A microwave that will not start with the door open is an example of which type of forcing function?",
+    "hint": "Operations must occur in the correct sequence.",
+    "options": ["A) Lock-in", "B) Lockout", "C) Interlock", "D) Poka-yoke"],
+    "answer_key": "C",
+    "explanation": "An interlock requires operations to occur in the correct sequence. The microwave requires the door to be closed (step 1) before it can start (step 2). You cannot bypass this sequence."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which principle does the 'Save before closing?' dialog implement?",
+    "hint": "It prevents the user from leaving a state without addressing unsaved changes.",
+    "options": ["A) Interlock", "B) Lock-in", "C) Lockout", "D) Graceful degradation"],
+    "answer_key": "B",
+    "explanation": "A lock-in prevents the user from leaving a state prematurely. The 'Save before closing?' dialog forces the user to make a decision about unsaved work before the application closes, preventing accidental data loss."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A cloud storage service requires users to type the folder name to confirm permanent deletion. This technique is called:",
+    "hint": "It comes from manufacturing — making it impossible to make a specific error.",
+    "options": ["A) Graceful degradation", "B) Progressive disclosure", "C) Poka-yoke", "D) Undo/redo"],
+    "answer_key": "C",
+    "explanation": "Poka-yoke (mistake-proofing), introduced by Shingo (1986), makes it procedurally impossible to make a specific error. Requiring the user to type the exact resource name before deletion ensures the action is deliberate and targeted at the correct resource."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "An error message says: 'Error 500: Internal Server Error.' How many of the three components of a good error message does it satisfy (WHAT, WHY, HOW)?",
+    "hint": "Does it tell you what happened in user terms, why it happened, or how to fix it?",
+    "options": ["A) All three", "B) Two (WHAT and WHY)", "C) One (WHAT, vaguely)", "D) None"],
+    "answer_key": "D",
+    "explanation": "Error 500 is a server status code, not a user-facing explanation. It does not tell the user WHAT happened in understandable terms, WHY it happened, or HOW to fix it. A good message would say something like: 'We could not process your request (WHAT) because our servers are temporarily overloaded (WHY). Please try again in a few minutes (HOW).'"
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Gmail's 'Undo Send' feature gives users a brief window to recall a sent email. At which level of error management does this operate?",
+    "hint": "The email has already been 'sent' from the user's perspective.",
+    "options": ["A) Prevention", "B) Detection", "C) Recovery", "D) Graceful degradation"],
+    "answer_key": "C",
+    "explanation": "Undo Send operates at the recovery level. The user has already committed the action (clicking Send), and the system provides a mechanism to reverse it within a time window. Technically, Gmail delays actual transmission, but from the user's perspective it is recovering from a completed action."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Which of these error prevention strategies is most effective at reducing data-entry errors?",
+    "hint": "Think about preventing the error versus catching it afterward.",
+    "options": ["A) Showing a detailed error message after submission", "B) Providing an undo button", "C) Constraining inputs with dropdowns and date pickers", "D) Logging errors for developer review"],
+    "answer_key": "C",
+    "explanation": "Constraining inputs (prevention) is more effective than error messages after submission (detection) or undo (recovery). Maxion & de Champeaux (1995) showed that constrained interfaces reduced errors by 50-80% compared to unconstrained interfaces with post-hoc validation."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Norman (1988) identified four types of constraints. A SIM card tray with a notch that prevents insertion in the wrong orientation is which type?",
+    "hint": "The shape of the object prevents incorrect use.",
+    "options": ["A) Semantic constraint", "B) Cultural constraint", "C) Logical constraint", "D) Physical constraint"],
+    "answer_key": "D",
+    "explanation": "A physical constraint prevents incorrect use through the shape or form of the object. The notch on the SIM tray physically prevents the card from being inserted in the wrong orientation — no reasoning or convention is needed."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Who introduced the concept of undo as a fundamental interaction principle in 1983?",
+    "hint": "He also formulated the 'eight golden rules of interface design.'",
+    "answer_key": "Shneiderman",
+    "explanation": "Ben Shneiderman (1983) established undo as essential to direct-manipulation interfaces. He argued that interfaces encouraging exploration must provide a safety net against irreversible consequences."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What are the three questions a good error message should answer?",
+    "hint": "Think about the situation, the cause, and the fix.",
+    "answer_key": "what, why, how",
+    "explanation": "A good error message answers: WHAT happened ('Your payment could not be processed'), WHY it happened ('The card number is invalid'), and HOW to fix it ('Please check the number and try again')."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Name the three types of forcing functions identified by Norman (1988).",
+    "hint": "They govern sequence, premature exit, and dangerous entry.",
+    "answer_key": "interlocks, lock-ins, lockouts",
+    "explanation": "Norman identified three forcing functions: interlocks (operations must occur in the correct sequence), lock-ins (prevent leaving a state prematurely), and lockouts (prevent entering a dangerous state)."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Which Nielsen (1994) usability heuristic states that error messages should be expressed in plain language, precisely indicate the problem, and constructively suggest a solution?",
+    "hint": "It is heuristic number 9.",
+    "answer_key": "help users recognize, diagnose, and recover from errors",
+    "explanation": "Nielsen's heuristic #9: 'Help users recognize, diagnose, and recover from errors.' Error messages should be expressed in plain language (no codes), precisely indicate the problem, and constructively suggest a solution."
+  },
+  {
+    "id": 13,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A team collaboration tool allows users to permanently delete shared channels. A user accidentally deletes a channel with 2 years of conversation history. Design a three-layer defense system.",
+    "hint": "Apply prevention, detection, and recovery strategies.",
+    "steps": [
+      {
+        "prompt": "Design the prevention layer. What constraint or forcing function would you use?",
+        "answer_key": "Require the user to type the channel name to confirm deletion (poka-yoke), and restrict deletion to channel owners or admins (lockout)",
+        "explanation": "Prevention combines poka-yoke (typing the channel name ensures deliberate action) with a lockout (only authorized users can initiate deletion). This makes accidental deletion nearly impossible and limits who can attempt it."
+      },
+      {
+        "prompt": "Design the detection layer. What feedback would you provide before the action is committed?",
+        "answer_key": "Show a confirmation dialog displaying the channel name, member count, message count, and age before deletion",
+        "explanation": "A detailed confirmation dialog that shows the impact of deletion (e.g., '2,847 messages from 15 members over 2 years will be permanently removed') forces the user to confront the consequences before committing."
+      },
+      {
+        "prompt": "Design the recovery layer. What mechanism allows restoration after deletion?",
+        "answer_key": "Soft-delete with a 30-day recovery window, plus automated backups for permanent recovery by admins",
+        "explanation": "Soft delete moves the channel to an 'Archived/Deleted' state where it can be restored within 30 days. Beyond that window, automated backups allow admin-level recovery. This ensures no permanent data loss from a single action."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "An e-commerce checkout form currently shows all validation errors only after the user clicks 'Submit.' The team wants to improve error handling. Walk through the redesign.",
+    "hint": "Move error detection earlier in the process.",
+    "steps": [
+      {
+        "prompt": "What validation strategy should replace submit-time-only validation?",
+        "answer_key": "inline validation",
+        "explanation": "Inline validation checks each field as the user fills it (on blur or after a short typing pause), providing immediate feedback next to the relevant field. This catches errors before the user reaches the submit button."
+      },
+      {
+        "prompt": "For the credit card number field, which prevention technique would eliminate most input errors entirely?",
+        "answer_key": "input constraints such as accepting only digits, auto-formatting with spaces, and limiting to valid card length",
+        "explanation": "Input constraints prevent the error at the source: rejecting non-digit characters, auto-inserting spaces every 4 digits for readability, and limiting input to 16 characters. The user physically cannot enter an improperly formatted card number."
+      },
+      {
+        "prompt": "If the payment still fails after submission (e.g., card declined), what should the error message include?",
+        "answer_key": "WHAT: payment was declined, WHY: the bank rejected the charge, HOW: try a different card or contact the bank",
+        "explanation": "The error message must answer all three questions: 'Your payment was declined (WHAT) — your bank did not authorize the charge (WHY). Please try a different payment method or contact your bank for details (HOW).' This gives the user a clear path forward."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "For each scenario, identify whether the appropriate intervention is prevention, detection, or recovery.",
+    "hint": "Can you stop the error, catch it before it takes effect, or fix it after?",
+    "steps": [
+      {
+        "prompt": "A date picker that grays out weekends for a business-days-only scheduler — prevention, detection, or recovery?",
+        "answer_key": "prevention",
+        "explanation": "This is prevention through constraints. The user cannot select an invalid date because weekends are disabled. The error is made impossible, not just detected."
+      },
+      {
+        "prompt": "A form field that shows a red border and 'Invalid email format' as the user types — prevention, detection, or recovery?",
+        "answer_key": "detection",
+        "explanation": "This is detection — the system catches the error in real time and alerts the user before they submit. The error is possible but detected before it takes effect."
+      },
+      {
+        "prompt": "Google Docs automatically saving every keystroke so no work is lost if the browser crashes — prevention, detection, or recovery?",
+        "answer_key": "recovery",
+        "explanation": "This is recovery. The crash (error) cannot be prevented, but autosave ensures the system can restore the user's work after the failure occurs."
+      }
+    ]
+  }
+]

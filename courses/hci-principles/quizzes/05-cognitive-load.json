@@ -1,0 +1,204 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "According to Sweller's cognitive load theory, which type of load comes from poor interface design rather than the task itself?",
+    "hint": "This is the load that designers can and should eliminate.",
+    "options": ["A) Intrinsic load", "B) Extraneous load", "C) Germane load", "D) Structural load"],
+    "answer_key": "B",
+    "explanation": "Extraneous load is mental effort caused by poor design — scanning between separated labels and fields, deciphering ambiguous icons, or navigating unnecessary steps. It does not contribute to understanding or task completion and should be minimized."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the critical constraint in cognitive load theory?",
+    "hint": "Think about the relationship between total load and working memory.",
+    "options": ["A) Germane load must exceed extraneous load", "B) Intrinsic load must be zero", "C) Total load (intrinsic + extraneous + germane) must not exceed working memory capacity", "D) Extraneous load must equal germane load"],
+    "answer_key": "C",
+    "explanation": "The total cognitive load — the sum of intrinsic, extraneous, and germane load — must stay within working memory capacity. When it exceeds this limit, learning stops and task performance collapses."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "A form places error messages in a banner at the top of the page while the problematic fields are scattered below. Which cognitive load effect does this create?",
+    "hint": "The user must mentally connect information from two physically separated locations.",
+    "options": ["A) Redundancy effect", "B) Modality effect", "C) Split-attention effect", "D) Expertise reversal effect"],
+    "answer_key": "C",
+    "explanation": "The split-attention effect occurs when users must mentally integrate information from physically separated sources. Placing error messages far from the fields they describe forces the user to hold error details in working memory while scanning to find the relevant field."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which multimedia design principle states that animation paired with narration is more effective than animation paired with on-screen text?",
+    "hint": "This principle exploits the separate verbal and visual channels in working memory.",
+    "options": ["A) Spatial contiguity principle", "B) Redundancy principle", "C) Modality principle", "D) Signaling principle"],
+    "answer_key": "C",
+    "explanation": "The modality principle leverages Baddeley's finding that working memory has partly independent verbal (phonological loop) and visual (visuospatial sketchpad) channels. Animation + narration distributes load across both channels, while animation + on-screen text overloads the visual channel alone."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A tutorial video shows code on screen while a narrator reads the exact same code aloud. According to Mayer's research, what effect does this have on learning?",
+    "hint": "Consider what happens when the same information is presented in two formats simultaneously.",
+    "options": ["A) It improves learning by reinforcing through repetition", "B) It has no effect on learning", "C) It hurts learning because the redundant narration adds extraneous load", "D) It improves learning only for visual learners"],
+    "answer_key": "C",
+    "explanation": "This is the redundancy effect (Mayer, d = 0.72). When narration merely reads on-screen text, the user must cross-reference two channels to confirm they match, adding extraneous load. Narration should explain the visual, not repeat it."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Kalyuga et al. (2003) found that instructional designs optimized for novices can become detrimental for experts. What is this phenomenon called?",
+    "hint": "The benefit reverses as the learner's expertise increases.",
+    "options": ["A) The split-attention effect", "B) The expertise reversal effect", "C) The modality effect", "D) The seductive details effect"],
+    "answer_key": "B",
+    "explanation": "The expertise reversal effect shows that scaffolding helpful for novices becomes redundant load for experts. Experts already have schemas that make the additional support unnecessary, and processing the redundant information costs effort."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Sweller and Chandler (1994) found that integrating labels directly onto a circuit diagram improved learning compared to having text on a separate page. What was the primary dependent measure that showed improvement?",
+    "hint": "They measured both knowledge and subjective experience.",
+    "options": ["A) Only study time decreased", "B) Transfer test scores increased and subjective mental effort decreased", "C) Only reading speed improved", "D) Participants reported higher enjoyment"],
+    "answer_key": "B",
+    "explanation": "The integrated group scored significantly higher on transfer tests (requiring application of knowledge, not just recall) and reported lower mental effort on a 9-point Likert scale, demonstrating that integration reduced extraneous load and freed capacity for germane processing."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "A tax filing application has inherently high intrinsic load due to the complex interactions between income, deductions, and credits. According to cognitive load theory, what is the best design strategy?",
+    "hint": "You cannot reduce intrinsic load, but you can manage how it is encountered.",
+    "options": ["A) Add detailed explanations to every field to increase germane load", "B) Remove deduction fields to simplify the form", "C) Break the process into sequential steps that each handle a subset of interacting elements", "D) Present all fields on a single page to avoid navigation overhead"],
+    "answer_key": "C",
+    "explanation": "When intrinsic load is high, the strategy is to manage it through scaffolding — breaking the task into steps that reduce element interactivity at each stage. A wizard that handles income, then deductions, then credits separately keeps the number of simultaneously interacting elements within working memory limits."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Name the three types of cognitive load in Sweller's theory.",
+    "hint": "One comes from the task, one from poor design, and one from productive learning.",
+    "answer_key": "intrinsic, extraneous, germane",
+    "explanation": "Intrinsic load comes from the inherent complexity of the task, extraneous load comes from poor design, and germane load is the productive mental effort devoted to building schemas and understanding."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Mayer (2001) reported that the spatial contiguity principle had an effect size of $d = 1.12$ across 22 tests. What does this principle state?",
+    "hint": "It is about the physical proximity of related text and graphics.",
+    "answer_key": "Students learn better when corresponding text and graphics are placed near each other",
+    "explanation": "The spatial contiguity principle states that learning improves when text and corresponding visuals are physically close together rather than separated. This reduces the split-attention cost of mentally integrating information from distant sources."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "According to Paas et al. (2003), what is the correlation (approximate $r$ value) between subjective mental effort ratings and objective cognitive load indicators?",
+    "hint": "The correlation is strong but not perfect.",
+    "answer_key": "0.7 to 0.8",
+    "explanation": "Paas et al. found that subjective ratings (e.g., 9-point effort scales) correlate at approximately $r = 0.7$–$0.8$ with objective measures like pupil dilation and heart rate variability, establishing that self-reported cognitive load is a valid and practical measurement."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Wroblewski (2008) found that one specific label placement was fastest for form completion. What placement was it?",
+    "hint": "It minimizes the horizontal saccade between label and field.",
+    "answer_key": "top-aligned labels",
+    "explanation": "Top-aligned labels (directly above the input field) were fastest because the eye moves straight down from label to field. Left-aligned labels require a horizontal saccade to map label to field — a direct manifestation of the split-attention effect."
+  },
+  {
+    "id": 13,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A software company is building an onboarding tutorial for a complex data visualization tool. The tutorial currently shows a 5-minute video of all features with on-screen text matching the narration. Apply cognitive load principles to redesign it.",
+    "hint": "Consider the redundancy effect, modality effect, and scaffolding.",
+    "steps": [
+      {
+        "prompt": "What is wrong with having on-screen text that matches the narration word-for-word?",
+        "answer_key": "It creates the redundancy effect — the user wastes cognitive resources cross-referencing two identical information streams instead of learning",
+        "explanation": "Mayer's redundancy principle (d = 0.72) shows that narration + on-screen text that says the same thing is worse than narration alone, because the user spends effort confirming the two channels match rather than processing the content."
+      },
+      {
+        "prompt": "How should the video use the modality effect to improve learning?",
+        "answer_key": "Show visual demonstrations on screen while using spoken narration to explain what is happening, rather than displaying the explanation as text",
+        "explanation": "The modality effect (d = 1.17) shows that visual + narration outperforms visual + on-screen text because it distributes load across two working memory channels (visuospatial sketchpad and phonological loop) rather than overloading the visual channel."
+      },
+      {
+        "prompt": "How should the tutorial manage intrinsic load given the tool's complexity?",
+        "answer_key": "Break the tutorial into short segments, each covering one feature or workflow, rather than presenting all features in a single video",
+        "explanation": "Scaffolding reduces element interactivity — the number of concepts the user must hold in mind simultaneously. Short, focused segments let the user build a schema for one feature before encountering the next, keeping intrinsic load within working memory limits at each step."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "An e-commerce checkout page has these elements: order summary in a right sidebar, payment fields in the center, shipping address at the top (already entered), a promotional code field, trust badges, customer support chat widget, and a newsletter signup checkbox. Analyze the cognitive load.",
+    "hint": "Identify each element as contributing to intrinsic, extraneous, or germane load.",
+    "steps": [
+      {
+        "prompt": "Which elements contribute extraneous load and should be removed or de-emphasized?",
+        "answer_key": "Newsletter signup checkbox and promotional code field (for users without a code) — they distract from the primary task of completing the purchase",
+        "explanation": "The newsletter signup and promo code field are unrelated to the checkout task. The promo code field is especially problematic because it can trigger 'coupon hunting' behavior where the user leaves to search for a code. These add extraneous load. The chat widget may add minor extraneous load but provides error recovery value."
+      },
+      {
+        "prompt": "How does the order summary in the sidebar reduce cognitive load?",
+        "answer_key": "It eliminates the need to remember order details from a previous screen, avoiding cross-screen memory demands",
+        "explanation": "Without the visible order summary, users would need to hold their order details in working memory while filling in payment information. The sidebar externalizes this information, following the principle of not requiring users to hold information across views."
+      },
+      {
+        "prompt": "The shipping address is displayed at the top but the payment form is in the center. A user who entered a different billing address must scroll up to verify the shipping address matches. What cognitive load effect is this?",
+        "answer_key": "Split-attention effect — the user must integrate information from two spatially separated locations",
+        "explanation": "When the billing and shipping addresses need to be compared but are physically separated on the page, the user must hold one in working memory while scrolling to the other. An integrated solution would show both side-by-side or offer a 'same as shipping' checkbox."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "A medical records system is being redesigned. Doctors currently see a single screen with patient demographics, vital signs, medication list, lab results, imaging reports, allergies, and visit notes. Classify the cognitive load and propose improvements.",
+    "hint": "Consider which information elements interact and which are independent.",
+    "steps": [
+      {
+        "prompt": "Which information has high element interactivity (elements that must be considered together)?",
+        "answer_key": "Medications and allergies (must cross-reference for interactions), lab results and medications (dose adjustments), vital signs and visit notes (current assessment)",
+        "explanation": "These pairs have high element interactivity — a doctor must consider them simultaneously to make clinical decisions. This creates high intrinsic load. Separating them onto different tabs would actually increase load by requiring cross-screen memory."
+      },
+      {
+        "prompt": "How should the interface be reorganized to manage total cognitive load?",
+        "answer_key": "Group interacting elements together (e.g., medications next to allergies, vitals next to notes) and use progressive disclosure for less urgent information (imaging reports, demographics)",
+        "explanation": "By placing interacting elements in spatial proximity, the split-attention cost is eliminated. Progressive disclosure hides information that is not needed for the current clinical decision (demographics rarely change, imaging reports are consulted only for specific concerns), reducing the visible information to a level within working memory capacity."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "A mobile app's settings page shows 10 toggles on a single screen with no grouping, and each toggle has a one-word label. Users report confusion about what each toggle does. Diagnose the cognitive load issues and propose fixes.",
+    "hint": "Consider both extraneous load from poor labeling and intrinsic load from the number of options.",
+    "steps": [
+      {
+        "prompt": "What type of cognitive load do the ambiguous one-word labels create, and why?",
+        "answer_key": "Extraneous load — the user must spend mental effort interpreting vague labels rather than making decisions, which does not contribute to task completion",
+        "explanation": "One-word labels like 'Sync' or 'Alerts' are ambiguous and force the user to guess what each toggle controls. This interpretive effort is extraneous load — it serves the poor design, not the task. Adding descriptive subtitles (e.g., 'Sync — Automatically upload photos to cloud') eliminates this load."
+      },
+      {
+        "prompt": "How should the 10 toggles be reorganized to reduce total cognitive load?",
+        "answer_key": "Group into 2–3 labeled sections (e.g., 'Notifications,' 'Privacy,' 'Data') and add brief descriptions under each toggle",
+        "explanation": "Grouping reduces the number of independent items from 10 to 2–3 chunks, fitting within working memory. Descriptive labels eliminate the extraneous load of interpretation. Together, these changes free cognitive resources for the user's actual decisions about their preferences."
+      }
+    ]
+  }
+]

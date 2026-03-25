@@ -1,0 +1,199 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which memory process requires the user to generate information from memory with minimal external cues?",
+    "hint": "Think about typing a command from memory vs. selecting it from a menu.",
+    "options": ["A) Recognition", "B) Recall", "C) Encoding", "D) Rehearsal"],
+    "answer_key": "B",
+    "explanation": "Recall requires self-initiated search through long-term memory without external cues — like typing a command from memory. Recognition, by contrast, only requires judging whether a presented cue matches a stored memory."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In Shepard's (1967) classic study, participants viewed 612 pictures and then took a recognition test. What was the approximate accuracy?",
+    "hint": "The result was remarkably close to perfect.",
+    "options": ["A) 75%", "B) 88%", "C) 95%", "D) 99.7%"],
+    "answer_key": "D",
+    "explanation": "Shepard found 99.7% recognition accuracy for 612 images using a two-alternative forced-choice test — essentially perfect memory for hundreds of images after a single viewing, demonstrating the extraordinary capacity of visual recognition memory."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "A dropdown menu that shows all available options replaces which type of memory task for the user?",
+    "hint": "The user sees options and picks one, rather than generating the answer from memory.",
+    "options": ["A) Recognition task (replaced by a motor task)", "B) Recall task (replaced by a recognition task)", "C) Encoding task (replaced by a retrieval task)", "D) Perception task (replaced by a memory task)"],
+    "answer_key": "B",
+    "explanation": "Without the dropdown, the user would need to recall the correct option from memory (e.g., typing a country name). With the dropdown, they simply recognize the correct option from a list — a much easier memory task."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In signal detection theory applied to interface use, what is a 'false alarm'?",
+    "hint": "The target is not present, but the user responds as if it is.",
+    "options": ["A) Correctly selecting the target item", "B) Failing to notice the target item", "C) Selecting a non-target item by mistake", "D) Correctly skipping a non-target item"],
+    "answer_key": "C",
+    "explanation": "A false alarm occurs when the user selects an item that is not the target — for example, clicking 'Extract' when looking for 'Export.' The target is absent from the clicked item, but the user responded 'yes' (clicked it)."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Tulving and Thomson (1973) established the encoding specificity principle. What is its key implication for interface redesigns?",
+    "hint": "Consider what happens when icons or layouts change between versions.",
+    "options": ["A) Any icon can replace any other icon without affecting usability", "B) Cues at retrieval must match cues at encoding, so changing icons or layouts disrupts users' recognition", "C) Users always prefer new designs over familiar ones", "D) Recognition is independent of prior learning context"],
+    "answer_key": "B",
+    "explanation": "Encoding specificity means that memory retrieval depends on the match between current cues and the cues present when the memory was formed. If a user learned a feature through a specific icon, changing that icon disrupts recognition — the new icon does not match the encoding context."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Standing (1973) showed participants 10,000 pictures and tested recognition afterward. What was the approximate accuracy?",
+    "hint": "It was lower than Shepard's 612-picture study but still remarkably high.",
+    "options": ["A) 55%", "B) 70%", "C) 83%", "D) 97%"],
+    "answer_key": "C",
+    "explanation": "Standing found approximately 83% recognition accuracy for 10,000 images — meaning participants correctly recognized over 8,000 previously viewed pictures. This demonstrates that visual recognition memory has enormous capacity."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Wiedenbeck (1999) found that labeled icons were recognized 30–40% faster than unlabeled icons. Which design guideline follows directly from this finding?",
+    "hint": "Consider what each element (icon, label) contributes to recognition.",
+    "options": ["A) Remove all icons and use text-only navigation", "B) Use icons alone for a cleaner interface", "C) Pair icons with text labels to activate two encoding pathways", "D) Use labels only for the first visit, then remove them"],
+    "answer_key": "C",
+    "explanation": "Icons provide a visual cue and labels provide a verbal cue. Together they activate two encoding pathways (dual coding), making recognition faster and more accurate. Icons alone force a recall task ('What does this icon mean?'), while the label enables immediate recognition."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Mandler (1980) proposed a dual-process theory of recognition with two components: familiarity and recollection. A user opens an app they haven't used in months and immediately feels 'at home' with the layout but cannot remember where a specific setting is. Which component is active?",
+    "hint": "One component is fast and automatic, the other is slow and effortful.",
+    "options": ["A) Only recollection", "B) Only familiarity", "C) Both equally", "D) Neither — this is a recall task"],
+    "answer_key": "B",
+    "explanation": "Familiarity is the fast, automatic sense of 'I've seen this before' — the user recognizes the layout as familiar. Recollection (retrieving specific contextual details like where a setting lives) has not yet activated. The familiar feeling without specific recall is a hallmark of the familiarity component."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Name the four possible outcomes in a signal detection matrix.",
+    "hint": "Two outcomes involve correct responses and two involve errors.",
+    "answer_key": "hit, miss, false alarm, correct rejection",
+    "explanation": "A hit is correctly identifying a target. A miss is failing to detect a target. A false alarm is incorrectly identifying a non-target as a target. A correct rejection is correctly identifying a non-target as not the target."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Lansdale (1988) argued that traditional hierarchical file systems force which type of memory task, and proposed which alternative approach?",
+    "hint": "Consider folder navigation vs. search-based retrieval.",
+    "answer_key": "Hierarchical file systems force recall; search-based and tag-based systems convert to recognition",
+    "explanation": "Traditional file systems require recalling the folder name and path. Lansdale argued that search-based and tag-based systems convert this to recognition — the user types partial information and scans results, similar to how modern systems like Gmail and Spotlight work."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In Nielsen's (1994) interface comparison, menu users completed tasks with what approximate percentage improvement in speed and error reduction compared to command-line users?",
+    "hint": "The advantages were substantial, especially for infrequent tasks.",
+    "answer_key": "30% faster with 50% fewer errors",
+    "explanation": "Nielsen found that menu-based (recognition) interfaces were approximately 30% faster and had 50% fewer errors than command-line (recall) interfaces. The advantage was largest for infrequent tasks, where recall is weakest."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Brady et al. (2008) showed that visual recognition memory is not just large but also detailed. Their participants studied 2,500 objects and were tested with foils that differed only in state or exemplar. What was the approximate recognition accuracy?",
+    "hint": "The result showed that people store detailed visual representations, not just gist.",
+    "answer_key": "87%",
+    "explanation": "Even with highly similar foils (same object in a different state, or a different exemplar of the same category), recognition accuracy remained above 87%, demonstrating that people store detailed visual representations — not just category-level gist."
+  },
+  {
+    "id": 13,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A developer tools IDE currently uses a command palette as the primary way to access features — users must type command names from memory. Redesign the feature discovery system using recognition principles.",
+    "hint": "Think about how to convert recall tasks into recognition tasks at multiple levels.",
+    "steps": [
+      {
+        "prompt": "The command palette requires the user to type 'toggle minimap' from memory. How can autocomplete convert this from recall to recognition?",
+        "answer_key": "Show matching commands as the user types, with fuzzy matching so that typing 'mini' surfaces 'Toggle Minimap' as a suggestion the user can recognize and select",
+        "explanation": "Autocomplete bridges recall and recognition: the user begins a recall task (typing the first few characters) and the system converts it to recognition (presenting matching options). Fuzzy matching ensures the user doesn't need to recall the exact name."
+      },
+      {
+        "prompt": "For users who don't even know a feature exists, what recognition-based discovery mechanism should supplement the command palette?",
+        "answer_key": "A categorized menu or settings panel where features are browsable, allowing users to recognize relevant options they didn't know about",
+        "explanation": "A browsable, categorized list converts unknown-item discovery from an impossible recall task ('name a feature you don't know exists') into a recognition task ('scan these categories and see if anything is relevant'). This is why menus remain important even when command palettes exist."
+      },
+      {
+        "prompt": "How should recently used commands be presented to further leverage recognition?",
+        "answer_key": "Show a 'Recent Commands' section at the top of the command palette, displaying the last 5–7 commands used without requiring any typing",
+        "explanation": "Recent items convert a recall task ('What was that command I used yesterday?') into pure recognition — the user scans a short list and recognizes the command. Limiting to 5–7 items keeps the list within working memory scanning capacity."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "An enterprise application requires users to enter a 'cost center code' (e.g., 'CC-4829-NA') when submitting expense reports. Users frequently enter incorrect codes. Apply recognition vs. recall principles to fix this.",
+    "hint": "The current design relies entirely on recall of an arbitrary code.",
+    "steps": [
+      {
+        "prompt": "What memory task does the current design impose, and why is it error-prone?",
+        "answer_key": "Pure recall of an arbitrary alphanumeric code with no meaningful structure, which is the hardest type of memory retrieval",
+        "explanation": "The cost center code has no inherent meaning to the user — it cannot be chunked meaningfully and has no mnemonic structure. Recall of arbitrary codes is the weakest form of memory retrieval and the most error-prone."
+      },
+      {
+        "prompt": "Design a replacement input that converts the task to recognition. Describe at least two recognition-supporting features.",
+        "answer_key": "A searchable dropdown showing cost center names (not just codes) with department context, plus a 'Recent/Favorites' section showing the user's most-used cost centers",
+        "explanation": "The searchable dropdown converts code recall into name recognition ('Marketing - North America' is recognizable even if 'CC-4829-NA' is not). The recent/favorites section eliminates even the search step for routine submissions. Both features leverage the principle that recognition is faster and more accurate than recall."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "A mobile navigation app shows a list of 20 recently visited places as plain text addresses. Users report difficulty finding a specific place they visited last week.",
+    "hint": "Consider how visual cues, context, and encoding specificity can improve recognition.",
+    "steps": [
+      {
+        "prompt": "Why is a plain text address list suboptimal for recognition, even though it provides cues?",
+        "answer_key": "Text addresses provide only one encoding channel (verbal). Adding map thumbnails, visit dates, and category icons would activate visual recognition channels and provide encoding-specific context cues.",
+        "explanation": "Encoding specificity predicts that recognition improves when retrieval cues match the encoding context. Users encoded the visit as a visual experience (the place, the map route), so visual cues (thumbnails, map previews) activate those memory traces. Text addresses alone miss the visual encoding channel."
+      },
+      {
+        "prompt": "How should the list be organized to further support recognition?",
+        "answer_key": "Group by date (Today, Yesterday, Last Week) and add category tags (Restaurant, Office, Store), allowing users to narrow by temporal and categorical context",
+        "explanation": "Temporal grouping matches how people naturally encode events ('I went there last Tuesday'). Category tags activate schema-level recognition ('it was a restaurant'). Both reduce the scanning burden by allowing the user to skip irrelevant groups entirely."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "An e-commerce site is redesigning its product page. Currently, the 'Add to Wishlist' feature is accessed by typing the product SKU into a text field on a separate 'My Wishlist' page. Apply recognition vs. recall principles to improve this workflow.",
+    "hint": "Identify the recall demands and convert each one to recognition.",
+    "steps": [
+      {
+        "prompt": "What recall demands does the current design impose on the user?",
+        "answer_key": "The user must recall the product SKU (an arbitrary code) and recall that the wishlist feature is on a separate page, rather than recognizing either",
+        "explanation": "Two recall demands: remembering an arbitrary alphanumeric SKU and remembering the location of the wishlist page. Both are pure recall tasks with no recognition support — the user must generate the information from memory."
+      },
+      {
+        "prompt": "Redesign the wishlist feature to rely on recognition at every step.",
+        "answer_key": "Add a 'heart' or 'Add to Wishlist' button directly on each product card (recognition of the action), and show the wishlist as a panel or icon in the navigation with a badge count (recognition of the feature's location)",
+        "explanation": "The heart icon on the product card converts 'remember the SKU and go to the wishlist page' into 'recognize this button and click it.' The navigation icon with badge converts 'remember where wishlists live' into 'recognize the heart icon in the nav bar.' Both leverage visual recognition rather than requiring verbal recall."
+      }
+    ]
+  }
+]

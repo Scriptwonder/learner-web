@@ -3,11 +3,11 @@
    Day: architect's drafting table. Night: midnight lab.
    =================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 /* --- Dark theme (default) --- */
 :root, [data-theme="dark"] {
-  --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
   --font-code: 'JetBrains Mono', monospace;
 
   --bg:              #080b14;
@@ -267,14 +267,26 @@ body {
   margin-bottom: 10px;
 }
 
-.brand-icon {
-  color: var(--accent);
+.app-logo-mark {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--accent) 0%, #b07c28 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(212, 160, 74, 0.15);
   opacity: 0;
   animation: brandPop 0.5s var(--ease-spring) 0.2s forwards;
 }
 @keyframes brandPop {
   from { opacity: 0; transform: scale(0.7) rotate(-10deg); }
   to   { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+.app-logo-mark svg {
+  stroke: var(--bg);
+  stroke-width: 2.5;
 }
 
 .course-browser-title {
@@ -350,8 +362,28 @@ body {
 
 .course-card-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 12px;
+}
+
+.course-card-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.course-card-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.course-card-header-text {
+  flex: 1;
+  min-width: 0;
 }
 
 .course-card-title {
@@ -393,7 +425,6 @@ body {
 
 .course-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent-bright));
   border-radius: 2px;
   transition: width 0.5s var(--ease-out);
 }
@@ -484,8 +515,8 @@ body {
   flex-shrink: 0;
   display: none;
   flex-direction: column;
-  background: rgba(0, 0, 0, 0.25);
-  border-left: 1px solid var(--surface-border);
+  background: rgba(0, 0, 0, 0.2);
+  border-left: 1px solid rgba(212, 160, 74, 0.06);
   position: relative;
   overflow: hidden;
 }
@@ -502,34 +533,96 @@ body {
   to   { width: 42%; opacity: 1; }
 }
 
-/* Toolbar tabs */
-.viz-toolbar {
+/* --- Viz Header (Glass) --- */
+.viz-header {
   display: flex;
-  border-bottom: 1px solid var(--surface-border);
-  background: rgba(0, 0, 0, 0.35);
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.025);
+  border-bottom: 1px solid rgba(212, 160, 74, 0.07);
   flex-shrink: 0;
 }
 
+.viz-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-logo-mark {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  animation: none;
+  opacity: 1;
+}
+
+.viz-logo-text {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+}
+
+/* --- Viz Tab Group (Pill Toggle) --- */
+.viz-tab-group {
+  display: flex;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  padding: 2px;
+}
+
 .viz-tab {
-  flex: 1;
-  padding: 9px 0;
+  padding: 4px 12px;
+  border-radius: 4px;
   border: none;
   background: transparent;
   color: var(--text-muted);
-  font-family: var(--font-code);
-  font-size: 11px;
+  font-family: var(--font-body);
+  font-size: 10px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.03em;
+  text-transform: none;
   cursor: pointer;
-  transition: color 0.15s, background 0.15s;
-  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
 }
-.viz-tab:hover { color: var(--text-secondary); }
+
+.viz-tab:hover {
+  color: var(--text-secondary);
+}
+
 .viz-tab.active {
+  background: rgba(212, 160, 74, 0.12);
   color: var(--accent-bright);
-  border-bottom-color: var(--accent);
-  background: rgba(212, 160, 74, 0.04);
+}
+
+/* --- Floating Info Pill --- */
+.viz-info-pill {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 5px 16px;
+  font-family: var(--font-code);
+  font-size: 10px;
+  line-height: 1.5;
+  color: rgba(240, 236, 228, 0.6);
+  white-space: nowrap;
+  max-width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.viz-info-pill:empty {
+  display: none;
 }
 
 .viz-canvas-wrap {
@@ -572,14 +665,14 @@ body {
 }
 
 .viz-controls {
-  padding: 12px 16px;
-  border-top: 1px solid var(--surface-border);
-  background: rgba(0, 0, 0, 0.3);
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.015);
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
   max-height: 240px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .viz-slider-row {
@@ -590,17 +683,18 @@ body {
 }
 
 .viz-slider-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  font-family: var(--font-code);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-muted);
+  font-family: var(--font-body);
   white-space: nowrap;
 }
 
 .viz-slider-value {
-  font-size: 11px;
-  color: var(--accent-bright);
+  font-size: 10px;
+  color: rgba(212, 160, 74, 0.7);
   font-family: var(--font-code);
+  font-weight: 500;
   text-align: right;
 }
 
@@ -608,8 +702,8 @@ body {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 3px;
-  background: rgba(210, 180, 120, 0.15);
+  height: 2px;
+  background: rgba(212, 160, 74, 0.08);
   border-radius: 2px;
   outline: none;
   cursor: pointer;
@@ -622,6 +716,7 @@ body {
   height: 12px;
   border-radius: 50%;
   background: var(--accent);
+  box-shadow: 0 0 8px rgba(212, 160, 74, 0.25);
   cursor: pointer;
   border: none;
 }
@@ -631,43 +726,56 @@ body {
   height: 12px;
   border-radius: 50%;
   background: var(--accent);
+  box-shadow: 0 0 8px rgba(212, 160, 74, 0.25);
   cursor: pointer;
   border: none;
 }
 
 .viz-toggle-row {
-  padding: 2px 0;
-}
-
-.viz-toggle-label {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
-  color: var(--text-secondary);
+  padding: 2px 0;
+}
+
+.viz-toggle-switch {
+  width: 28px;
+  height: 16px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  position: relative;
   cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
 }
 
-.viz-toggle-label input[type="checkbox"] {
-  accent-color: var(--accent);
+.viz-toggle-switch.active {
+  background: rgba(212, 160, 74, 0.25);
 }
 
-.viz-info {
-  padding: 10px 16px;
-  border-top: 1px solid var(--surface-border);
-  background: rgba(0, 0, 0, 0.4);
-  min-height: 40px;
+.viz-toggle-switch::after {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(240, 236, 228, 0.4);
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.2s, background 0.2s;
 }
 
-.viz-readout {
-  font-family: var(--font-code);
-  font-size: 12px;
-  line-height: 1.6;
-  color: var(--text-body);
+.viz-toggle-switch.active::after {
+  transform: translateX(12px);
+  background: var(--accent);
 }
 
-.viz-readout b {
-  color: var(--text-primary);
+.viz-toggle-label {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  cursor: pointer;
 }
 
 @media (max-width: 1100px) {
@@ -733,11 +841,25 @@ body {
   color: var(--text-secondary);
 }
 
+/* --- Button icons --- */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-icon svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
 /* --- Sidebar buttons --- */
 .study-sidebar .btn-quiz {
   margin-top: 20px;
   text-align: center;
   width: 100%;
+  justify-content: center;
 }
 .study-sidebar .btn-new-topic {
   margin-top: 8px;
@@ -1653,7 +1775,12 @@ body {
   border: none;
 }
 
-[data-theme="light"] .brand-icon { color: var(--accent); }
+[data-theme="light"] .app-logo-mark {
+  background: linear-gradient(135deg, var(--accent) 0%, #8a5f1e 100%);
+}
+[data-theme="light"] .app-logo-mark svg {
+  stroke: var(--bg);
+}
 
 [data-theme="light"] .quiz-answer-input {
   background: rgba(0, 0, 0, 0.03);
@@ -1663,24 +1790,53 @@ body {
   background: rgba(0, 0, 0, 0.02);
 }
 
-[data-theme="light"] .viz-panel {
-  background: rgba(0, 0, 0, 0.03);
+[data-theme="light"] .viz-header {
+  background: rgba(0, 0, 0, 0.02);
+  border-bottom-color: rgba(176, 124, 40, 0.08);
 }
 
-[data-theme="light"] .viz-controls {
+[data-theme="light"] .viz-tab-group {
   background: rgba(0, 0, 0, 0.04);
 }
 
-[data-theme="light"] .viz-info {
-  background: rgba(0, 0, 0, 0.05);
+[data-theme="light"] .viz-tab.active {
+  background: rgba(176, 124, 40, 0.1);
+}
+
+[data-theme="light"] .viz-info-pill {
+  background: rgba(255, 255, 255, 0.75);
+  color: rgba(28, 26, 22, 0.6);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .viz-controls {
+  background: rgba(0, 0, 0, 0.015);
+  border-top-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .viz-toggle-switch {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .viz-toggle-switch::after {
+  background: rgba(28, 26, 22, 0.3);
+}
+
+[data-theme="light"] .viz-toggle-switch.active {
+  background: rgba(176, 124, 40, 0.2);
+}
+
+[data-theme="light"] .viz-toggle-switch.active::after {
+  background: var(--accent);
+}
+
+[data-theme="light"] .viz-panel {
+  background: rgba(0, 0, 0, 0.02);
+  border-left-color: rgba(176, 124, 40, 0.08);
 }
 
 [data-theme="light"] .viz-code-wrap {
   background: rgba(0, 0, 0, 0.03);
-}
-
-[data-theme="light"] .viz-toolbar {
-  background: rgba(0, 0, 0, 0.04);
 }
 
 /* Light theme scrollbar */

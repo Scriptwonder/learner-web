@@ -1,0 +1,219 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In an HCI experiment comparing two keyboard layouts, the keyboard layout is the:",
+    "hint": "It is the factor the experimenter deliberately changes.",
+    "options": ["A) Dependent variable", "B) Independent variable", "C) Confounding variable", "D) Control variable"],
+    "answer_key": "B",
+    "explanation": "The independent variable (IV) is the factor the experimenter manipulates. Here, the researcher chooses which keyboard layout each participant uses."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "A study measures task completion time to compare two menu designs. Task completion time is the:",
+    "hint": "It is the outcome being measured.",
+    "options": ["A) Independent variable", "B) Confounding variable", "C) Dependent variable", "D) Moderating variable"],
+    "answer_key": "C",
+    "explanation": "The dependent variable (DV) is the outcome that is measured. Task completion time depends on which menu design the participant uses."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In a within-subjects design, what is the primary reason for counterbalancing condition order?",
+    "hint": "Think about what happens when every participant does Condition A first.",
+    "options": ["A) To increase the number of participants", "B) To control for order effects such as practice and fatigue", "C) To eliminate the need for statistical tests", "D) To ensure random assignment to groups"],
+    "answer_key": "B",
+    "explanation": "Counterbalancing distributes practice and fatigue effects evenly across conditions so they do not systematically favor one condition over another."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A researcher wants to compare three input techniques. Each participant uses all three techniques. What is the minimum number of participants needed to complete a basic Latin square?",
+    "hint": "A Latin square for $k$ conditions has $k$ rows.",
+    "options": ["A) 2", "B) 3", "C) 6", "D) 9"],
+    "answer_key": "B",
+    "explanation": "A Latin square for $k$ conditions requires at least $k$ participants (one per row). With 3 conditions, you need a minimum of 3 participants — though in practice you use a multiple of 3 for statistical power."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A study has participants use Interface A in the morning and Interface B in the afternoon. What methodological problem does this introduce?",
+    "hint": "Can you separate the effect of interface from the effect of time-of-day?",
+    "options": ["A) Low statistical power", "B) A confound between interface and time-of-day", "C) Too many dependent variables", "D) An ethical violation"],
+    "answer_key": "B",
+    "explanation": "When interface type and time-of-day vary together, they are confounded. Any difference in performance could be due to the interface, the time of day, or both — and the design cannot distinguish between them."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Which design is most appropriate when you suspect that experience with one condition will permanently change how participants perform in another condition?",
+    "hint": "Asymmetric transfer is a problem for designs where participants experience multiple conditions.",
+    "options": ["A) Within-subjects design with counterbalancing", "B) Between-subjects design with random assignment", "C) Mixed factorial design", "D) Single-case design"],
+    "answer_key": "B",
+    "explanation": "When asymmetric carryover or transfer is expected, a between-subjects design avoids the problem entirely because each participant only experiences one condition."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "A $2 \\times 3$ mixed factorial design has one between-subjects factor with 2 levels and one within-subjects factor with 3 levels. If 30 participants are recruited (15 per between-subjects group), how many total observations are collected?",
+    "hint": "Each participant provides data for all levels of the within-subjects factor.",
+    "options": ["A) 30", "B) 60", "C) 90", "D) 180"],
+    "answer_key": "C",
+    "explanation": "Each of the 30 participants completes all 3 levels of the within-subjects factor, producing $30 \\times 3 = 90$ observations. The between-subjects factor divides participants into groups but does not multiply observations."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "In Fitts's 1954 tapping study, the $4 \\times 4$ factorial design (4 widths $\\times$ 4 amplitudes) was within-subjects. What was the primary advantage of this choice over a between-subjects design?",
+    "hint": "Think about what is controlled when the same person does all conditions.",
+    "options": ["A) It eliminated the need for counterbalancing", "B) It reduced individual differences as a source of noise, increasing statistical power", "C) It prevented order effects", "D) It required more participants, improving generalizability"],
+    "answer_key": "B",
+    "explanation": "Within-subjects designs control for individual differences because each participant serves as their own baseline. This drastically reduces error variance and increases power — critical when testing 16 conditions."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the term for a variable that varies alongside the independent variable and provides an alternative explanation for changes in the dependent variable?",
+    "hint": "It starts with 'c' and means the variable is mixed up with the IV.",
+    "answer_key": "confounding variable",
+    "explanation": "A confounding variable (or confound) is an extraneous factor that co-varies with the IV, making it impossible to determine whether the IV or the confound caused the observed effect."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What counterbalancing technique uses a square arrangement where each condition appears exactly once in each ordinal position?",
+    "hint": "It is named after a geographic region and a shape.",
+    "answer_key": "Latin square",
+    "explanation": "A Latin square assigns conditions to ordinal positions such that each condition appears exactly once in each position across participants. For $k$ conditions, it requires at least $k$ participants."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "In a between-subjects design, what procedure is used to ensure that participant groups are equivalent on average before the experiment begins?",
+    "hint": "It is the gold standard for causal inference in experimental design.",
+    "answer_key": "random assignment",
+    "explanation": "Random assignment ensures that each participant has an equal chance of being placed in any condition, distributing individual differences (age, experience, ability) evenly across groups on average."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "A researcher reports $p = 0.03$ and $d = 0.15$ for a comparison of two interfaces. What concern should you raise about this result?",
+    "hint": "Consider the relationship between statistical significance and practical significance.",
+    "answer_key": "The effect size is very small despite being statistically significant",
+    "explanation": "A Cohen's $d$ of 0.15 is a very small effect. While $p = 0.03$ indicates the difference is unlikely to be zero, the tiny effect size suggests the difference may not be practically meaningful. This often happens with large sample sizes that detect trivially small effects."
+  },
+  {
+    "id": 13,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "You want to study whether voice input is faster than touch input for entering search queries on a smart speaker with a screen. Design the experiment step by step.",
+    "hint": "Start by identifying the variables, then choose a design, then address confounds.",
+    "steps": [
+      {
+        "prompt": "What is the independent variable and how many levels does it have?",
+        "answer_key": "Input method (voice vs. touch), 2 levels",
+        "explanation": "The IV is the input method, manipulated at two levels: voice input and touch input. This is the factor the experimenter controls."
+      },
+      {
+        "prompt": "Name two appropriate dependent variables for this study.",
+        "answer_key": "Task completion time and error rate",
+        "explanation": "Task completion time (seconds to enter a query) and error rate (proportion of incorrectly entered queries) are the most common DVs for text-entry studies. You might also measure throughput or subjective workload."
+      },
+      {
+        "prompt": "Should you use a within-subjects or between-subjects design? Justify your choice.",
+        "answer_key": "Within-subjects, because it controls individual differences and requires fewer participants",
+        "explanation": "Within-subjects is preferred here because individual differences in typing speed and speech clarity are large. Having each person try both methods controls for these differences. The two input modalities are different enough that asymmetric transfer is unlikely."
+      },
+      {
+        "prompt": "Name one confounding variable you must control and explain how.",
+        "answer_key": "Query difficulty — use a standardized set of queries for both conditions",
+        "explanation": "If voice queries happen to be simpler than touch queries, query difficulty is confounded with input method. Using the same standardized query set for both conditions eliminates this confound. Other valid answers include order effects (counterbalance) or prior experience (measure and report as covariate)."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A study compares 4 icon styles for a mobile app using a within-subjects design with 12 participants. Walk through the counterbalancing plan.",
+    "hint": "Use a Latin square to determine condition order.",
+    "steps": [
+      {
+        "prompt": "How many rows does the Latin square need, and how many participants are assigned to each row?",
+        "answer_key": "4 rows, 3 participants per row",
+        "explanation": "A Latin square for 4 conditions has 4 rows (one possible ordering per row). With 12 participants, each row is assigned $12 / 4 = 3$ participants, ensuring balance."
+      },
+      {
+        "prompt": "Write one valid Latin square for conditions A, B, C, D (list all 4 rows).",
+        "answer_key": "ABCD, BDAC, CABD is not valid — one valid square is ABCD, BCDA, CDAB, DABC",
+        "explanation": "A valid Latin square has each condition appearing exactly once in each column (position). ABCD / BCDA / CDAB / DABC is a cyclic Latin square where each condition appears in each ordinal position exactly once."
+      },
+      {
+        "prompt": "What additional property does a balanced Latin square have beyond a standard Latin square?",
+        "answer_key": "Each condition precedes every other condition equally often",
+        "explanation": "A balanced Latin square controls not only for position effects but also for first-order carryover effects by ensuring that each condition follows every other condition equally often. This is important when the experience of one condition might influence the next."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "A usability researcher observes that participants using a new checkout flow are 2 seconds faster but make 15% more errors than with the old flow. Evaluate this finding.",
+    "hint": "Consider the speed-accuracy tradeoff.",
+    "steps": [
+      {
+        "prompt": "What tradeoff is likely occurring in this study?",
+        "answer_key": "Speed-accuracy tradeoff",
+        "explanation": "The speed-accuracy tradeoff means participants may be going faster at the cost of making more errors. The new flow might not genuinely be better — participants may simply be rushing through it."
+      },
+      {
+        "prompt": "Why is it problematic to conclude the new flow is 'better' based on speed alone?",
+        "answer_key": "The higher error rate means the speed gain may come at the cost of accuracy, not from a better design",
+        "explanation": "A design that is faster but more error-prone is not necessarily better. Errors have real costs — failed transactions, user frustration, support calls. Both speed and accuracy must be considered together."
+      },
+      {
+        "prompt": "What single metric could combine both speed and accuracy into one measure?",
+        "answer_key": "Throughput or a combined efficiency metric like correct tasks per minute",
+        "explanation": "Throughput (ISO 9241-9) or task efficiency (successful tasks per unit time) combines speed and accuracy. If the error rate increase outweighs the time savings, the combined metric will show the new flow is actually worse overall."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A researcher wants to compare how novices and experts perform with three different dashboard layouts. Design the appropriate factorial experiment.",
+    "hint": "One factor varies between participants (you cannot change someone's expertise), the other can vary within.",
+    "steps": [
+      {
+        "prompt": "What type of factorial design is appropriate here (within, between, or mixed)?",
+        "answer_key": "Mixed factorial design",
+        "explanation": "Expertise (novice vs. expert) is a between-subjects factor — you cannot randomly assign expertise. Dashboard layout (3 levels) can be within-subjects. This creates a $2 \\times 3$ mixed factorial design."
+      },
+      {
+        "prompt": "How many unique conditions does this design have?",
+        "answer_key": "6",
+        "explanation": "$2 \\times 3 = 6$ conditions: novice-layout1, novice-layout2, novice-layout3, expert-layout1, expert-layout2, expert-layout3."
+      },
+      {
+        "prompt": "What interaction effect might this design reveal that separate studies could not?",
+        "answer_key": "Whether the effect of dashboard layout differs between novices and experts",
+        "explanation": "An interaction would show that one layout is best for novices while a different layout is best for experts. This is crucial for design decisions: you might need adaptive interfaces rather than a single optimal layout."
+      }
+    ]
+  }
+]

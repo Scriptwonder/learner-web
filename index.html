@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Learner — Math for Computer Graphics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23d4a04a'/><g transform='translate(6,6)' fill='none' stroke='%23080b14' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10 1L1 5.5l9 4.5 9-4.5L10 1z'/><path d='M1 14.5l9 4.5 9-4.5'/><path d='M1 10l9 4.5 9-4.5'/></g></svg>">
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
@@ -16,7 +17,14 @@
   {
     "imports": {
       "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
-      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/",
+      "codemirror": "https://esm.sh/@codemirror/view@6.35.0",
+      "@codemirror/state": "https://esm.sh/@codemirror/state@6.5.2",
+      "@codemirror/view": "https://esm.sh/@codemirror/view@6.35.0",
+      "@codemirror/language": "https://esm.sh/@codemirror/language@6.10.8",
+      "@codemirror/legacy-modes/mode/clike": "https://esm.sh/@codemirror/legacy-modes@6.4.2/mode/clike",
+      "@codemirror/commands": "https://esm.sh/@codemirror/commands@6.7.1",
+      "@codemirror/theme-one-dark": "https://esm.sh/@codemirror/theme-one-dark@6.1.2"
     }
   }
   </script>
@@ -51,13 +59,13 @@
     <div class="course-browser">
       <div class="course-browser-header">
         <div class="course-browser-brand">
-          <svg class="brand-icon" viewBox="0 0 32 32" width="28" height="28" fill="none">
-            <rect x="2" y="2" width="28" height="28" rx="6" stroke="currentColor" stroke-width="2"/>
-            <line x1="9" y1="16" x2="23" y2="16" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
-            <line x1="16" y1="9" x2="16" y2="23" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
-            <circle cx="16" cy="16" r="4" stroke="currentColor" stroke-width="2"/>
-            <circle cx="16" cy="16" r="1.5" fill="currentColor"/>
-          </svg>
+          <div class="app-logo-mark">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              <path d="M2 17l10 5 10-5"/>
+              <path d="M2 12l10 5 10-5"/>
+            </svg>
+          </div>
           <div class="course-browser-title">Learner</div>
         </div>
         <div class="course-browser-tagline">master the math behind the pixels</div>
@@ -70,20 +78,33 @@
     <nav class="study-sidebar" aria-label="Lesson navigation">
       <div class="toc-label">Contents</div>
       <div class="toc-list" id="toc-list"></div>
-      <button class="btn-quiz study-sidebar-quiz" id="btn-quiz-from-study">Quiz Me</button>
+      <button class="btn-quiz study-sidebar-quiz btn-icon" id="btn-quiz-from-study"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Quiz Me</button>
     </nav>
     <article class="study-content" id="study-content"></article>
     <div class="viz-panel" id="viz-panel">
-      <div class="viz-toolbar">
-        <button class="viz-tab active" id="viz-tab-3d" data-tab="3d">3D View</button>
-        <button class="viz-tab" id="viz-tab-code" data-tab="code">Code</button>
+      <div class="viz-header">
+        <div class="viz-logo">
+          <div class="app-logo-mark viz-logo-mark">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              <path d="M2 17l10 5 10-5"/>
+              <path d="M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <span class="viz-logo-text">Visualizer</span>
+        </div>
+        <div class="viz-tab-group">
+          <button class="viz-tab active" id="viz-tab-3d" data-tab="3d">3D</button>
+          <button class="viz-tab" id="viz-tab-code" data-tab="code">Code</button>
+        </div>
       </div>
-      <div class="viz-canvas-wrap" id="viz-canvas-wrap"></div>
+      <div class="viz-canvas-wrap" id="viz-canvas-wrap">
+        <div class="viz-info-pill" id="viz-info"></div>
+      </div>
       <div class="viz-code-wrap" id="viz-code-wrap" style="display:none;">
         <pre class="viz-code-block"><code id="viz-code-content"></code></pre>
       </div>
       <div class="viz-controls" id="viz-controls"></div>
-      <div class="viz-info" id="viz-info"></div>
     </div>
   </div>
 
@@ -160,12 +181,69 @@
     </div>
   </div>
 
+  <div id="shader-editor-screen" class="screen" role="main" aria-label="Shader Editor">
+    <div class="shader-editor">
+      <div class="se-editor-panel">
+        <div class="se-editor-tabs">
+          <button class="se-tab active" data-lang="glsl">GLSL</button>
+          <button class="se-tab" data-lang="hlsl">HLSL</button>
+          <button class="se-tab" data-lang="slang">Slang</button>
+        </div>
+        <div class="se-editor-wrap" id="se-editor-wrap"></div>
+        <div class="se-error-bar" id="se-error-bar"></div>
+      </div>
+      <div class="se-side-panel">
+        <div class="se-preview">
+          <div class="se-canvas-row">
+            <div class="se-canvas-box">
+              <div class="se-canvas-label">Yours</div>
+              <canvas id="se-canvas-user" width="256" height="256"></canvas>
+            </div>
+            <div class="se-canvas-box">
+              <div class="se-canvas-label">Target</div>
+              <canvas id="se-canvas-target" width="256" height="256"></canvas>
+            </div>
+          </div>
+          <div class="se-match" id="se-match">Match: —</div>
+        </div>
+        <div class="se-challenge" id="se-challenge">
+          <div class="se-challenge-header">
+            <span class="se-challenge-num" id="se-challenge-num">Challenge 1/3</span>
+            <span class="se-challenge-title" id="se-challenge-title"></span>
+          </div>
+          <div class="se-challenge-desc" id="se-challenge-desc"></div>
+          <div class="se-hints" id="se-hints"></div>
+          <div class="se-primer-toggle" id="se-primer-toggle">
+            <span>Primer</span>
+            <span class="se-primer-arrow">&#9656;</span>
+          </div>
+          <div class="se-primer" id="se-primer" style="display:none;"></div>
+          <div class="se-theory" id="se-theory" style="display:none;"></div>
+          <div class="se-actions">
+            <button class="se-btn se-btn-reset" id="se-btn-reset">Reset</button>
+            <button class="se-btn se-btn-submit" id="se-btn-submit">Submit</button>
+          </div>
+          <div class="se-nav">
+            <button class="se-nav-btn" id="se-nav-prev" disabled>&#9664; Prev</button>
+            <div class="se-dots" id="se-dots"></div>
+            <button class="se-nav-btn" id="se-nav-next">Next &#9654;</button>
+          </div>
+          <button class="se-btn se-btn-back" id="se-btn-back">Back to Course</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="js/theme-toggle.js"></script>
   <script src="js/render-markdown.js"></script>
   <script src="js/app.js"></script>
   <script src="js/study.js"></script>
   <script src="js/quiz.js"></script>
   <script src="js/course-browser.js"></script>
+  <script src="js/shader-translator.js"></script>
+  <script src="js/shader-renderer.js"></script>
+  <script src="js/shader-challenges.js"></script>
+  <script type="module" src="js/shader-editor.js"></script>
   <script type="module" src="js/visualizer.js"></script>
 </body>
 </html>

@@ -50,7 +50,8 @@ function updateStudyForCourseMode() {
   const backBtn = document.createElement('button');
   backBtn.id = 'btn-back-to-course';
   backBtn.className = 'btn-secondary btn-new-topic';
-  backBtn.textContent = '\u2190 Back to Course';
+  backBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back to Course';
+  backBtn.classList.add('btn-icon');
   backBtn.addEventListener('click', () => {
     resetState();
     studyContent.innerHTML = '';
@@ -71,7 +72,8 @@ function updateStudyForCourseMode() {
   if (appState.prevLesson) {
     const prevBtn = document.createElement('button');
     prevBtn.className = 'btn-secondary lesson-nav-btn';
-    prevBtn.textContent = '\u2190 ' + formatLessonName(appState.prevLesson);
+    prevBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> ' + formatLessonName(appState.prevLesson);
+    prevBtn.classList.add('btn-icon');
     prevBtn.addEventListener('click', () => openLesson(appState.courseId, appState.prevLesson));
     nav.appendChild(prevBtn);
   } else {
@@ -81,7 +83,8 @@ function updateStudyForCourseMode() {
   if (appState.nextLesson) {
     const nextBtn = document.createElement('button');
     nextBtn.className = 'btn-study lesson-nav-btn';
-    nextBtn.textContent = formatLessonName(appState.nextLesson) + ' \u2192';
+    nextBtn.innerHTML = formatLessonName(appState.nextLesson) + ' <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+    nextBtn.classList.add('btn-icon');
     nextBtn.addEventListener('click', () => openLesson(appState.courseId, appState.nextLesson));
     nav.appendChild(nextBtn);
   }

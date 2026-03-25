@@ -1,0 +1,199 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "According to Cowan's (2001) revised estimate, what is the capacity of working memory when rehearsal is prevented?",
+    "hint": "Cowan argued Miller's original estimate was inflated by covert rehearsal.",
+    "options": ["A) $2 \\pm 1$ items", "B) $4 \\pm 1$ items", "C) $7 \\pm 2$ items", "D) $12 \\pm 3$ items"],
+    "answer_key": "B",
+    "explanation": "Cowan (2001) showed that when rehearsal and long-term memory chunking are controlled, working memory capacity converges on approximately $4 \\pm 1$ items, not Miller's original $7 \\pm 2$."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is a 'chunk' in Miller's (1956) framework?",
+    "hint": "Think about how a phone number can be grouped differently depending on familiarity.",
+    "options": ["A) A single bit of information", "B) A meaningful unit that can vary in information content", "C) A fixed 7-character string", "D) A visual element on screen"],
+    "answer_key": "B",
+    "explanation": "A chunk is a meaningful unit — a digit, a word, a familiar phrase — and the key insight is that while the number of chunks is fixed (~4–7), the information content per chunk can vary enormously based on expertise and familiarity."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which component of Baddeley's working memory model is responsible for holding and rehearsing verbal information?",
+    "hint": "This is the component you use when silently repeating a phone number to yourself.",
+    "options": ["A) Visuospatial sketchpad", "B) Central executive", "C) Phonological loop", "D) Episodic buffer"],
+    "answer_key": "C",
+    "explanation": "The phonological loop holds and rehearses verbal/acoustic information — it is the basis of 'inner speech' and is what you use when you repeat a phone number in your head."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A dashboard displays 12 KPIs all visible at once with no grouping. According to working memory research, what is the most likely usability problem?",
+    "hint": "Consider the capacity limits and the role of chunking.",
+    "options": ["A) Users will memorize all 12 KPIs after repeated use", "B) The display exceeds working memory capacity, causing users to miss important changes", "C) Users will find it aesthetically unpleasant but functionally fine", "D) The KPIs will load too slowly in the browser"],
+    "answer_key": "B",
+    "explanation": "Twelve ungrouped items far exceeds the 4±1 working memory capacity. Users cannot effectively hold and compare that many independent values, leading them to overlook important changes or relationships between metrics."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A multi-step checkout wizard requires users to remember their selected shipping method from Step 1 when choosing insurance options in Step 3. What working memory principle does this violate?",
+    "hint": "Think about what happens when information must be carried across screens.",
+    "options": ["A) The modality effect", "B) The principle of not requiring users to hold information across screens", "C) The chunking principle", "D) The split-attention effect"],
+    "answer_key": "B",
+    "explanation": "Forcing users to remember information from a previous screen consumes working memory for no benefit. The design should redisplay the shipping method selection on the insurance step so users can reference it without relying on memory."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Luck and Vogel (1997) used a change-detection paradigm with colored squares. What did their results suggest about the unit of visual working memory?",
+    "hint": "They tested whether features (color, orientation) or whole objects are the limiting factor.",
+    "options": ["A) Each individual feature consumes one slot", "B) Only color information is stored", "C) The limit is on objects, not individual features", "D) There is no limit for visual information"],
+    "answer_key": "C",
+    "explanation": "Luck and Vogel found that performance was limited to about 4 items regardless of whether objects had one feature (color only) or multiple features (color + orientation), suggesting the limit is on objects, not on the total number of features stored."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "According to Oberauer (2002), what is the capacity of the 'focus of attention' within working memory?",
+    "hint": "Oberauer distinguished between the focus of attention and the broader 'region of direct access.'",
+    "options": ["A) 4 items", "B) 7 items", "C) 1 item", "D) 2–3 items"],
+    "answer_key": "C",
+    "explanation": "Oberauer refined Cowan's model by distinguishing between the focus of attention (just 1 item at a time) and the broader region of direct access (~4 items). This explains why task-switching costs occur even within working memory."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "An expert chess player can recall meaningful board positions far better than a novice, but performs equally on random positions. This finding by Chase and Simon (1973) best illustrates which concept?",
+    "hint": "The expert's advantage disappears when the domain knowledge cannot be applied.",
+    "options": ["A) Experts have larger working memory capacity", "B) Experts build richer chunks from domain knowledge", "C) Experts use the visuospatial sketchpad more efficiently", "D) Random positions are inherently easier to remember"],
+    "answer_key": "B",
+    "explanation": "Chase and Simon showed that expertise works through chunking — masters 'see' board positions as a few strategic configurations, not 32 individual pieces. When positions are random, domain-based chunking is impossible, and experts perform no better than novices."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Name the four components of Baddeley's working memory model.",
+    "hint": "There is a loop for verbal information, a sketchpad for visual information, a control system, and a buffer that integrates information.",
+    "answer_key": "phonological loop, visuospatial sketchpad, central executive, episodic buffer",
+    "explanation": "Baddeley's model consists of the phonological loop (verbal rehearsal), visuospatial sketchpad (visual/spatial information), central executive (attentional control), and episodic buffer (integration of information from subsystems and long-term memory)."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What technique did Cowan (2001) use to prevent participants from rehearsing items, revealing the true working memory capacity?",
+    "hint": "Participants had to repeat an irrelevant word aloud while trying to remember items.",
+    "answer_key": "articulatory suppression",
+    "explanation": "Articulatory suppression — repeating an irrelevant word like 'the the the' aloud — blocks the phonological loop from rehearsing to-be-remembered items, revealing the underlying capacity limit of ~4 items."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A phone number is 10 digits: 8005551234. A user who parses it as 800-555-1234 has reduced it to how many chunks?",
+    "hint": "Count the groups created by the standard phone number formatting.",
+    "answer_key": "3",
+    "explanation": "The formatted number 800-555-1234 creates three chunks: the area code (800), the exchange (555), and the subscriber number (1234). Each chunk is a meaningful unit that is easier to hold in working memory than 10 individual digits."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "According to Hasher and Zacks (1988), why do older adults show reduced working memory capacity?",
+    "hint": "It relates to difficulty filtering out irrelevant information.",
+    "answer_key": "weaker inhibitory control",
+    "explanation": "Hasher and Zacks found that older adults have weaker inhibitory control — reduced ability to suppress irrelevant information — which means irrelevant items occupy working memory slots, effectively reducing the capacity available for task-relevant information."
+  },
+  {
+    "id": 13,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "You are designing a flight booking results page. Currently it shows 15 attributes per flight (airline, price, departure time, arrival time, duration, stops, layover airports, layover durations, aircraft type, seat pitch, baggage allowance, on-time percentage, Wi-Fi availability, meal service, carbon emissions). Redesign using working memory principles.",
+    "hint": "Think about chunking, progressive disclosure, and the 4–5 visible items guideline.",
+    "steps": [
+      {
+        "prompt": "Which 4–5 attributes should be visible by default as the primary comparison set?",
+        "answer_key": "price, departure time, arrival time, duration, stops",
+        "explanation": "These are the attributes most users need for initial comparison. They represent the core decision factors and fit within the 4±1 working memory guideline for simultaneously compared items."
+      },
+      {
+        "prompt": "How should the remaining 10 attributes be organized?",
+        "answer_key": "Group into expandable chunks such as 'Layover Details,' 'Comfort & Amenities,' and 'Performance' using progressive disclosure",
+        "explanation": "Progressive disclosure keeps the default view within working memory limits. Grouping the remaining attributes into 2–3 meaningful chunks (e.g., layover info, comfort features, reliability stats) means users only expand the chunk relevant to their current concern."
+      },
+      {
+        "prompt": "A user wants to compare layover details across three flights. What design pattern prevents them from holding information across screens?",
+        "answer_key": "Show a side-by-side comparison view where layover details for all selected flights are visible simultaneously",
+        "explanation": "Requiring users to memorize layover details from one flight card while scrolling to another violates the principle of not requiring cross-screen memory. A comparison view externalizes the information, eliminating the working memory demand."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A mobile banking app shows a transaction history list. Users report difficulty finding specific transactions. Apply working memory and chunking principles to improve the design.",
+    "hint": "Consider how grouping, visual formatting, and search can reduce memory load.",
+    "steps": [
+      {
+        "prompt": "How should transactions be chunked in the list view?",
+        "answer_key": "Group by date with clear date headers (e.g., 'Today,' 'Yesterday,' 'March 20')",
+        "explanation": "Date-based grouping creates meaningful chunks. Instead of scanning 50 individual transactions, the user scans 5–7 date groups and expands only the relevant one. This aligns with how people naturally remember transactions ('I bought it last Tuesday')."
+      },
+      {
+        "prompt": "What visual chunking technique should be applied to each individual transaction entry?",
+        "answer_key": "Show merchant name and amount prominently, with date, category icon, and account as secondary information",
+        "explanation": "Within each entry, a visual hierarchy chunks the information: primary (merchant + amount) is what the user scans for recognition, secondary (date, category) provides context without competing for attention. This keeps the per-item processing load within the 2–3 chunk range."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "An analytics dashboard currently shows 8 metrics with no grouping: page views, unique visitors, bounce rate, session duration, conversion rate, revenue, cart abandonment rate, and customer acquisition cost. Redesign it using chunking principles.",
+    "hint": "Identify natural categories among the metrics.",
+    "steps": [
+      {
+        "prompt": "Identify 2–3 meaningful chunks for these 8 metrics.",
+        "answer_key": "Traffic (page views, unique visitors, bounce rate, session duration), Revenue (conversion rate, revenue, cart abandonment rate), Acquisition (customer acquisition cost)",
+        "explanation": "Grouping by business function creates 3 chunks of 2–4 metrics each. Each chunk fits within working memory limits and corresponds to a coherent concern: 'How much traffic?', 'How much money?', 'How much does acquisition cost?'"
+      },
+      {
+        "prompt": "What visual technique should separate the chunks on the dashboard?",
+        "answer_key": "Use distinct card or panel containers with section headings, separated by whitespace",
+        "explanation": "Card-based layouts with labeled headers create visual boundaries that the preattentive processing system recognizes instantly. Whitespace between cards signals 'these are separate groups' without requiring conscious effort, leveraging Gestalt proximity."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Baddeley et al. (1975) showed that articulatory suppression (speaking while trying to remember) cuts verbal working memory roughly in half. Apply this finding to the design of a voice-controlled in-car navigation system.",
+    "hint": "Consider that the driver's phonological loop is occupied by speaking commands.",
+    "steps": [
+      {
+        "prompt": "Why is verbal working memory especially constrained during voice interaction with an in-car system?",
+        "answer_key": "The driver is speaking aloud (articulatory suppression), which blocks the phonological loop from rehearsing other verbal information, cutting verbal working memory capacity roughly in half",
+        "explanation": "Articulatory suppression occurs whenever a person speaks aloud, blocking the phonological loop's rehearsal mechanism. A driver giving voice commands cannot simultaneously rehearse a multi-step address or a list of options read aloud by the system."
+      },
+      {
+        "prompt": "The system reads aloud a list of 5 possible destination matches and asks the driver to choose by number. Based on working memory under suppression, what is the design problem and how should it be fixed?",
+        "answer_key": "Under suppression, the driver can hold only ~2–3 items, so a list of 5 spoken options exceeds capacity. Fix by limiting spoken options to 2–3, using confirmation after each ('Did you mean X?'), or displaying options on screen.",
+        "explanation": "With articulatory suppression halving capacity to ~2–3 items, presenting 5 spoken options overflows working memory. The driver forgets early items by the time the last is read. Reducing the list, using sequential confirmation, or shifting to a visual display offloads the phonological loop."
+      }
+    ]
+  }
+]

@@ -1,0 +1,195 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "According to Nielsen's '5-user heuristic,' approximately what percentage of usability problems can be found with 5 participants from a single user profile?",
+    "hint": "This is a commonly cited threshold that makes small tests cost-effective.",
+    "options": ["A) 50%", "B) 65%", "C) 80%", "D) 95%"],
+    "answer_key": "C",
+    "explanation": "Nielsen (2000) argued that 5 participants from a single user profile find approximately 80% or more of usability problems. His recommendation is to run multiple small iterative tests rather than one large test."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which of the following is the best task prompt for a usability test of an airline booking site?",
+    "hint": "Good tasks describe a realistic goal and context, not step-by-step instructions.",
+    "options": ["A) Click the 'Flights' tab, enter 'Chicago' in the departure field, and click Search.", "B) You need to fly from Chicago to Denver next Friday and return Sunday. Find the cheapest round-trip option.", "C) Test whether the search function works correctly.", "D) Navigate to the booking page and fill in all fields."],
+    "answer_key": "B",
+    "explanation": "Option B is a scenario-based task that gives context (travel need) and a goal (find cheapest option) without prescribing how to accomplish it. This reveals the user's natural strategy. Options A and D are instructions, and C is a test objective, not a user task."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In a usability test, a participant asks 'Should I click this button?' What is the correct facilitator response?",
+    "hint": "The facilitator should avoid giving hints or instructions.",
+    "options": ["A) 'Yes, that's the right button.'", "B) 'No, try the other one.'", "C) 'What would you do if I weren't here?'", "D) 'Let me show you how it works.'"],
+    "answer_key": "C",
+    "explanation": "The golden rule of usability test facilitation is never help the participant. Redirecting with 'What would you do if I weren't here?' keeps the participant's natural behavior intact without providing guidance that would contaminate the data."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What is the key difference between concurrent and retrospective think-aloud protocols?",
+    "hint": "One happens during the task, the other after.",
+    "options": ["A) Concurrent is used for quantitative data; retrospective for qualitative data", "B) Concurrent asks participants to verbalize during the task (may slow performance); retrospective asks them to explain afterward using a recording", "C) Concurrent is done by the facilitator; retrospective is done by the participant", "D) Concurrent uses multiple participants simultaneously; retrospective uses one at a time"],
+    "answer_key": "B",
+    "explanation": "Concurrent think-aloud captures real-time thoughts during task execution but can slow performance by 15-20%. Retrospective think-aloud avoids interference but relies on memory, which is imperfect. Most practitioners use concurrent for qualitative insight."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Spool and Schroeder (2001) challenged Nielsen's 5-user recommendation. Under what conditions did they find 5 users insufficient?",
+    "hint": "Think about when the probability of encountering a given problem varies across users.",
+    "options": ["A) When the interface had fewer than 10 screens", "B) When testing was done remotely instead of in person", "C) When user populations were heterogeneous (different experience levels and goals)", "D) When the system had no critical usability problems"],
+    "answer_key": "C",
+    "explanation": "Spool and Schroeder found that for complex systems with heterogeneous user populations, the per-user detection probability ($\\lambda$) drops, meaning 5 users from a single profile miss problems specific to other profiles. They recommended testing 2-3 representatives per distinct user segment."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "The System Usability Scale (SUS) produces a score from 0 to 100. What is considered the average SUS score?",
+    "hint": "Brooke (1996) introduced SUS; Sauro and Lewis (2016) established benchmarks.",
+    "options": ["A) 50", "B) 68", "C) 75", "D) 85"],
+    "answer_key": "B",
+    "explanation": "A SUS score of 68 is the average based on large-scale benchmarking by Sauro and Lewis (2016). A score of 80.3 corresponds to the 90th percentile. SUS is a 10-item Likert questionnaire with high reliability (Cronbach's alpha ~0.91)."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "A usability test finds that 3 out of 5 participants completed a critical task. What is the task completion rate, and why might this number be misleading if reported without confidence intervals?",
+    "hint": "Small sample sizes produce wide confidence intervals.",
+    "options": ["A) 60%; misleading because 5 users cannot represent a diverse population", "B) 60%; misleading because the 95% confidence interval is very wide (approximately 15%-95%) with only 5 participants", "C) 60%; misleading because SUS scores should be used instead", "D) 60%; misleading because only moderated tests produce valid completion rates"],
+    "answer_key": "B",
+    "explanation": "The point estimate is 60% (3/5), but with only 5 participants, the 95% confidence interval (using an adjusted Wald method) spans approximately 15% to 95%. Reporting '60% completion rate' without this context overstates the precision of the measurement."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Which of the following best describes the iterative testing approach recommended by Nielsen and Krug?",
+    "hint": "Think about the relationship between testing frequency and test size.",
+    "options": ["A) Run one comprehensive test with 30+ participants at the end of development", "B) Run three rounds of 5 users each, fixing the top problems between each round", "C) Run automated A/B tests with thousands of users after launch", "D) Run a single test with 15 users and prioritize all findings by severity"],
+    "answer_key": "B",
+    "explanation": "Nielsen and Krug advocate iterative discount testing: small tests (3-5 users), fix the top problems, retest. Three rounds of 5 users beats one round of 15 because each fix cycle eliminates problems that would have masked deeper issues. This approach improves usability metrics by an average of 165% across two iterations."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Who published the foundational study on diminishing returns in usability testing sample size, showing that 5 participants find approximately 80% of problems?",
+    "hint": "Published in 1992, this preceded Nielsen's popularization of the finding.",
+    "answer_key": "Virzi",
+    "explanation": "Robert Virzi (1992) conducted the study showing steep gains through 4-5 participants with sharply diminishing returns thereafter. Nielsen (2000) later popularized this as the '5-user heuristic.'"
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What is the name of the 10-item post-test questionnaire introduced by Brooke (1996) that produces a single usability score from 0 to 100?",
+    "hint": "Its abbreviation is three letters.",
+    "answer_key": "SUS",
+    "explanation": "The System Usability Scale (SUS), introduced by John Brooke in 1996, is a 10-item Likert questionnaire that produces a single score from 0 to 100. It has become the industry standard for post-test subjective usability assessment."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "According to Ericsson and Simon (1993), which level of verbalization does NOT significantly alter task performance: Level 1 (vocalizing current thoughts) or Level 3 (explaining and justifying behavior)?",
+    "hint": "One type asks 'what are you thinking?' and the other asks 'why did you do that?'",
+    "answer_key": "Level 1",
+    "explanation": "Ericsson and Simon showed that Level 1 verbalization (simply vocalizing current thoughts, e.g., 'I'm looking for the save button...') does not significantly alter performance. Level 3 verbalization (explaining and justifying, e.g., 'I clicked this because...') slows performance and may change the cognitive process."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "In Nielsen's usability problem detection model $P(i) = 1 - (1 - \\lambda)^i$, what does $\\lambda$ represent?",
+    "hint": "It is a probability value associated with a single participant.",
+    "answer_key": "the probability that a single user encounters a given problem",
+    "explanation": "$\\lambda$ is the average probability that any single participant will encounter (and thus reveal) a given usability problem during a test session. With $\\lambda = 0.31$, five users yields $P(5) \\approx 0.84$."
+  },
+  {
+    "id": 13,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "You are planning a usability test for a new food delivery app. The app has two user types: customers who order food and restaurant owners who manage menus. Walk through the planning process.",
+    "hint": "Apply the 5-user heuristic per profile, and think about task design and method selection.",
+    "steps": [
+      {
+        "prompt": "How many total participants should you recruit, and why?",
+        "answer_key": "10",
+        "explanation": "5 per user profile (customers and restaurant owners) = 10 total. The 5-user heuristic applies per distinct user type. Testing 5 customers and 5 restaurant owners ensures adequate coverage for both workflows."
+      },
+      {
+        "prompt": "Write a scenario-based task for customer participants (one sentence, not step-by-step instructions).",
+        "answer_key": "You're at home on a Friday evening and want to order Thai food for delivery — find a nearby Thai restaurant with good ratings and place an order for pad thai and spring rolls.",
+        "explanation": "A good task provides context (Friday evening at home), a realistic goal (order Thai food), and specific but not prescriptive criteria (nearby, good ratings, specific dishes). It does not dictate which buttons to click."
+      },
+      {
+        "prompt": "Should you use concurrent think-aloud or retrospective think-aloud for this test? Give a one-sentence justification.",
+        "answer_key": "concurrent",
+        "explanation": "Concurrent think-aloud is preferred because the app is new and the team needs real-time insight into moments of confusion — why users hesitate, what they expect, and where they get lost. The 15-20% slowdown is an acceptable tradeoff for the richness of qualitative data."
+      },
+      {
+        "prompt": "Name three quantitative metrics you should collect during the test sessions.",
+        "answer_key": "completion rate, time on task, error count",
+        "explanation": "Core usability metrics include: (1) task completion rate (% who finish without help), (2) time on task (seconds per task, reported as geometric mean), and (3) error count (wrong taps, wrong screens, backtracking). Post-session SUS score is also recommended."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "After running a usability test with 5 participants on a checkout flow, you observe the following: 4/5 completed the task, average time was 3.2 minutes, 3 participants expressed confusion about the shipping options page, and SUS score averaged 62.",
+    "hint": "Interpret each metric against known benchmarks and thresholds.",
+    "steps": [
+      {
+        "prompt": "Is the 80% (4/5) completion rate definitively good? Explain the statistical limitation.",
+        "answer_key": "No",
+        "explanation": "With only 5 participants, the 95% confidence interval for an 80% completion rate is approximately 28%-99% (adjusted Wald). The point estimate looks acceptable, but the true population completion rate could be much lower. More participants would narrow this interval."
+      },
+      {
+        "prompt": "The average SUS score is 62. How does this compare to the industry benchmark, and what does it suggest?",
+        "answer_key": "below average",
+        "explanation": "The industry average SUS score is 68. A score of 62 is below average, suggesting users perceive the system as somewhat difficult to use. A score below 68 indicates usability issues that warrant attention."
+      },
+      {
+        "prompt": "3 out of 5 participants were confused by the shipping options page. What analysis technique would you use to identify patterns in their confusion, and what should you do next?",
+        "answer_key": "affinity diagramming, then redesign and retest",
+        "explanation": "Use affinity diagramming: extract observations from think-aloud transcripts, write each on a note, and cluster them into themes. Common themes might include unclear labels, too many options, or confusing pricing. Then redesign the shipping page based on these themes and retest with 5 new participants (iterative testing)."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "A startup wants to test their MVP with the absolute minimum budget. They can afford either (A) one moderated test with 5 participants, or (B) two rounds of remote unmoderated testing with 3 participants each, fixing problems between rounds. Which approach should they choose?",
+    "hint": "Consider the iterative testing philosophy and the type of insight each method provides.",
+    "steps": [
+      {
+        "prompt": "Which option (A or B) is more likely to result in a better product after the testing is complete? State your answer and one reason.",
+        "answer_key": "B",
+        "explanation": "Option B (iterative testing) is more likely to improve the product because the fix cycle between rounds eliminates top problems, revealing deeper issues in round 2 that would have been masked in a single test. Nielsen's data shows iterative testing improves usability by ~165% across two iterations."
+      },
+      {
+        "prompt": "What is the main advantage that Option A (moderated, 5 participants) has over Option B?",
+        "answer_key": "richer qualitative data from follow-up questions and observation of body language",
+        "explanation": "Moderated testing allows the facilitator to ask follow-up questions, observe hesitation and body language, and probe moments of confusion in real time. Unmoderated testing captures task metrics but misses the 'why' behind user behavior."
+      },
+      {
+        "prompt": "If the startup chose Option B, how many total unique usability problems would you expect them to find across both rounds, compared to finding them all in Option A?",
+        "answer_key": "more in B",
+        "explanation": "Option B is expected to find more unique problems in total. Round 1 finds the most prominent issues; after fixing those, Round 2 exposes previously hidden problems. A single test (Option A) finds more problems in one sitting but cannot uncover issues masked by top-level breakdowns."
+      }
+    ]
+  }
+]

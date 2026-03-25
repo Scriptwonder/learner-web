@@ -1,0 +1,199 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "According to information foraging theory, what is 'information scent'?",
+    "hint": "Think about what a user assesses before clicking a link.",
+    "options": ["A) The actual quality of content on a page", "B) The perceived likelihood that a path will lead to desired information, based on proximal cues", "C) The visual attractiveness of a link", "D) The loading speed of a destination page"],
+    "answer_key": "B",
+    "explanation": "Information scent is the user's estimate — based on proximal cues like link text, headings, and snippets — of how likely a path is to lead to the desired information. It is about prediction from cues, not the actual content quality at the destination."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which behavioral ecology concept does information foraging theory borrow to explain how users choose which links to follow?",
+    "hint": "The analogy is between a predator choosing prey and a user choosing links.",
+    "options": ["A) Migration theory", "B) Optimal foraging theory", "C) Natural selection", "D) Territorial behavior"],
+    "answer_key": "B",
+    "explanation": "Information foraging theory applies optimal foraging theory from behavioral ecology. Just as a predator selects prey based on energy gain vs. handling cost, a user selects links based on expected information value vs. time cost."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is 'pogosticking' in the context of web navigation?",
+    "hint": "It involves a repeated pattern of clicking forward and then immediately going back.",
+    "options": ["A) Scrolling rapidly through a long page", "B) Clicking a link, scanning the page, immediately clicking back, and repeating", "C) Opening multiple tabs at once", "D) Bookmarking pages for later"],
+    "answer_key": "B",
+    "explanation": "Pogosticking is the behavior of clicking a link, quickly determining the destination doesn't have what you want, clicking back, trying another link, and repeating. It indicates that link scent is misleading — the text promises something the destination doesn't deliver."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Simon (1956) introduced the concept of 'satisficing.' What does it mean in the context of information foraging?",
+    "hint": "Users don't optimize — they settle for the first adequate result.",
+    "options": ["A) Users always find the best possible answer", "B) Users stop searching when they find an answer that is good enough", "C) Users prefer satisfying visual designs", "D) Users read every search result before choosing"],
+    "answer_key": "B",
+    "explanation": "Satisficing means accepting the first option that meets a minimum acceptability threshold, rather than exhaustively searching for the optimal option. Users stop foraging when they find 'good enough' information, even if better information exists elsewhere."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Spool, Perfetti & Brittan (2004) found that one factor was the single strongest predictor of task success across multiple websites. What was it?",
+    "hint": "It was more important than site architecture, page layout, or visual design.",
+    "options": ["A) Page loading speed", "B) Visual design quality", "C) Link text quality", "D) Number of navigation levels"],
+    "answer_key": "C",
+    "explanation": "Spool et al. found that link text quality (r = 0.74 with task success) was the strongest predictor — stronger than site architecture, page layout, or visual design. When links clearly described their destination, users succeeded; when link text was vague, users failed."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Chi et al. (2001) operationalized 'scent' computationally using what mathematical technique?",
+    "hint": "They measured similarity between word vectors representing the user's goal and the link text.",
+    "options": ["A) Euclidean distance between pixel coordinates", "B) Cosine similarity between word-frequency vectors", "C) Levenshtein edit distance between strings", "D) Bayesian probability of link relevance"],
+    "answer_key": "B",
+    "explanation": "Chi et al. computed scent as the cosine similarity between two word-frequency vectors: one representing the user's information goal and one representing the link text (augmented by surrounding page context). Higher cosine similarity meant stronger scent."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "According to the patch model in information foraging theory, when does a user decide to leave a web page (patch)?",
+    "hint": "The analogy is an animal leaving a berry patch.",
+    "options": ["A) When the page takes too long to load", "B) When the rate of finding useful information drops below the expected rate from other patches", "C) After exactly 30 seconds on any page", "D) When they have read every word on the page"],
+    "answer_key": "B",
+    "explanation": "Like an animal leaving a depleting berry patch, a user leaves a page when the marginal rate of information gain falls below the average expected rate across all available patches. This is why users often leave a page before reading it completely — the remaining content's scent has dropped below threshold."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Pirolli (2007) noted an important boundary condition for information foraging theory. For which type of task is the theory least applicable?",
+    "hint": "Consider the difference between browsing and going directly to a known destination.",
+    "options": ["A) Exploratory browsing tasks", "B) Research and comparison tasks", "C) Known-item tasks where the user knows exactly what they want and where it is", "D) Tasks involving unfamiliar websites"],
+    "answer_key": "C",
+    "explanation": "Information foraging theory applies most strongly to exploratory tasks (browsing, researching, comparing) where the user must navigate between patches. For known-item tasks — where the user knows exactly what they want and navigates directly to it — the foraging decision process is largely bypassed."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What link text should replace 'Click here' to provide strong information scent for a page about subscription pricing?",
+    "hint": "The link text should predict what the user will find at the destination.",
+    "answer_key": "View subscription pricing",
+    "explanation": "'Click here' provides zero scent — it reveals nothing about the destination. 'View subscription pricing' contains the exact words a user looking for pricing information would scan for, creating strong scent."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "According to Julien and Duggan (2000), how do users change their foraging strategy under time pressure?",
+    "hint": "They become more selective about which links to follow.",
+    "answer_key": "They narrow their diet, following only the highest-scent links and skipping marginal options",
+    "explanation": "Under time pressure, users become more selective (narrowing their 'diet' in foraging terms), pursuing only links with the strongest scent and ignoring ambiguous or marginal options. This means interfaces for time-critical contexts must have exceptionally clear scent."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Pirolli (2007) described two navigation patterns: hub-and-spoke and tunnel. What characterizes hub-and-spoke navigation?",
+    "hint": "Think about a user who keeps returning to a central page between each exploration.",
+    "answer_key": "The user returns to a central page (like search results) between each foray into a destination",
+    "explanation": "In hub-and-spoke navigation, the user treats a central page (search results, category listing) as a home base, venturing out to evaluate individual pages and returning to the hub to try the next option. This indicates the user is evaluating multiple scent trails from a single patch."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Olston and Chi (2003) created a system called ScentTrails. What did it do, and what was the result?",
+    "hint": "It modified the visual appearance of links based on query relevance.",
+    "answer_key": "ScentTrails visually highlighted high-scent links on a page based on the user's query, resulting in faster task completion and fewer navigation errors",
+    "explanation": "ScentTrails computed scent for every link on the current page based on the user's query and visually highlighted the highest-scent links. Users with ScentTrails found information faster and with fewer wrong turns, directly demonstrating that amplifying scent improves foraging efficiency."
+  },
+  {
+    "id": 13,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A corporate intranet has a navigation menu with these items: 'Resources,' 'Tools,' 'Services,' 'Information,' and 'Help.' Users frequently report they cannot find the employee benefits enrollment page. Apply information foraging theory to diagnose and fix the problem.",
+    "hint": "Evaluate the scent of each menu item from the perspective of someone looking for benefits enrollment.",
+    "steps": [
+      {
+        "prompt": "Rate the information scent of each menu item for the goal 'find employee benefits enrollment.' Which items are ambiguous, and why?",
+        "answer_key": "'Resources,' 'Tools,' 'Services,' and 'Information' all have weak, ambiguous scent for benefits enrollment — any of them could plausibly contain it, so none provides a clear signal",
+        "explanation": "The menu items are generic labels that could contain almost anything. A user looking for benefits has no strong scent trail to follow — 'Resources' could mean documents, 'Services' could mean IT support or HR, 'Information' could mean anything. This ambiguity causes pogosticking as users try each option."
+      },
+      {
+        "prompt": "Redesign the navigation menu to provide strong scent for common user goals including benefits enrollment.",
+        "answer_key": "Replace generic labels with goal-specific ones: 'HR & Benefits,' 'IT Support,' 'Company Policies,' 'Department Tools,' 'Help.' This gives the benefits-seeker a clear high-scent path.",
+        "explanation": "Specific labels act as strong scent cues. 'HR & Benefits' immediately signals to the benefits-seeker that their goal is behind this link. The redesign follows Spool et al.'s finding that descriptive link text is the strongest predictor of task success."
+      },
+      {
+        "prompt": "Beyond navigation labels, what additional scent mechanism would help users find benefits information from any page on the intranet?",
+        "answer_key": "A site-wide search with rich snippets showing page titles, breadcrumb paths, and content previews, allowing users to assess scent from the results page without clicking through",
+        "explanation": "Search with rich snippets lets users assess scent before committing to a navigation action. A result showing 'HR & Benefits > Enrollment > 2024 Open Enrollment — Learn about medical, dental, and vision plans...' provides strong scent that prevents pogosticking."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "An e-commerce site's product listing pages show product name, price, and a thumbnail for each item. Users searching for specific product features (e.g., 'waterproof') are pogosticking — clicking into products, not finding the feature mentioned, clicking back, and trying the next product.",
+    "hint": "The scent cues on the listing page are insufficient for feature-based decisions.",
+    "steps": [
+      {
+        "prompt": "Using information foraging terminology, diagnose the problem.",
+        "answer_key": "The information patch (listing page) provides insufficient scent cues for feature-based foraging — the proximal cues (name, price, thumbnail) do not predict whether a product has the desired feature, forcing the user to enter each product page to evaluate",
+        "explanation": "The listing page serves as a patch from which users evaluate scent trails (product links). But the available cues (name, price, image) do not encode feature information, so all products have roughly equal (low) scent for a feature-based goal. The user cannot discriminate without clicking through."
+      },
+      {
+        "prompt": "Propose a redesign that increases scent for feature-based foraging on the listing page.",
+        "answer_key": "Add feature tags or badges (e.g., 'Waterproof,' 'Lightweight,' 'Rechargeable') visible on each product card in the listing, plus a feature filter in the sidebar",
+        "explanation": "Visible feature tags on the listing page provide the scent cues needed for feature-based discrimination without clicking through. Feature filters narrow the patch to only relevant products, further increasing the scent density. Both reduce pogosticking by letting users assess relevance from the listing page."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "A documentation site has a long tutorial page with 15 sections. Users land on it from search but often leave within seconds because they cannot quickly determine if the page contains the specific information they need.",
+    "hint": "The page is an information patch, and users are assessing its scent upon arrival.",
+    "steps": [
+      {
+        "prompt": "Why do users leave the page quickly despite it containing relevant content?",
+        "answer_key": "The page lacks strong scent cues (clear headings, a table of contents) that would let users quickly assess whether their target information is present",
+        "explanation": "Users scan pages in an F-pattern, reading headings and first lines to assess scent. A wall of text with weak headings provides no scent cues for rapid assessment, so users conclude the patch is low-value and leave — even if the answer is buried in paragraph 12."
+      },
+      {
+        "prompt": "Propose two changes that increase the page's scent density for scanning users.",
+        "answer_key": "Add a sticky table of contents with descriptive section headings, and add a highlighted summary or 'key points' box at the top of the page",
+        "explanation": "A table of contents serves as a concentrated scent source — users can scan all section topics in seconds. A key points summary provides immediate scent for the most common goals. Both let the user quickly assess the patch's value and navigate directly to the relevant section rather than abandoning."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "Eye-tracking studies (Nielsen, 2006) show that users scan web pages in an F-pattern, focusing on headings and the first few words of each line. A help center page has the heading 'Miscellaneous Information' and begins each section with filler like 'In this section, we will discuss...' Apply foraging theory to diagnose and fix the problems.",
+    "hint": "Consider where scent cues are concentrated during F-pattern scanning.",
+    "steps": [
+      {
+        "prompt": "Why does the heading 'Miscellaneous Information' cause users to skip the page during foraging?",
+        "answer_key": "The heading has zero information scent — it does not predict any specific content, so users cannot determine whether their goal is on this page",
+        "explanation": "F-pattern scanning means users read headings first to assess scent. 'Miscellaneous Information' gives no signal about what topics are covered, so the heading fails as a scent cue. Users cannot match it to any goal and move on to higher-scent alternatives."
+      },
+      {
+        "prompt": "Why are the filler opening sentences ('In this section, we will discuss...') problematic for F-pattern scanners, and what should replace them?",
+        "answer_key": "F-pattern scanners read only the first few words of each line, and filler pushes the informative content past the scan zone. Replace with front-loaded sentences that put the key topic words first.",
+        "explanation": "Because users scan only the first 2–3 words of each line, filler phrases consume the most-read portion of the line with zero-scent words. 'In this section, we will discuss...' tells the scanner nothing. 'Password reset steps for locked accounts' front-loads the scent words ('Password reset,' 'locked accounts') where the F-pattern concentrates."
+      }
+    ]
+  }
+]

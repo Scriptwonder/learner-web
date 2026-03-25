@@ -1,0 +1,195 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which Gestalt principle states that elements close together are perceived as a group?",
+    "hint": "This is the strongest static grouping cue.",
+    "options": ["A) Similarity", "B) Closure", "C) Proximity", "D) Common fate"],
+    "answer_key": "C",
+    "explanation": "Proximity is the principle that elements near each other are perceived as belonging together. It is the strongest static grouping cue and often overrides similarity when the two conflict."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "The Gestalt motto — 'the whole is different from the sum of its parts' — means:",
+    "hint": "Think about emergent properties of visual organization.",
+    "options": ["A) You cannot understand a design by looking at individual elements", "B) Perceptual organization emerges from relationships between elements, not from the elements alone", "C) Users always perceive more than what is on screen", "D) The whole is always greater and more complex than its parts"],
+    "answer_key": "B",
+    "explanation": "The Gestalt insight is that perception is organized by relationships (proximity, similarity, etc.) rather than by the properties of individual elements. The perceived structure emerges from these relationships and may differ from what a pixel-by-pixel analysis would suggest."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which principle explains why a circle with a small gap is still perceived as a circle?",
+    "hint": "The brain fills in missing information to complete familiar shapes.",
+    "options": ["A) Continuity", "B) Closure", "C) Similarity", "D) Prägnanz"],
+    "answer_key": "B",
+    "explanation": "Closure is the principle that the visual system completes incomplete shapes. A circle with a gap is perceived as a whole circle (with something occluding part of it) rather than as an arc, because the brain \"closes\" the gap."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "A modal dialog appears with a semi-transparent dark overlay behind it. Which Gestalt principle makes the dialog feel like it is 'in front of' the page?",
+    "hint": "This principle separates the visual field into foreground and background.",
+    "options": ["A) Common fate", "B) Proximity", "C) Figure-ground", "D) Uniform connectedness"],
+    "answer_key": "C",
+    "explanation": "Figure-ground segregation causes the modal dialog to be perceived as the figure (foreground) and the dimmed page as the ground (background). The figure appears to be in front and has a defined shape, while the ground continues behind it."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A form has labels left-aligned in one column and input fields right-aligned in another column. Users often associate a label with the wrong input field. Which Gestalt principle is most likely responsible?",
+    "hint": "Consider the spacing between labels and their intended inputs versus adjacent labels.",
+    "options": ["A) Closure — the form fields look incomplete", "B) Proximity — labels are closer to the wrong input field", "C) Similarity — all labels look the same", "D) Common fate — labels and inputs move together"],
+    "answer_key": "B",
+    "explanation": "When a label is far from its intended input (due to wide column separation) but close to an adjacent input vertically, proximity causes the wrong association. Labels should be placed close to their corresponding input fields — proximity drives grouping more strongly than visual alignment."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Palmer (1992) demonstrated that common region is an independent grouping cue by showing that:",
+    "hint": "He placed common region in opposition to proximity.",
+    "options": ["A) Enclosed elements were grouped together even when proximity predicted a different grouping", "B) Common region only works for rectangular boundaries", "C) Proximity always overrides common region", "D) Common region is the same as similarity of background color"],
+    "answer_key": "A",
+    "explanation": "Palmer created displays where proximity cues predicted grouping into certain pairs, but enclosure (common region) predicted different pairs. Participants consistently grouped by common region, demonstrating it is independent of — and can override — proximity."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Which modern addition to the Gestalt principles states that elements connected by a visual link (such as a line) are perceived as a unit?",
+    "hint": "Palmer & Rock (1994) proposed this as potentially the most fundamental grouping cue.",
+    "options": ["A) Common region", "B) Prägnanz", "C) Uniform connectedness", "D) Common fate"],
+    "answer_key": "C",
+    "explanation": "Uniform connectedness, proposed by Palmer & Rock (1994), states that connected elements are perceived as a single group. Connecting two items with a line creates a stronger grouping than proximity, similarity, or even common region."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "A navigation menu has items: Home, Products, Pricing, Blog, Contact, Login, Sign Up. All items are styled identically. Users report that 'Login' and 'Sign Up' don't feel like they belong with the other navigation items. Which Gestalt principle would best separate them intentionally?",
+    "hint": "These authentication actions serve a fundamentally different purpose than the content navigation items.",
+    "options": ["A) Continuity — arrange them in a curve", "B) Similarity — make them visually distinct (different color, style, or shape)", "C) Closure — remove their borders", "D) Common fate — animate them differently on hover"],
+    "answer_key": "B",
+    "explanation": "Similarity groups elements that share visual properties. By styling Login/Sign Up differently (e.g., as buttons with a different color vs. plain text links for the content items), you break the similarity grouping and signal that they are functionally different. Combined with proximity (placing them at the far right), the separation is clear."
+  },
+  {
+    "id": 9,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "According to the law of Prägnanz, when a visual pattern is ambiguous, the brain resolves it by:",
+    "hint": "Also known as the law of simplicity or good form.",
+    "options": ["A) Choosing the interpretation that matches prior experience with similar patterns", "B) Choosing the simplest, most regular, most symmetric interpretation", "C) Choosing the interpretation with the most distinct groups", "D) Choosing the interpretation that uses the fewest colors"],
+    "answer_key": "B",
+    "explanation": "Prägnanz (the law of good form or simplicity) states that ambiguous stimuli are perceived in the simplest, most regular, most symmetric way possible. For example, two overlapping rectangles are perceived as two simple shapes rather than one complex irregular polygon."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Who published the foundational 1923 paper systematizing the Gestalt grouping laws?",
+    "hint": "He was one of the three founders of Gestalt psychology, along with Koffka and Köhler.",
+    "answer_key": "Wertheimer",
+    "explanation": "Max Wertheimer published 'Untersuchungen zur Lehre von der Gestalt' (Laws of Organization in Perceptual Forms) in 1923, which systematized the grouping principles of proximity, similarity, closure, continuity, common fate, and Prägnanz."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Which Gestalt principle explains why elements that animate in the same direction at the same speed are perceived as a group?",
+    "hint": "This is a dynamic grouping cue that only applies when there is motion.",
+    "answer_key": "common fate",
+    "explanation": "Common fate groups elements that move together — same direction, same speed. It is a dynamic grouping cue, as opposed to static cues like proximity and similarity. In UI, it explains why sidebar elements that slide in together are perceived as one unit."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A card-based UI uses bordered containers around groups of related information. Which modern Gestalt principle (not from Wertheimer's original set) does this exploit?",
+    "hint": "Palmer (1992) demonstrated this as an independent grouping cue.",
+    "answer_key": "common region",
+    "explanation": "Common region, proposed by Palmer (1992), states that elements enclosed within the same bounded area are perceived as a group. Card-based designs exploit this by placing related content within a shared border or background, creating strong grouping independent of proximity."
+  },
+  {
+    "id": 13,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "Wertheimer's 1912 study of apparent motion (the phi phenomenon) demonstrated that observers perceived a single light moving between two positions, rather than two lights flashing. Why was this finding important for the founding of Gestalt psychology?",
+    "hint": "The perceived motion existed nowhere in the physical stimulus.",
+    "answer_key": "It showed that perception creates emergent properties not present in the physical stimulus, supporting the Gestalt view that the whole differs from the sum of its parts",
+    "explanation": "The phi phenomenon demonstrated that perceptual experience (smooth motion) can be qualitatively different from the physical stimulus (two alternating static lights). This was the core Gestalt insight: perception is organized and constructive, not a passive copy of the stimulus."
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A settings panel has 8 controls in a vertical list with equal 12px spacing between all items: Wi-Fi toggle, Bluetooth toggle, Airplane mode toggle, Brightness slider, Volume slider, Font size dropdown, Language dropdown, Dark mode toggle. Users say the page feels like 'an endless list' and they can't find controls quickly.",
+    "hint": "Identify the logical groups and apply Gestalt principles to restructure the layout.",
+    "steps": [
+      {
+        "prompt": "Using the controls' functions, identify the logical groups.",
+        "answer_key": "Connectivity (Wi-Fi, Bluetooth, Airplane mode), Display (Brightness, Font size, Dark mode), Audio (Volume), Language (Language)",
+        "explanation": "The controls naturally group by function: network/connectivity controls, display/appearance controls, audio controls, and localization. Alternatively: Connectivity (Wi-Fi, Bluetooth, Airplane), Output (Brightness, Volume), Preferences (Font size, Language, Dark mode)."
+      },
+      {
+        "prompt": "Which Gestalt principle is being violated by the current equal-spacing layout, and which principle should be applied to fix it?",
+        "answer_key": "Proximity is violated — equal spacing prevents grouping. Apply proximity by adding larger gaps between groups and smaller gaps within groups.",
+        "explanation": "With equal 12px spacing between all 8 items, proximity cannot create subgroups. The fix is to use smaller spacing (8px) within logical groups and larger spacing (24-32px) between groups. This creates clear perceptual clusters."
+      },
+      {
+        "prompt": "Name one additional Gestalt principle you could apply to further reinforce the grouping.",
+        "answer_key": "Common region — add section headers or subtle background boxes around each group",
+        "explanation": "Adding a section header (e.g., 'Connectivity') and/or a subtle background container around each group applies common region on top of proximity. This dual encoding makes the grouping unambiguous. You could also use similarity (e.g., all toggle controls share one style, all dropdowns share another)."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Users of a file manager report accidentally clicking 'Delete' instead of 'Rename' because the buttons are adjacent in the context menu. Both are styled as plain text menu items.",
+    "hint": "Think about which Gestalt principles are causing the confusion and which could prevent it.",
+    "steps": [
+      {
+        "prompt": "Which Gestalt principle is causing Delete and Rename to be perceived as equivalent actions?",
+        "answer_key": "Similarity — both buttons share the same visual style (plain text, same size, same color), making them appear functionally equivalent",
+        "explanation": "Similarity groups elements that look alike. When Delete and Rename are visually identical, the Gestalt principle of similarity causes users to perceive them as belonging to the same functional category, reducing the perceived risk of clicking Delete."
+      },
+      {
+        "prompt": "Propose a redesign using Gestalt principles to make the destructive action (Delete) distinct.",
+        "answer_key": "Break similarity by styling Delete differently (red text or red icon) and add proximity separation (gap or divider line between safe and destructive actions)",
+        "explanation": "Breaking similarity (red color for Delete vs. default color for Rename) signals that Delete is functionally different. Adding a divider line or extra spacing before Delete applies proximity separation, creating a perceptual boundary between safe and destructive actions."
+      },
+      {
+        "prompt": "After the redesign, predict how users' error rate will change and explain using Gestalt principles.",
+        "answer_key": "Error rate will decrease because broken similarity makes Delete perceptually distinct, and proximity separation creates a 'speed bump' that interrupts the motor sequence",
+        "explanation": "The broken similarity means Delete no longer 'blends in' with adjacent items — it stands out as different, triggering more careful processing. The proximity gap creates a perceptual boundary that the user must consciously cross, reducing accidental clicks from rapid sequential selection."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "A data visualization shows a scatter plot where data points from three departments are encoded as: Marketing = blue circle, Sales = blue square, Engineering = red circle. A manager wants to quickly see all Marketing data points.",
+    "hint": "Analyze whether finding blue circles is a feature search or a conjunction search.",
+    "steps": [
+      {
+        "prompt": "Is finding Marketing data points (blue circles) a feature search or conjunction search? Why?",
+        "answer_key": "Conjunction search — blue circles share color with Sales (blue squares) and shape with Engineering (red circles)",
+        "explanation": "Neither color alone (blue) nor shape alone (circle) uniquely identifies Marketing. Blue is shared with Sales, and circle is shared with Engineering. Finding blue circles requires binding both features — a conjunction search that is serial and $O(n)$."
+      },
+      {
+        "prompt": "Redesign the encoding so that finding any single department is a preattentive feature search.",
+        "answer_key": "Use unique colors for each department: e.g., Marketing = blue, Sales = green, Engineering = red (all same shape, or each with a unique color regardless of shape)",
+        "explanation": "If each department has a unique color, users can find any department by color alone — a preattentive feature search that is $O(1)$. Shape can be used as a redundant secondary encoding for accessibility, but color should be the primary distinguishing feature."
+      }
+    ]
+  }
+]

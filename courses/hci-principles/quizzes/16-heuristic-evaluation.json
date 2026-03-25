@@ -1,0 +1,195 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Who introduced heuristic evaluation as a usability inspection method?",
+    "hint": "They published their foundational paper in 1990.",
+    "options": ["A) Card, Moran & Newell", "B) Nielsen & Molich", "C) Norman & Draper", "D) Shneiderman & Plaisant"],
+    "answer_key": "B",
+    "explanation": "Jakob Nielsen and Rolf Molich introduced heuristic evaluation in their 1990 paper as a discount usability inspection method."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Approximately what percentage of usability problems does a single evaluator typically find?",
+    "hint": "Think about why multiple evaluators are recommended.",
+    "options": ["A) 10%", "B) 35%", "C) 60%", "D) 85%"],
+    "answer_key": "B",
+    "explanation": "A single evaluator typically finds only about 35% of usability problems. Different evaluators find different problems, which is why 3-5 evaluators working independently are recommended."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "A user clicks 'Delete' and there is no confirmation dialog or undo option. Which heuristic does this violate?",
+    "hint": "Think about giving users a way out of unwanted states.",
+    "options": ["A) H1 — Visibility of system status", "B) H2 — Match between system and the real world", "C) H3 — User control and freedom", "D) H8 — Aesthetic and minimalist design"],
+    "answer_key": "C",
+    "explanation": "Heuristic #3 (User control and freedom) states that users need a clearly marked 'emergency exit' — undo, redo, or confirmation dialogs — to recover from mistakes."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "An application uses 'Terminate Process' in one menu and 'Kill Task' in another to mean the same thing. Which heuristic is violated?",
+    "hint": "The issue is that different labels are used for the same action.",
+    "options": ["A) H2 — Match between system and the real world", "B) H4 — Consistency and standards", "C) H6 — Recognition rather than recall", "D) H10 — Help and documentation"],
+    "answer_key": "B",
+    "explanation": "Heuristic #4 (Consistency and standards) requires that the same concept always uses the same terminology. Using 'Terminate Process' and 'Kill Task' interchangeably forces users to wonder whether they mean different things."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A form allows users to enter a date in any format (MM/DD/YYYY, DD-MM-YYYY, etc.) and silently interprets '03/04/2025' as March 4th regardless of the user's locale. Which heuristic is most directly violated?",
+    "hint": "This problem could have been avoided by constraining the input or showing the interpreted result.",
+    "options": ["A) H1 — Visibility of system status", "B) H5 — Error prevention", "C) H7 — Flexibility and efficiency of use", "D) H9 — Help users recognize, diagnose, and recover from errors"],
+    "answer_key": "B",
+    "explanation": "Heuristic #5 (Error prevention) says a careful design prevents problems from occurring. A date picker or explicit format indicator would prevent the ambiguity. The system silently misinterprets input — a preventable error."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "An e-commerce site requires users to memorize a 12-digit order number from the confirmation email, navigate to a separate 'Order Lookup' page, and type the number from memory to check status. Which heuristic does this violate?",
+    "hint": "The design forces the user to keep information in their head instead of showing it.",
+    "options": ["A) H3 — User control and freedom", "B) H5 — Error prevention", "C) H6 — Recognition rather than recall", "D) H8 — Aesthetic and minimalist design"],
+    "answer_key": "C",
+    "explanation": "Heuristic #6 (Recognition rather than recall) requires minimizing the user's memory load. A link directly to the order status page — or showing recent orders — would let users recognize rather than recall."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "A dashboard displays 15 metrics, 8 action buttons, a scrolling news ticker, and animated charts — all visible simultaneously on the main screen. Which heuristic is most directly violated?",
+    "hint": "Consider whether all that information is relevant to the user's immediate task.",
+    "options": ["A) H1 — Visibility of system status", "B) H4 — Consistency and standards", "C) H7 — Flexibility and efficiency of use", "D) H8 — Aesthetic and minimalist design"],
+    "answer_key": "D",
+    "explanation": "Heuristic #8 (Aesthetic and minimalist design) states that every extra unit of information competes with relevant units. A cluttered dashboard with 15 metrics, animations, and a news ticker overwhelms rather than informs."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "After uploading a file, the interface shows no progress bar, no spinner, and no status message. The user does not know if the upload started, is in progress, or failed. This violates which heuristic?",
+    "hint": "The user is left with zero feedback about what the system is doing.",
+    "options": ["A) H1 — Visibility of system status", "B) H3 — User control and freedom", "C) H5 — Error prevention", "D) H9 — Help users recognize, diagnose, and recover from errors"],
+    "answer_key": "A",
+    "explanation": "Heuristic #1 (Visibility of system status) requires the system to keep users informed about what is going on through appropriate feedback within reasonable time. No feedback during a file upload directly violates this principle."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "How many evaluators does Nielsen recommend for a heuristic evaluation to balance cost and coverage?",
+    "hint": "It is a range, not a single number. Give the range.",
+    "answer_key": "3-5",
+    "explanation": "Nielsen recommends 3-5 evaluators. Fewer than 3 misses too many problems; more than 5 provides diminishing returns relative to cost."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "On Nielsen's severity rating scale, what rating (0-4) represents a 'usability catastrophe' that is imperative to fix before release?",
+    "hint": "It is the highest severity level on the scale.",
+    "answer_key": "4",
+    "explanation": "A severity rating of 4 indicates a usability catastrophe — the problem is so severe that users cannot complete their tasks, and it must be fixed before release."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "According to Nielsen's aggregation model, approximately what percentage of usability problems do five evaluators find?",
+    "hint": "Use the formula $P(i) = 1 - (1 - \\lambda)^i$ with $\\lambda = 0.35$ and $i = 5$.",
+    "answer_key": "75%",
+    "explanation": "$P(5) = 1 - (1 - 0.35)^5 = 1 - (0.65)^5 = 1 - 0.116 \\approx 0.884$. Nielsen commonly cites ~75% as a practical estimate (this varies depending on evaluator expertise; 75% for regular evaluators, higher for specialists)."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "What term describes the phenomenon where different evaluators find largely non-overlapping sets of usability problems?",
+    "hint": "Hertzum and Jacobsen (2001) formalized this concept.",
+    "answer_key": "evaluator effect",
+    "explanation": "The evaluator effect, formalized by Hertzum and Jacobsen (2001), describes the finding that any two evaluators typically agree on fewer than 20% of the problems they find. This is why independent evaluation followed by aggregation is essential."
+  },
+  {
+    "id": 13,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A mobile banking app has the following interface for money transfers: (1) The 'Transfer' button uses a paper airplane icon with no text label. (2) After tapping Transfer, the app asks for the recipient but shows no indication of the current step or how many steps remain. (3) On the confirmation screen, the amount is displayed in light gray text on a white background. (4) If the transfer fails due to insufficient funds, the message reads 'TX_ERR_402.' Identify and classify each violation.",
+    "hint": "Map each issue to one of Nielsen's 10 heuristics and rate the severity.",
+    "steps": [
+      {
+        "prompt": "Which heuristic does the icon-only 'Transfer' button with no label violate?",
+        "answer_key": "H6",
+        "explanation": "Heuristic #6 (Recognition rather than recall). An unlabeled icon requires users to recall or guess its meaning. A text label or tooltip would let them recognize the action."
+      },
+      {
+        "prompt": "Which heuristic does the missing step indicator (no progress bar) violate?",
+        "answer_key": "H1",
+        "explanation": "Heuristic #1 (Visibility of system status). The user cannot see where they are in the multi-step process or how many steps remain."
+      },
+      {
+        "prompt": "The amount displayed in light gray on white is a violation of which heuristic?",
+        "answer_key": "H8",
+        "explanation": "Heuristic #8 (Aesthetic and minimalist design) — though this also touches on visibility. The critical information (the transfer amount) is de-emphasized by poor contrast, making it difficult to verify on a confirmation screen where accuracy is paramount."
+      },
+      {
+        "prompt": "Rate the severity (0-4) of the cryptic error message 'TX_ERR_402' for a failed transfer due to insufficient funds.",
+        "answer_key": "4",
+        "explanation": "This is a severity 4 (catastrophe). The user's money transfer has failed, they do not know why, and they receive no guidance on how to resolve it. The error involves financial data, making clarity critical. It violates H9 (Help users recognize, diagnose, and recover from errors)."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "You are leading a heuristic evaluation of a new project management tool. You have a budget for evaluators and need to plan the process.",
+    "hint": "Consider the evaluator effect and Nielsen's aggregation model.",
+    "steps": [
+      {
+        "prompt": "If each evaluator independently finds about 35% of problems, and you need to find at least 75% of all usability problems, what is the minimum number of evaluators you should recruit?",
+        "answer_key": "5",
+        "explanation": "Using $P(i) = 1 - (1 - 0.35)^i$: $P(3) \\approx 0.73$, $P(4) \\approx 0.82$, $P(5) \\approx 0.88$. Five evaluators comfortably exceed the 75% threshold. Nielsen's standard recommendation is 3-5 evaluators."
+      },
+      {
+        "prompt": "Should evaluators work together in a group session or independently? State which approach and explain in one sentence.",
+        "answer_key": "independently",
+        "explanation": "Evaluators must work independently to maximize the evaluator effect. Group sessions cause convergence — evaluators anchor on the same problems — reducing the diversity of findings."
+      },
+      {
+        "prompt": "After collecting all findings, Evaluator A rated a problem as severity 2 and Evaluator B rated the same problem as severity 4. What should you do with these ratings?",
+        "answer_key": "average them",
+        "explanation": "Average the independent severity ratings. The average (3.0 — Major) reflects the consensus view. Nielsen recommends averaging severity ratings across evaluators to reduce individual bias."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "A healthcare portal displays patient lab results. The results page shows numeric values but uses red and green colors as the only indicator of normal vs. abnormal ranges, with no text labels. When a patient clicks on a result for more detail, the system navigates to a new page with no back button — only the browser's back button works.",
+    "hint": "Look for violations of multiple heuristics in this scenario.",
+    "steps": [
+      {
+        "prompt": "Using color alone (red/green) to indicate normal vs. abnormal results, without text labels, violates which heuristic?",
+        "answer_key": "H1",
+        "explanation": "Heuristic #1 (Visibility of system status). The system communicates status through color alone, which is invisible to colorblind users and ambiguous without labels. Pairing color with text ('Normal,' 'Abnormal') would satisfy the heuristic."
+      },
+      {
+        "prompt": "The lack of an in-app back button, forcing reliance on the browser's back button, violates which heuristic?",
+        "answer_key": "H3",
+        "explanation": "Heuristic #3 (User control and freedom). Users need clearly marked navigation controls within the application. Relying on the browser's back button is fragile (it may not work as expected in single-page apps) and fails the 'emergency exit' requirement."
+      },
+      {
+        "prompt": "Rate the severity (0-4) of using color alone for medical results, considering colorblind users and the medical context.",
+        "answer_key": "3",
+        "explanation": "Severity 3 (Major). Approximately 8% of males have color vision deficiency. In a medical context, misinterpreting a lab result as normal when it is abnormal could delay treatment. The frequency is high (affects every results view), impact is significant, and the problem persists across all sessions."
+      }
+    ]
+  }
+]

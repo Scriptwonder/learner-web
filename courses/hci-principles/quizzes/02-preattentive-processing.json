@@ -1,0 +1,185 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the approximate time threshold for preattentive processing?",
+    "hint": "It happens before conscious, focused attention kicks in.",
+    "options": ["A) Under 50 milliseconds", "B) Under 200 milliseconds", "C) Under 1 second", "D) Under 3 seconds"],
+    "answer_key": "B",
+    "explanation": "Preattentive processing occurs in under 200 milliseconds — fast enough that it happens before focal attention is directed. Features detected in this window are processed in parallel across the entire visual field."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which of the following is a preattentive feature?",
+    "hint": "Preattentive features can be detected without focused attention, in parallel across the visual field.",
+    "options": ["A) The conjunction of red color and circular shape", "B) Color hue", "C) The specific text content of a label", "D) The semantic meaning of an icon"],
+    "answer_key": "B",
+    "explanation": "Color hue is one of the most well-established preattentive features. Conjunctions of features (A), text content (C), and semantic meaning (D) all require focused, serial attention."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In Treisman's Feature Integration Theory, what happens during the preattentive stage?",
+    "hint": "Think about whether items are processed one at a time or all at once.",
+    "options": ["A) Features are bound into unified objects", "B) Items are scanned one at a time from left to right", "C) Basic features are detected in parallel across the entire visual field", "D) The brain categorizes items by semantic meaning"],
+    "answer_key": "C",
+    "explanation": "During the preattentive stage, basic visual features (color, orientation, size, motion) are detected simultaneously across the visual field in parallel — this is why feature search is independent of set size."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Finding a red circle among blue circles takes approximately the same time regardless of whether there are 5 or 50 distractors. What computational complexity does this represent?",
+    "hint": "The search time does not grow with the number of items.",
+    "options": ["A) $O(n)$ — linear", "B) $O(n^2)$ — quadratic", "C) $O(1)$ — constant", "D) $O(\\log n)$ — logarithmic"],
+    "answer_key": "C",
+    "explanation": "Feature search operates in $O(1)$ time with respect to set size. Because all items are processed in parallel, adding more distractors does not increase the time to find the target."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A dashboard uses red triangles for errors and red circles for warnings. An operator needs to quickly identify all errors. Why is this encoding problematic?",
+    "hint": "Consider what type of search is required when the target shares a feature with distractors.",
+    "options": ["A) Red is not a preattentive feature", "B) Triangles are not visible at small sizes", "C) The operator must perform a conjunction search (red + triangle), which is serial and slow", "D) The dashboard has too many data points"],
+    "answer_key": "C",
+    "explanation": "Both errors and warnings are red, so color alone does not distinguish them. Both triangles and circles appear in the display, so shape alone does not distinguish them either. The operator must search for the conjunction of red AND triangle — a serial, $O(n)$ process."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Treisman's 1980 experiment found that target-absent trials in conjunction search had slopes approximately twice as steep as target-present trials. What does this indicate?",
+    "hint": "Think about when a serial search can stop.",
+    "options": ["A) Participants were guessing on absent trials", "B) A self-terminating serial search — present trials stop at the target, absent trials must check all items", "C) Absent trials are processed in parallel but present trials are serial", "D) Participants had slower reaction times when they were less confident"],
+    "answer_key": "B",
+    "explanation": "The 2:1 absent-to-present slope ratio is the signature of a self-terminating serial search. When the target is present, search terminates on average after checking half the items. When absent, all items must be checked before responding, producing a slope twice as steep."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Which preattentive feature is generally considered the most powerful — almost impossible to ignore — and should therefore be reserved for urgent notifications?",
+    "hint": "This feature involves temporal change in the display.",
+    "options": ["A) Color hue", "B) Size", "C) Orientation", "D) Motion"],
+    "answer_key": "D",
+    "explanation": "Motion is the most powerful preattentive feature because the visual system is evolutionarily tuned to detect movement (a survival mechanism). A moving element among static ones captures attention involuntarily, making it ideal for urgent alerts but distracting when overused."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Wolfe & Horowitz (2004, 2017) classified preattentive attributes into tiers. Which set of features are all classified as \"undoubted\" preattentive attributes?",
+    "hint": "These are the features with the strongest evidence for parallel, set-size-independent search.",
+    "options": ["A) Color, orientation, motion, size", "B) Color, texture, semantic category, depth", "C) Shape complexity, word meaning, numerosity, symmetry", "D) Orientation, familiarity, emotional valence, luminance"],
+    "answer_key": "A",
+    "explanation": "Wolfe & Horowitz classify color, orientation, motion, and size as \"undoubted\" preattentive features based on extensive evidence of flat search slopes. More complex features like shape complexity, semantic category, and emotional valence require attention."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "In Feature Integration Theory, what is the term for the problem of combining features from separate feature maps into a unified perception of an object?",
+    "hint": "Treisman argued that attention serves as the 'glue' for this problem.",
+    "answer_key": "binding problem",
+    "explanation": "The binding problem refers to the challenge of combining independently detected features (e.g., red + circular + large) into a single perceived object. Treisman proposed that focused attention is required to bind features together."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A conjunction search task takes approximately 25 ms per item on target-present trials. How long would it take on average to find the target in a display of 40 items (assuming the target is present)?",
+    "hint": "A self-terminating search checks about half the items on average when the target is present.",
+    "answer_key": "500 ms",
+    "explanation": "On average, a self-terminating serial search checks half the items before finding the target: $40 / 2 = 20$ items. At 25 ms per item: $20 \\times 25 = 500$ ms. (Plus a baseline RT of ~400-500ms, but the question asks about the search component.)"
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Approximately how many reliably discriminable color categories can the preattentive color channel support before discrimination degrades?",
+    "hint": "Think about common recommendations for categorical color palettes in data visualization.",
+    "answer_key": "6-8",
+    "explanation": "Research on color discrimination in visualization (Healey et al., 1996; Ware, 2004) shows that about 6-8 distinct hues can be reliably discriminated preattentively. Beyond this, colors become too similar and confusion errors increase."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "In preattentive search, finding a tilted line among vertical lines is faster than finding a vertical line among tilted lines. What is this phenomenon called?",
+    "hint": "The search works better in one direction than the other.",
+    "answer_key": "search asymmetry",
+    "explanation": "Search asymmetry occurs when detecting feature A among feature B distractors is easier than detecting B among A distractors. The more distinctive or complex feature (tilted line) pops out from the simpler feature (vertical), but not vice versa."
+  },
+  {
+    "id": 13,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A network monitoring tool displays 200 nodes as colored dots. Currently, healthy nodes are green circles and failed nodes are red circles. The team wants to add a third state — 'degraded' — encoded as orange circles. Analyze whether this encoding will work.",
+    "hint": "Consider the preattentive discriminability of the three colors and what happens as the number of categories increases.",
+    "steps": [
+      {
+        "prompt": "Is the current two-state encoding (green circles vs red circles) effective for preattentive detection? Why or why not?",
+        "answer_key": "Yes — color hue is preattentive and green vs red is highly discriminable",
+        "explanation": "Color hue is an undoubted preattentive feature, and green vs. red are far apart in color space. A single red dot among 199 green dots will pop out in under 200ms regardless of set size."
+      },
+      {
+        "prompt": "Adding orange as a third state creates a potential problem. What is it?",
+        "answer_key": "Orange is perceptually close to red, reducing discriminability between degraded and failed states",
+        "explanation": "Orange sits between red and yellow on the color spectrum. When both red (failed) and orange (degraded) nodes are present, the reduced color distance means a failed node may not preattentively pop out from a field of degraded nodes — the target-distractor similarity is too high."
+      },
+      {
+        "prompt": "Propose a better encoding for the three-state system that preserves preattentive detection of failed nodes.",
+        "answer_key": "Use a second preattentive channel (e.g., add motion/pulsing to failed nodes, or use size: failed nodes larger)",
+        "explanation": "Adding a second independent preattentive channel ensures that failed nodes pop out regardless of how many degraded nodes are present. Making failed nodes pulse (motion) or making them larger (size) provides a channel that is independent of the color encoding. The color can then use more discriminable hues: green, yellow, gray."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A data visualization shows a scatter plot of 150 data points. The designer encodes three variables: $x$-position for revenue, $y$-position for profit, and the conjunction of color + shape for category (e.g., red circles = Tech, blue squares = Finance, green triangles = Healthcare).",
+    "hint": "Think about which encodings are preattentive and which require serial search.",
+    "steps": [
+      {
+        "prompt": "Can a user preattentively find all Tech companies (red circles) in this visualization?",
+        "answer_key": "No — finding red circles among blue squares and green triangles is a conjunction search",
+        "explanation": "The target (red circle) shares color with no distractors but shares the shape dimension with distractors (there are circles, squares, and triangles in multiple colors). Actually, since each category has a unique color AND unique shape, color alone could identify the target — but the encoding is redundant and potentially confusing. If any two categories shared a color or shape, it would definitely be conjunction search."
+      },
+      {
+        "prompt": "In this case, could the user find all Tech companies using color alone (red)?",
+        "answer_key": "Yes — if red is unique to Tech, color alone is a preattentive feature search",
+        "explanation": "Since each category has a unique color, the user can search by color alone — a preattentive feature search. The shape encoding is redundant, which helps with accessibility (for color-blind users) but is not needed for preattentive detection."
+      },
+      {
+        "prompt": "If the designer added a fourth category using red squares (same red as Tech), would finding Tech companies still be preattentive?",
+        "answer_key": "No — it would become a conjunction search (red + circle), which is serial",
+        "explanation": "With two categories sharing the red color, finding Tech (red circles) among the new category (red squares) requires checking the conjunction of color AND shape. This converts the search from $O(1)$ to $O(n)$, and with 150 points, the difference is substantial."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "An email client shows unread messages in bold and read messages in normal weight. A user reports that important flagged messages are hard to find in a long list. Currently, flagged messages have a small star icon next to them.",
+    "hint": "Consider which features are preattentive and which require item-by-item inspection.",
+    "steps": [
+      {
+        "prompt": "Why is the small star icon hard to find preattentively?",
+        "answer_key": "A small icon requires scrutinizing each item individually — it is not a preattentive feature that pops out from the list",
+        "explanation": "A small added mark can be preattentive in some cases, but if the icon is small relative to the text and similar in luminance, it blends into the visual texture of the list. The user must serially scan each row to check for the star."
+      },
+      {
+        "prompt": "Suggest an encoding change that would make flagged messages preattentively detectable.",
+        "answer_key": "Use a preattentive feature like background color highlight (e.g., light yellow background) or a bold color accent on the row",
+        "explanation": "A full-row background color is a preattentive feature (color/luminance) that spans enough visual area to pop out. A light yellow highlight on flagged rows would make them instantly detectable among hundreds of messages without serial scanning."
+      }
+    ]
+  }
+]

@@ -204,23 +204,32 @@ function addSlider(label, min, max, value, step, onChange) {
 function addToggle(label, checked, onChange) {
   const row = document.createElement('div');
   row.className = 'viz-toggle-row';
-  const lbl = document.createElement('label');
+
+  const toggle = document.createElement('div');
+  toggle.className = 'viz-toggle-switch' + (checked ? ' active' : '');
+  toggle.addEventListener('click', () => {
+    const isActive = toggle.classList.toggle('active');
+    onChange(isActive);
+  });
+
+  const lbl = document.createElement('span');
   lbl.className = 'viz-toggle-label';
-  const cb = document.createElement('input');
-  cb.type = 'checkbox';
-  cb.checked = checked;
-  cb.addEventListener('change', () => onChange(cb.checked));
-  const span = document.createElement('span');
-  span.textContent = label;
-  lbl.appendChild(cb);
-  lbl.appendChild(span);
+  lbl.textContent = label;
+  lbl.addEventListener('click', () => toggle.click());
+
+  row.appendChild(toggle);
   row.appendChild(lbl);
   controlsDiv.appendChild(row);
-  return cb;
+  return toggle;
 }
 
 function setInfo(html) {
-  infoDiv.innerHTML = html;
+  // Convert multiline viz-readout HTML to single-line pill format
+  let text = html
+    .replace(/<div class="viz-readout">/g, '')
+    .replace(/<\/div>/g, '')
+    .replace(/<br\s*\/?>/g, ' \u00b7 ');
+  infoDiv.innerHTML = text;
 }
 
 // === VISUALIZATIONS ===

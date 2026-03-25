@@ -1,0 +1,199 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In Norman's three-model framework, what is the sole communication channel between the designer and the user?",
+    "hint": "The designer never communicates directly with the user.",
+    "options": ["A) The designer's model", "B) The user's model", "C) The system image", "D) The mental model"],
+    "answer_key": "C",
+    "explanation": "The system image — the interface, documentation, error messages, tooltips, and behavior — is the only medium through which the designer's understanding reaches the user. If the system image is ambiguous, the user's model will diverge from the designer's model."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "How many stages are in Norman's action cycle?",
+    "hint": "The cycle covers everything from forming a goal to evaluating the outcome.",
+    "options": ["A) 3", "B) 5", "C) 7", "D) 10"],
+    "answer_key": "C",
+    "explanation": "Norman's action cycle has seven stages: (1) Goal, (2) Plan, (3) Specify, (4) Perform, (5) Perceive, (6) Interpret, (7) Compare. These cover the full loop from intention to evaluation."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which stages of Norman's action cycle define the 'Gulf of Execution'?",
+    "hint": "The gulf of execution is about translating intention into action.",
+    "options": ["A) Stages 1–3", "B) Stages 2–4 (Plan, Specify, Perform)", "C) Stages 5–7 (Perceive, Interpret, Compare)", "D) Stages 4–6"],
+    "answer_key": "B",
+    "explanation": "The gulf of execution spans stages 2–4: planning an action, specifying the exact sequence, and performing it. A wide gulf means the user cannot figure out how to do what they want to do."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "A user saves a file but sees no visual confirmation. Which gulf is wide in this scenario?",
+    "hint": "The user performed the action but cannot tell what happened.",
+    "options": ["A) Gulf of Execution", "B) Gulf of Evaluation", "C) Both gulfs equally", "D) Neither gulf"],
+    "answer_key": "B",
+    "explanation": "The gulf of evaluation (stages 5–7) is wide because the user cannot perceive or interpret the system's state after their action. They successfully executed the save command (narrow gulf of execution) but cannot tell if it worked (wide gulf of evaluation)."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Hutchins, Hollan & Norman (1985) argued that direct manipulation interfaces feel natural because they minimize two types of distance at every stage of the action cycle. What are these two distances?",
+    "hint": "One is about how closely the action resembles the intention; the other is about how closely the representation maps to the domain.",
+    "options": ["A) Physical distance and temporal distance", "B) Articulatory distance and semantic distance", "C) Cognitive distance and motor distance", "D) Perceptual distance and memory distance"],
+    "answer_key": "B",
+    "explanation": "Articulatory distance measures how closely the physical action resembles the user's intention (dragging vs. typing a command). Semantic distance measures how closely the system's representation maps to the user's domain concepts (a file icon vs. an inode number). Direct manipulation minimizes both."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Carroll and Olson (1988) found that users who received a clear conceptual model of a text editor outperformed those who received only step-by-step procedural instructions. What does this finding imply for onboarding design?",
+    "hint": "Consider the difference between teaching 'how it works' vs. 'what to click.'",
+    "options": ["A) Procedural tutorials are always superior", "B) Investing in 'how it works' explanations pays off in long-term usability", "C) Conceptual models are only useful for experts", "D) Users should never be given instructions"],
+    "answer_key": "B",
+    "explanation": "Users who understand the conceptual model can transfer their understanding to new tasks and recover from errors, while procedural-only users are stuck when the exact steps don't apply. Onboarding tours and 'how it works' sections build stronger mental models."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A music app uses a 'cassette tape' metaphor. Users understand play, pause, fast-forward, and rewind by analogy. But when they try to 'shuffle,' the metaphor breaks. This illustrates which principle about metaphors in HCI?",
+    "hint": "Metaphors import an existing model but have inherent limits.",
+    "options": ["A) Metaphors should never be used in modern interfaces", "B) Metaphors work by importing existing mental models but break down at the edges", "C) The cassette metaphor is poorly chosen", "D) Shuffle is too complex for any metaphor"],
+    "answer_key": "B",
+    "explanation": "Metaphors give users a running start by importing a familiar mental model, but they inevitably break where the digital system extends beyond the physical analogy. Designers must complement metaphors with explicit feedback and cues where the analogy stops applying."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Gentner and Stevens (1983) found that users' mental models are often incomplete, unstable, and contain superstitions. What is the primary design implication of this finding?",
+    "hint": "Designers cannot assume users will build correct models on their own.",
+    "options": ["A) Interfaces should be as complex as the underlying system", "B) The system image must actively guide correct mental model formation through consistent, visible feedback", "C) Users should be required to read documentation before using the system", "D) Mental models are irrelevant to interface design"],
+    "answer_key": "B",
+    "explanation": "Because users naturally form incomplete and often incorrect mental models, the system image must actively shape the model through visibility of state, consistent behavior, clear feedback, and meaningful error messages. Relying on users to spontaneously build correct models leads to superstitious behavior and errors."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Name the three models in Norman's framework for understanding design communication.",
+    "hint": "One belongs to the creator, one to the product, and one to the end user.",
+    "answer_key": "designer's model, system image, user's model",
+    "explanation": "The designer's model is the accurate understanding of how the system works. The system image is everything the user can perceive (UI, docs, feedback). The user's model is the simplified representation the user constructs from interacting with the system image."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What term describes the gap between the user's intention and the actions the system allows?",
+    "hint": "It covers stages 2–4 of the action cycle: Plan, Specify, Perform.",
+    "answer_key": "gulf of execution",
+    "explanation": "The gulf of execution is the distance between what the user wants to do and what the system lets them do. A wide gulf means the user cannot figure out how to accomplish their goal through the available interface controls."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Who coined the term 'direct manipulation' to describe interfaces where users act on visible objects with immediate feedback?",
+    "hint": "This researcher described it in 1983, before the term was widely adopted.",
+    "answer_key": "Shneiderman",
+    "explanation": "Ben Shneiderman (1983) coined the term 'direct manipulation' to describe interfaces where objects are visible, actions are physical (dragging, clicking), results are immediate, and actions are reversible. Hutchins, Hollan & Norman (1985) later provided the theoretical analysis of why it works."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "According to Staggers and Norcio (1993), what three outcomes does the strength of a user's mental model predict?",
+    "hint": "Think about day-to-day performance, handling mistakes, and learning new features.",
+    "answer_key": "task performance, error recovery, transfer to new tasks",
+    "explanation": "Their review of 40 studies found that stronger mental models predict better task performance (speed and accuracy), more effective error recovery (understanding what went wrong and how to fix it), and better transfer to new tasks (applying understanding to unfamiliar features)."
+  },
+  {
+    "id": 13,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A user is trying to schedule a recurring meeting in a calendar application. Walk through Norman's seven-stage action cycle for this task and identify where gulfs might appear.",
+    "hint": "Consider each stage and where the user might get stuck.",
+    "steps": [
+      {
+        "prompt": "The user's goal is 'schedule a weekly team standup at 9am.' They look at the calendar interface and see no obvious 'recurring event' button. Which gulf is wide, and at which stage does the breakdown occur?",
+        "answer_key": "The gulf of execution is wide, and the breakdown occurs at stage 2 (Plan) — the user cannot determine the correct action to take",
+        "explanation": "The user has a clear goal but cannot form a plan because the interface does not reveal how to create a recurring event. This is a planning failure within the gulf of execution. The action exists (perhaps buried in an event's settings) but the system image does not make it discoverable."
+      },
+      {
+        "prompt": "The user eventually finds 'Repeat' inside the event editor and sets it to weekly. After saving, the calendar shows only today's instance with no visual indication of recurrence. Which gulf is wide now?",
+        "answer_key": "The gulf of evaluation is wide — the user cannot perceive whether the recurrence was successfully set",
+        "explanation": "The user performed the action (narrow gulf of execution after discovery) but cannot tell from the system's appearance whether it worked. Without a visual indicator (e.g., a recurring icon on the event) or a confirmation message, the user is left uncertain at stage 5 (Perceive) and stage 7 (Compare)."
+      },
+      {
+        "prompt": "Propose one design change to narrow each gulf.",
+        "answer_key": "Execution: add a visible 'Make Recurring' option in the event creation flow or a right-click context menu. Evaluation: display a recurring icon on calendar events and show 'Repeats every week' in the event details.",
+        "explanation": "Narrowing the gulf of execution requires making the action discoverable — surfacing 'recurring' as a first-class option. Narrowing the gulf of evaluation requires providing visible feedback — an icon, a label, or a confirmation that shows the recurrence pattern. Both changes align the system image with the designer's model."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A smart thermostat has a simple dial and a small screen. Users frequently set the target temperature but don't understand why the HVAC doesn't immediately start. The system is in 'eco mode' which delays activation, but this mode is indicated only by a tiny leaf icon with no label.",
+    "hint": "Analyze using the three-model framework and the gulfs.",
+    "steps": [
+      {
+        "prompt": "Using Norman's three-model framework, explain the core problem.",
+        "answer_key": "The designer's model includes eco-mode delay logic, but the system image (a tiny unlabeled leaf icon) fails to communicate this to the user, so the user's model does not include the concept of eco-mode delay",
+        "explanation": "The gap between the designer's model and the user's model exists because the system image is inadequate. The leaf icon is too subtle and ambiguous to communicate the eco-mode behavior, so users build a mental model that does not account for the delay."
+      },
+      {
+        "prompt": "Which gulf is primarily responsible for user confusion, and at which stage?",
+        "answer_key": "The gulf of evaluation at stage 6 (Interpret) — the user perceives that nothing is happening but cannot interpret why",
+        "explanation": "The user sets the temperature (execution succeeded), observes that the HVAC is not running (perception works), but cannot interpret why there is a delay (interpretation fails). The system's state (eco-mode active, waiting for optimal activation time) is not communicated clearly."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "Compare a command-line file manager and a graphical file manager (like Windows Explorer) using the concepts of gulfs and direct manipulation.",
+    "hint": "Consider how each interface handles the task of moving a file from one folder to another.",
+    "steps": [
+      {
+        "prompt": "For the task 'move report.pdf from Documents to Archive,' describe the gulf of execution in a command-line interface vs. a graphical file manager.",
+        "answer_key": "Command line has a wide gulf: the user must recall the exact syntax (e.g., 'mv ~/Documents/report.pdf ~/Archive/'). Graphical file manager has a narrow gulf: the user drags the visible file icon to the visible folder.",
+        "explanation": "The command line requires the user to translate their intention into arbitrary syntax (recall task), while the graphical interface maps the intention directly to a physical action on visible objects (recognition task). The articulatory distance is much smaller in the graphical interface."
+      },
+      {
+        "prompt": "After the move, describe the gulf of evaluation for each interface.",
+        "answer_key": "Command line: narrow if successful (returns to prompt with no error), but ambiguous (no positive confirmation the file moved). Graphical: narrow — the file icon visibly disappears from Documents and appears in Archive.",
+        "explanation": "The graphical file manager provides continuous visual feedback — the file moves on screen. The command line provides only absence-of-error as confirmation, which is a weaker signal. Direct manipulation narrows the gulf of evaluation through visible state changes."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "Winograd and Flores (1986) introduced the concept of 'breakdowns' — moments when the user's transparent engagement with a tool is disrupted. A photo editing app crashes silently during an export, returning the user to the editor with no message. Analyze this breakdown through Norman's action cycle.",
+    "hint": "Walk through the evaluation stages (5–7) to identify where the breakdown occurs.",
+    "steps": [
+      {
+        "prompt": "The user clicked 'Export' and the app returned to the editor view. At which stage of the action cycle does the breakdown occur, and why?",
+        "answer_key": "Stage 6 (Interpret) — the user perceives the editor view but cannot interpret whether the export succeeded, failed, or is still in progress",
+        "explanation": "The user can perceive that they are back in the editor (stage 5 works), but the absence of any feedback — no success message, no error dialog, no progress indicator — makes interpretation impossible. The system image does not communicate its state."
+      },
+      {
+        "prompt": "Propose a design fix that narrows the gulf of evaluation and prevents this breakdown.",
+        "answer_key": "Show a clear notification indicating export status — success with file location, failure with error reason and retry option, or a progress bar during processing",
+        "explanation": "Feedback closes the gulf of evaluation. A success notification confirms the goal was achieved (stage 7). A failure notification with a reason and retry option enables error recovery. A progress bar prevents premature interpretation. All three prevent the breakdown by making the system state transparent."
+      }
+    ]
+  }
+]

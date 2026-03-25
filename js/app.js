@@ -2,6 +2,7 @@ const screens = {
   courseBrowser: document.getElementById('course-browser-screen'),
   study: document.getElementById('study-screen'),
   quiz: document.getElementById('quiz-screen'),
+  shaderEditor: document.getElementById('shader-editor-screen'),
 };
 
 function showScreen(name) {

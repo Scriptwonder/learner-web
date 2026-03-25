@@ -1,0 +1,190 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the fundamental distinction between slips and mistakes?",
+    "hint": "Think about where the error occurs — in the plan or in the execution.",
+    "options": ["A) Slips are minor; mistakes are major", "B) Slips have the correct intention but wrong execution; mistakes have the wrong intention", "C) Slips happen to novices; mistakes happen to experts", "D) Slips are cognitive; mistakes are physical"],
+    "answer_key": "B",
+    "explanation": "Reason (1990) defines slips as execution failures (correct intention, wrong action) and mistakes as planning failures (wrong intention, correctly executed). The distinction determines what kind of design intervention is appropriate."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "A user types their old password into the 'New Password' field during a password change because both fields look identical and are adjacent. What type of error is this?",
+    "hint": "The user intended to type the new password but entered it in a field that shares a similar description with the correct one.",
+    "options": ["A) Capture error", "B) Description error", "C) Mode error", "D) Knowledge-based mistake"],
+    "answer_key": "B",
+    "explanation": "This is a description error — the intended action (entering a password) is performed on the wrong object (old vs. new password field) because the two objects share a similar description. Both are password fields, side by side, with similar visual appearance."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In Rasmussen's SRK framework, at which level do slips typically occur?",
+    "hint": "Slips happen during automatic, routine behavior.",
+    "options": ["A) Knowledge-based", "B) Rule-based", "C) Skill-based", "D) Meta-cognitive"],
+    "answer_key": "C",
+    "explanation": "Slips occur at the skill-based level — the user is operating on autopilot, performing routine actions with minimal conscious attention. Something derails the automatic routine, causing the wrong action to be executed despite the correct intention."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "You intend to type a URL into the browser address bar, but the cursor focus is on a chat window. You type the URL into the chat and send it. This is a:",
+    "hint": "The system is in a different mode than the user expects.",
+    "options": ["A) Capture error", "B) Loss-of-activation error", "C) Mode error", "D) Rule-based mistake"],
+    "answer_key": "C",
+    "explanation": "This is a mode error. The user performed an action appropriate for one mode (address bar focused) while the system was in another mode (chat window focused). The user's mental model of the system state did not match the actual state."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A user wants to drive to a new restaurant but finds themselves on the route to work because that route is more practiced. Reason classifies this as a:",
+    "hint": "A more habitual action 'takes over' the intended action.",
+    "options": ["A) Description error", "B) Mode error", "C) Knowledge-based mistake", "D) Capture error"],
+    "answer_key": "D",
+    "explanation": "This is a capture error — the more frequently performed action (driving to work) 'captures' the intended but less practiced action (driving to the restaurant). Capture errors occur when two action sequences share a common beginning and the more habitual one takes over."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A junior developer sees a 'merge conflict' error and resolves it by deleting the conflicting file entirely, reasoning that 'removing the problem file fixes the problem.' This is a:",
+    "hint": "The user formed an incorrect plan based on incomplete understanding.",
+    "options": ["A) Capture error", "B) Description error", "C) Rule-based mistake", "D) Knowledge-based mistake"],
+    "answer_key": "D",
+    "explanation": "This is a knowledge-based mistake. The user encountered a novel situation (merge conflict), reasoned from an incomplete mental model, and formed a wrong plan. They executed the plan correctly (deleted the file), but the intention was wrong."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Reason's Swiss Cheese Model argues that accidents occur when:",
+    "hint": "Think about layers of defense and their imperfections.",
+    "options": ["A) A single catastrophic failure occurs in the system", "B) The user makes more than three errors in sequence", "C) Holes in multiple layers of defense align, allowing an error to pass through all defenses", "D) The system lacks any error handling code"],
+    "answer_key": "C",
+    "explanation": "The Swiss Cheese Model states that each layer of defense has holes (imperfections). An accident occurs when the holes in multiple layers align simultaneously, allowing an error to pass through every defense uncaught. The design goal is to ensure layers are independent so holes are unlikely to align."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "A user opens a new browser tab to search for something, but by the time the tab loads, they have forgotten what they wanted to search for. This is a:",
+    "hint": "The user's goal was lost during the action sequence.",
+    "options": ["A) Capture error", "B) Loss-of-activation error", "C) Rule-based mistake", "D) Description error"],
+    "answer_key": "B",
+    "explanation": "This is a loss-of-activation error — the user's goal was 'deactivated' (forgotten) during the execution of the action sequence. The intention was correct but the activation of the goal decayed before it could be completed."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Who published the foundational error taxonomy distinguishing slips from mistakes in 1990?",
+    "hint": "A British psychologist who also proposed the Swiss Cheese Model.",
+    "answer_key": "Reason",
+    "explanation": "James Reason published 'Human Error' in 1990, formalizing the slip/mistake taxonomy and introducing the Swiss Cheese Model of accident causation."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What does SRK stand for in Rasmussen's (1983) framework?",
+    "hint": "Three levels of cognitive control, from automatic to deliberate.",
+    "answer_key": "Skills, Rules, Knowledge",
+    "explanation": "Rasmussen's SRK framework describes three levels of human cognitive control: Skill-based (automatic), Rule-based (applying learned rules), and Knowledge-based (reasoning from first principles)."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Name the four subtypes of slips in Reason's taxonomy.",
+    "hint": "Think capture, description, mode, and one more related to forgetting.",
+    "answer_key": "capture, description, mode, loss-of-activation",
+    "explanation": "Reason identified four types of slips: capture errors (habitual action takes over), description errors (action on wrong but similar object), mode errors (action appropriate for wrong mode), and loss-of-activation errors (forgetting the goal mid-sequence)."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What research method did Reason (1979) primarily use to collect data on everyday human errors?",
+    "hint": "Participants recorded their own errors over time.",
+    "answer_key": "diary studies",
+    "explanation": "Reason asked participants to keep journals of their everyday errors — pressing the wrong button, going to the wrong room, saying the wrong word. Over several studies, he collected thousands of self-reported error events."
+  },
+  {
+    "id": 13,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A user in a photo editing app selects 50 photos and clicks 'Delete' instead of 'Download' because both buttons are adjacent, similarly styled, and start with 'D'. Classify the error, identify the cause, and propose a prevention strategy.",
+    "hint": "The two actions share a visual and textual description.",
+    "steps": [
+      {
+        "prompt": "Classify this error using Reason's taxonomy. Is it a slip or a mistake, and what subtype?",
+        "answer_key": "slip, description error",
+        "explanation": "This is a description error (a type of slip). The user had the correct intention (download photos) but performed the action on the wrong control because the correct and incorrect controls share a similar description — similar position, appearance, and starting letter."
+      },
+      {
+        "prompt": "At which level of Rasmussen's SRK framework did this error occur?",
+        "answer_key": "skill-based",
+        "explanation": "Description errors are slips, which occur at the skill-based level. The user was operating semi-automatically — they knew what they wanted (download) and reached for a button without carefully reading the label, relying on position and visual similarity."
+      },
+      {
+        "prompt": "Propose one design change that would prevent this specific error type.",
+        "answer_key": "Make the Delete button visually distinct from Download — use red color, different icon, and separate it spatially",
+        "explanation": "To prevent description errors, make similar objects visually distinct. Separating Delete from Download spatially, using a red color and trash icon for Delete versus a blue color and arrow icon for Download, eliminates the visual similarity that caused the slip."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "An ATM user withdraws cash, takes the money, and walks away — leaving their card in the machine. Apply the Swiss Cheese Model to analyze why this happened and how to fix it.",
+    "hint": "This is a well-studied error type related to forgetting a step after the main goal is achieved.",
+    "steps": [
+      {
+        "prompt": "What subtype of error is this? (Hint: the main goal has been achieved.)",
+        "answer_key": "loss-of-activation",
+        "explanation": "This is a loss-of-activation error (also called a post-completion error). The user's main goal (get cash) was achieved, and the remaining step (retrieve card) was forgotten because the goal activation decayed after the primary objective was met."
+      },
+      {
+        "prompt": "Using the Swiss Cheese Model, which layer of defense failed here?",
+        "answer_key": "prevention",
+        "explanation": "The prevention layer failed. The ATM design allowed the user to take cash and walk away without retrieving their card. There was no forcing function to prevent this sequence."
+      },
+      {
+        "prompt": "Many modern ATMs return the card BEFORE dispensing cash. Which type of forcing function is this?",
+        "answer_key": "interlock",
+        "explanation": "This is an interlock — operations must occur in the correct sequence. By requiring the user to take the card before receiving cash, the ATM forces the completion of the post-completion step as a prerequisite for the main goal. The user cannot forget their card because they must remove it to get the cash."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "For each scenario, classify the error as a slip or mistake, then identify the specific subtype.",
+    "hint": "Ask: did the user have the right intention?",
+    "steps": [
+      {
+        "prompt": "A user tries to close a document with Ctrl+W but the application interprets it as 'delete word' because they are in a different text mode. Slip or mistake, and what subtype?",
+        "answer_key": "slip, mode error",
+        "explanation": "This is a mode error (slip). The user had the correct intention (close document) but performed the action in the wrong mode. The keyboard shortcut means different things in different modes."
+      },
+      {
+        "prompt": "A user sees 'Low disk space' and deletes their System32 folder because they believe system files are unnecessary duplicates. Slip or mistake, and what subtype?",
+        "answer_key": "mistake, knowledge-based",
+        "explanation": "This is a knowledge-based mistake. The user formed a wrong plan (delete system files) based on an incorrect mental model (system files are unnecessary). The intention itself was wrong, but execution was correct."
+      },
+      {
+        "prompt": "A user wants to Reply to an email but clicks Reply All because the buttons are adjacent and they clicked too quickly. Slip or mistake, and what subtype?",
+        "answer_key": "slip, description error",
+        "explanation": "This is a description error (slip). The user had the correct intention (Reply) but clicked the wrong button because the two buttons share a similar description — similar label, similar position, similar appearance."
+      }
+    ]
+  }
+]

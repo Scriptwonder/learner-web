@@ -1,0 +1,185 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What does the just-noticeable difference (JND) represent?",
+    "hint": "Think about the smallest change a person can detect.",
+    "options": ["A) The absolute threshold for detecting any stimulus", "B) The smallest change in a stimulus that a person can reliably detect", "C) The maximum intensity a sense organ can handle", "D) The average intensity of a stimulus across all senses"],
+    "answer_key": "B",
+    "explanation": "The JND is the smallest difference between two stimuli that a person can reliably discriminate. It is not about detecting a stimulus from nothing (that's the absolute threshold) but about detecting a change from a reference level."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Weber's Law states that $\\frac{\\Delta I}{I} = k$. What does $k$ represent?",
+    "hint": "It is a constant that varies by sense, not by stimulus intensity.",
+    "options": ["A) The absolute threshold of detection", "B) The Weber fraction — a constant ratio for a given sense modality", "C) The intensity of the original stimulus", "D) The logarithm of the perceived intensity"],
+    "answer_key": "B",
+    "explanation": "The Weber fraction $k$ is a constant that depends on the sensory modality (e.g., ~2% for weight, ~8% for brightness). It does not change with the baseline intensity — that is the entire point of Weber's Law."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which sensory modality has the smallest Weber fraction, indicating the highest sensitivity to change?",
+    "hint": "Musicians rely on this sense's high sensitivity.",
+    "options": ["A) Brightness (~8%)", "B) Lifted weight (~2%)", "C) Pitch (~0.3%)", "D) Loudness (~5%)"],
+    "answer_key": "C",
+    "explanation": "Pitch discrimination has a Weber fraction of approximately 0.3%, meaning humans can detect a frequency change as small as 0.3% of the reference frequency. This is far more sensitive than brightness (8%) or weight (2%)."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A designer increases the font size of a heading from 16px to 17px. The Weber fraction for spatial extent is approximately 8%. Will users reliably notice this change?",
+    "hint": "Calculate $\\Delta I / I$ and compare to the Weber fraction.",
+    "options": ["A) Yes — 1px is always noticeable", "B) No — the 6.25% change is below the 8% Weber fraction", "C) Yes — any change to a heading is noticed because headings attract attention", "D) No — font size cannot be perceived at all"],
+    "answer_key": "B",
+    "explanation": "The change ratio is $1/16 = 6.25\\%$, which is below the ~8% Weber fraction for spatial extent. The change is below the just-noticeable difference and will not be reliably detected."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "According to Fechner's Law, perceived intensity $\\psi$ is related to physical stimulus intensity $I$ by which relationship?",
+    "hint": "Fechner integrated Weber's Law to derive a subjective sensation scale.",
+    "options": ["A) $\\psi = k \\cdot I$ (linear)", "B) $\\psi = k \\cdot I^2$ (quadratic)", "C) $\\psi = k \\ln(I / I_0)$ (logarithmic)", "D) $\\psi = k \\cdot S^n$ (power law)"],
+    "answer_key": "C",
+    "explanation": "Fechner derived that if each JND step is one subjective unit, then sensation grows as the logarithm of stimulus intensity: $\\psi = k \\ln(I / I_0)$. Option D describes Stevens' Power Law, which came later (1957)."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In Stevens' Power Law $\\psi = k \\cdot S^n$, what happens when the exponent $n < 1$?",
+    "hint": "Think about how brightness perception compresses large intensities.",
+    "options": ["A) Perception increases faster than the physical stimulus", "B) Perception increases linearly with the physical stimulus", "C) Perception compresses — large increases in stimulus produce diminishing perceptual change", "D) Perception becomes binary — the stimulus is either detected or not"],
+    "answer_key": "C",
+    "explanation": "When $n < 1$ (as with brightness, where $n \\approx 0.33$), the power function is concave — doubling the physical intensity does not double the perceived brightness. Large stimulus changes produce progressively smaller perceptual differences."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "A brightness slider maps physical luminance linearly from 0 to 255. A user at level 200 complains that increasing the slider by 5 steps produces no visible change. What is the most likely explanation based on Weber's Law?",
+    "hint": "Calculate the ratio and compare it to the Weber fraction for brightness.",
+    "options": ["A) The monitor is broken", "B) The 2.5% change ($5/200$) is below the ~8% Weber fraction for brightness", "C) The user is not paying attention", "D) Brightness cannot be changed in steps of 5"],
+    "answer_key": "B",
+    "explanation": "At level 200, a change of 5 represents $5/200 = 2.5\\%$, well below the ~8% Weber fraction for brightness. The user literally cannot see the difference. A perceptually uniform slider would use larger physical steps at higher intensities."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Why do ease-in-out animation curves feel more natural than linear animations, from a Weber's Law perspective?",
+    "hint": "Consider how the perceived rate of change relates to the current speed.",
+    "options": ["A) Linear animations are too fast for the eye to track", "B) Ease-in-out curves compensate for the diminishing perceptual impact of equal position increments at higher speeds", "C) The human eye can only process parabolic motion paths", "D) Linear animations violate Fechner's Law of color perception"],
+    "answer_key": "B",
+    "explanation": "At higher velocities, equal increments of position change produce diminishing perceptual impact (per Weber's Law applied to velocity perception). Ease-in-out curves produce larger position changes in the middle of the animation and smaller changes at the start and end, roughly matching perceptual sensitivity."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "If a reference weight is 500 g and the Weber fraction for lifted weight is 2%, what is the JND in grams?",
+    "hint": "Multiply the reference weight by the Weber fraction.",
+    "answer_key": "10",
+    "explanation": "$\\Delta I = k \\times I = 0.02 \\times 500 = 10$ grams. A person holding a 500 g weight needs at least a 10 g change to notice the difference."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A button has a 2px border. Using the Weber fraction of 8% for spatial extent, what is the minimum border increase (in px, rounded up to the nearest whole pixel) that a user could notice?",
+    "hint": "Calculate $\\Delta I = k \\times I$ and then round up since pixels are discrete.",
+    "answer_key": "1",
+    "explanation": "$\\Delta I = 0.08 \\times 2 = 0.16$ px. Since pixels are discrete, the minimum noticeable change rounds up to 1px. However, note that a 1px change on a 2px border is actually a 50% change — far above the JND — so it would be very noticeable."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "An element has 50px of padding. Using the spatial Weber fraction of 8%, what is the minimum padding increase (in px) that a user would notice?",
+    "hint": "Compute $\\Delta I = k \\times I$ for spatial extent.",
+    "answer_key": "4",
+    "explanation": "$\\Delta I = 0.08 \\times 50 = 4$ px. The padding must increase by at least 4px (from 50 to 54) for users to reliably detect the change."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "What is the name of the 1957 law that replaces Fechner's logarithmic function with a power function to model perceived intensity?",
+    "hint": "The psychologist who proposed it used magnitude estimation experiments.",
+    "answer_key": "Stevens' Power Law",
+    "explanation": "S. S. Stevens proposed the power law $\\psi = k \\cdot S^n$ in 1957, where the exponent $n$ varies by sensory modality. It provides a more accurate fit than Fechner's logarithmic law for many stimuli."
+  },
+  {
+    "id": 13,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A dashboard shows a progress bar at 80% width (320px of a 400px container). A background process advances it to 84% (336px). Will the user notice the change without a side-by-side comparison?",
+    "hint": "Use the Weber fraction for spatial extent (~8%) and calculate based on the bar's current width.",
+    "steps": [
+      {
+        "prompt": "What is the current width of the progress bar in pixels?",
+        "answer_key": "320",
+        "explanation": "80% of 400px = 320px."
+      },
+      {
+        "prompt": "What is the JND for a 320px element using a Weber fraction of 8%?",
+        "answer_key": "25.6",
+        "explanation": "$\\Delta I = 0.08 \\times 320 = 25.6$ px."
+      },
+      {
+        "prompt": "The bar grows by 16px (from 320 to 336). Is this above or below the JND? Will the user notice?",
+        "answer_key": "Below the JND — the user will not notice",
+        "explanation": "The 16px change is below the 25.6px JND. The ratio is $16/320 = 5\\%$, which is less than the 8% Weber fraction. The change will not be reliably detected. To ensure visibility, the bar would need to grow by at least 26px (to 346px, or ~86.5%)."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "You are designing a brightness slider for a photo editor. The slider has 100 discrete positions mapping linearly to luminance values 0-255. A user at position 10 (luminance 25.5) notices every step feels like a big jump, while a user at position 90 (luminance 229.5) says steps are invisible.",
+    "hint": "Apply Weber's Law to both ends of the slider and consider a nonlinear mapping.",
+    "steps": [
+      {
+        "prompt": "At position 10 (luminance 25.5), what is the percentage change per step? Is it above or below the ~8% Weber fraction for brightness?",
+        "answer_key": "~10% per step, above the Weber fraction",
+        "explanation": "Each step changes luminance by 2.55. At luminance 25.5, that is $2.55 / 25.5 = 10\\%$, which exceeds the 8% Weber fraction. Every step is noticeable."
+      },
+      {
+        "prompt": "At position 90 (luminance 229.5), what is the percentage change per step? Is it above or below the Weber fraction?",
+        "answer_key": "~1.1% per step, well below the Weber fraction",
+        "explanation": "At luminance 229.5, each 2.55-unit step is $2.55 / 229.5 \\approx 1.1\\%$, far below the 8% threshold. Multiple steps are needed before a change is visible."
+      },
+      {
+        "prompt": "What type of nonlinear mapping would fix this problem, making each step perceptually equal?",
+        "answer_key": "Logarithmic or power-law (gamma) mapping",
+        "explanation": "A logarithmic mapping (following Fechner's Law) or a power-law mapping (following Stevens' Law) would space low-luminance values further apart and high-luminance values closer together in physical units, making each slider step produce an approximately equal perceptual change."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "An e-commerce site wants to show a price discount badge. The original price is $50. What is the minimum discount that customers would perceive as meaningfully different from the original?",
+    "hint": "Weber fractions for numerical magnitude are approximately 10-15%.",
+    "steps": [
+      {
+        "prompt": "Using a Weber fraction of ~10% for price perception, what is the JND for a $50 item?",
+        "answer_key": "$5",
+        "explanation": "$\\Delta I = 0.10 \\times 50 = \\$5$. A discount must be at least $5 for the new price to feel perceptibly different from the original."
+      },
+      {
+        "prompt": "The site proposes a $2 discount (from $50 to $48). Would customers perceive this as a meaningful price difference?",
+        "answer_key": "No — $2 is below the $5 JND",
+        "explanation": "A $2 discount is only 4% of the original price, well below the ~10% Weber fraction for numerical magnitude. The price will not feel meaningfully different. A minimum discount of $5 (10%) is needed to cross the perceptual threshold."
+      }
+    ]
+  }
+]

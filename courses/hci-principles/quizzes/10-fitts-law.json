@@ -1,0 +1,200 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In Fitts's Law, what does the Index of Difficulty (ID) measure?",
+    "hint": "It combines distance and target width into a single number.",
+    "options": ["A) The number of pixels the cursor must travel", "B) The difficulty of the aiming task in bits, based on the ratio of distance to width", "C) The error rate of the pointing task", "D) The reaction time before movement begins"],
+    "answer_key": "B",
+    "explanation": "The Index of Difficulty $ID = \\log_2(D/W + 1)$ (Shannon formulation) expresses task difficulty in bits, combining how far the cursor must travel ($D$) and how small the target is ($W$) into a single measure."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "According to Fitts's Law, which change will reduce movement time the most?",
+    "hint": "Consider what happens inside the $\\log_2(D/W + 1)$ expression.",
+    "options": ["A) Changing the button color from blue to green", "B) Doubling the target width $W$ while keeping distance $D$ constant", "C) Adding a tooltip to the button", "D) Increasing the button's z-index"],
+    "answer_key": "B",
+    "explanation": "Doubling $W$ halves the $D/W$ ratio inside the logarithm, directly reducing the Index of Difficulty and thus the movement time. Color, tooltips, and z-index do not affect motor performance."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Why are targets at screen edges faster to click than targets of the same size in the middle of the screen?",
+    "hint": "Think about what happens to the cursor when it reaches the screen boundary.",
+    "options": ["A) The operating system pre-selects edge targets", "B) Edge targets have effectively infinite width because the cursor stops at the boundary", "C) Pixels at the edge are physically larger", "D) Users tend to look at edges more often"],
+    "answer_key": "B",
+    "explanation": "The screen edge acts as a physical barrier — the cursor cannot overshoot. This makes the effective target width infinite along the approach axis, reducing the Index of Difficulty to nearly zero."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the minimum recommended touch target size according to Apple's Human Interface Guidelines?",
+    "hint": "Think about the size of a fingertip.",
+    "options": ["A) $24 \\times 24$ px", "B) $32 \\times 32$ px", "C) $44 \\times 44$ points", "D) $64 \\times 64$ points"],
+    "answer_key": "C",
+    "explanation": "Apple recommends a minimum tappable area of $44 \\times 44$ points. This accounts for the average fingertip width and ensures that the effective target is large enough for reliable selection."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Which formulation of Fitts's Law is used in the ISO 9241-411 standard for evaluating pointing devices?",
+    "hint": "It was proposed by MacKenzie in 1992 and has a $+1$ inside the logarithm.",
+    "options": ["A) $MT = a + b \\cdot \\log_2(2D/W)$ (Fitts original)", "B) $MT = a + b \\cdot \\log_2(D/W + 1)$ (Shannon formulation)", "C) $MT = a + b \\cdot (D/W)$ (Linear model)", "D) $MT = a + b \\cdot \\log_2(D/W + 0.5)$ (Welford formulation)"],
+    "answer_key": "B",
+    "explanation": "MacKenzie (1992) showed the Shannon formulation $MT = a + b \\cdot \\log_2(D/W + 1)$ provides a better fit across conditions and ensures $ID \\geq 0$. It became the ISO standard."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "A context menu (right-click menu) appears directly at the cursor position. According to Fitts's Law, why is this faster than navigating to a menu bar at the top of the screen?",
+    "hint": "Think about the $D$ variable in the Fitts equation.",
+    "options": ["A) Context menus have larger font sizes", "B) The distance $D$ is near zero since the menu spawns at the cursor, drastically reducing movement time", "C) Context menus have fewer options", "D) Right-clicking is a faster motor action than left-clicking"],
+    "answer_key": "B",
+    "explanation": "When the menu appears at the cursor, $D \\approx 0$. The ID approaches $\\log_2(0/W + 1) = 0$ bits, meaning almost no aimed movement is needed. A menu bar hundreds of pixels away has a much higher $D$ and thus higher MT."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Throughput (TP) in Fitts's Law is defined as $TP = ID / MT$. A mouse achieves ~4.0 bits/s and a touchscreen achieves ~6.0 bits/s. What does this mean?",
+    "hint": "Higher throughput means the device converts motor effort into aimed movements more efficiently.",
+    "options": ["A) The mouse is more accurate but slower per bit of difficulty", "B) The touchscreen transmits more pointing information per second, making it a more efficient pointing channel", "C) The mouse requires more screen space", "D) Touchscreens have lower error rates"],
+    "answer_key": "B",
+    "explanation": "Throughput measures the rate at which a pointing system resolves spatial uncertainty. Higher TP means more bits of difficulty are overcome per second. A touchscreen's direct input (finger on target) provides higher motor bandwidth than the indirect mouse."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Bi, Li, and Zhai (2013) developed the FFitts model for touchscreens. What additional factor does FFitts account for that standard Fitts's Law does not?",
+    "hint": "Think about what a finger does that a cursor point does not.",
+    "options": ["A) Screen brightness affecting visibility", "B) The fat finger problem — the finger's contact area occludes the target, adding a size-independent accuracy floor", "C) Network latency on mobile devices", "D) The time to lift the finger after tapping"],
+    "answer_key": "B",
+    "explanation": "FFitts adds a term for the finger's absolute pointing uncertainty (the \"fat finger\" effect). Because the finger has a physical width that occludes the target, very small targets become disproportionately harder than standard Fitts's Law predicts."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "Using the Shannon formulation, calculate the Index of Difficulty (in bits, to two decimal places) for a target with $D = 300$ px and $W = 100$ px.",
+    "hint": "$ID = \\log_2(D/W + 1)$.",
+    "answer_key": "2.00",
+    "explanation": "$ID = \\log_2(300/100 + 1) = \\log_2(4) = 2.00$ bits."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A button has $D = 500$ px and $W = 50$ px. Using the Shannon formulation, what is the Index of Difficulty in bits (to two decimal places)?",
+    "hint": "$ID = \\log_2(D/W + 1) = \\log_2(11)$. Use that $\\log_2(11) \\approx 3.46$.",
+    "answer_key": "3.46",
+    "explanation": "$ID = \\log_2(500/50 + 1) = \\log_2(11) \\approx 3.46$ bits."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "If $a = 50$ ms and $b = 150$ ms/bit, what is the predicted movement time (in ms) for a target with $ID = 3.0$ bits?",
+    "hint": "$MT = a + b \\cdot ID$.",
+    "answer_key": "500",
+    "explanation": "$MT = 50 + 150 \\times 3.0 = 50 + 450 = 500$ ms."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "A user completes a pointing task with $ID = 4.0$ bits in 900 ms. What is the throughput in bits/s (to two decimal places)?",
+    "hint": "$TP = ID / MT$. Convert MT to seconds first.",
+    "answer_key": "4.44",
+    "explanation": "$TP = 4.0 / 0.9 = 4.44$ bits/s."
+  },
+  {
+    "id": 13,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A dialog has two submit button designs. Design A: $D = 400$ px, $W = 60$ px. Design B: $D = 200$ px, $W = 100$ px. Use the Shannon formulation with $a = 50$ ms, $b = 150$ ms/bit. Determine which is faster.",
+    "hint": "Compute ID for each, then MT.",
+    "steps": [
+      {
+        "prompt": "What is the Index of Difficulty for Design A (in bits, to two decimal places)?",
+        "answer_key": "2.94",
+        "explanation": "$ID_A = \\log_2(400/60 + 1) = \\log_2(7.667) \\approx 2.94$ bits."
+      },
+      {
+        "prompt": "What is the Index of Difficulty for Design B (in bits, to two decimal places)?",
+        "answer_key": "1.58",
+        "explanation": "$ID_B = \\log_2(200/100 + 1) = \\log_2(3) \\approx 1.58$ bits."
+      },
+      {
+        "prompt": "What is the movement time difference between Design A and Design B (in ms, to the nearest integer)?",
+        "answer_key": "204",
+        "explanation": "$MT_A = 50 + 150 \\times 2.94 = 50 + 441 = 491$ ms. $MT_B = 50 + 150 \\times 1.58 = 50 + 237 = 287$ ms. Difference: $491 - 287 = 204$ ms. Design B is 204 ms faster per click."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A toolbar has a \"Save\" button ($W = 80$ px) at distance $D = 600$ px from the typical cursor position. A redesign moves it to the screen edge where $D = 800$ px but $W$ is effectively infinite. Compare using the Shannon formulation with $a = 50$ ms, $b = 150$ ms/bit.",
+    "hint": "For the edge target, as $W \\to \\infty$, the $D/W$ ratio approaches 0.",
+    "steps": [
+      {
+        "prompt": "What is the ID for the original non-edge button (in bits, to two decimal places)?",
+        "answer_key": "3.09",
+        "explanation": "$ID = \\log_2(600/80 + 1) = \\log_2(8.5) \\approx 3.09$ bits."
+      },
+      {
+        "prompt": "What does the ID approach for the edge-positioned button as $W \\to \\infty$?",
+        "answer_key": "0",
+        "explanation": "As $W \\to \\infty$, $D/W \\to 0$, so $ID = \\log_2(0 + 1) = \\log_2(1) = 0$ bits. The cursor cannot overshoot the screen edge, making the target effectively infinitely wide."
+      },
+      {
+        "prompt": "What is the predicted MT for the original button and for the edge button (in ms)?",
+        "answer_key": "Original: ~514 ms; Edge: ~50 ms",
+        "explanation": "Original: $MT = 50 + 150 \\times 3.09 = 513.5 \\approx 514$ ms. Edge: $MT = 50 + 150 \\times 0 = 50$ ms (just the base overhead). The edge button is approximately 10x faster."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "An inline \"Edit\" button appears 20px from the text it edits ($W = 60$ px). A toolbar \"Edit\" button is 500px away ($W = 40$ px). Compare the two using the Shannon formulation with $a = 50$ ms, $b = 150$ ms/bit.",
+    "hint": "Calculate ID for each. The inline button should have a much smaller $D/W$ ratio.",
+    "steps": [
+      {
+        "prompt": "What is the ID for the inline edit button (to two decimal places)?",
+        "answer_key": "0.42",
+        "explanation": "$ID = \\log_2(20/60 + 1) = \\log_2(1.333) \\approx 0.42$ bits."
+      },
+      {
+        "prompt": "What is the ID for the toolbar edit button (to two decimal places)?",
+        "answer_key": "3.75",
+        "explanation": "$ID = \\log_2(500/40 + 1) = \\log_2(13.5) \\approx 3.75$ bits."
+      },
+      {
+        "prompt": "How much faster (in ms) is the inline button?",
+        "answer_key": "500",
+        "explanation": "$MT_{inline} = 50 + 150 \\times 0.42 = 113$ ms. $MT_{toolbar} = 50 + 150 \\times 3.75 = 613$ ms. Difference: $613 - 113 = 500$ ms. The inline button is ~500 ms faster because both $D$ is smaller and $W$ is larger."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "MacKenzie and Buxton (1992) studied Fitts's Law for 2D rectangular targets. They found that the relevant $W$ in the Fitts formula should be:",
+    "hint": "Think about which dimension matters when approaching a rectangle from a specific direction.",
+    "options": ["A) The target's area divided by its perimeter", "B) The minimum of width and height", "C) The target's extent along the axis of approach", "D) The diagonal of the rectangle"],
+    "answer_key": "C",
+    "explanation": "The relevant $W$ is the target dimension along the approach axis. A wide button is easier to hit from the left/right (large $W$) than from above/below (small $W$), even if the overall area is the same."
+  }
+]

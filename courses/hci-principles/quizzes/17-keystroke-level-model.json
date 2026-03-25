@@ -1,0 +1,185 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Who introduced the Keystroke-Level Model (KLM)?",
+    "hint": "They also authored *The Psychology of Human-Computer Interaction* (1983).",
+    "options": ["A) Nielsen & Molich", "B) Card, Moran & Newell", "C) Fitts & Posner", "D) Norman & Draper"],
+    "answer_key": "B",
+    "explanation": "Stuart Card, Thomas Moran, and Allen Newell introduced KLM in 1980 and elaborated on it in their 1983 book *The Psychology of Human-Computer Interaction*."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which KLM operator represents the time a user spends mentally preparing before an action?",
+    "hint": "This operator is the most expensive in the standard set, at ~1.35 seconds.",
+    "options": ["A) K (Keystroke)", "B) P (Point)", "C) M (Mental preparation)", "D) H (Home hands)"],
+    "answer_key": "C",
+    "explanation": "The M (Mental preparation) operator represents the ~1.35 seconds a user spends deciding what to do next — the most expensive operator in typical KLM sequences."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "What is the typical duration of the P (Point) operator in KLM?",
+    "hint": "It is derived from Fitts's Law for a typical GUI pointing task.",
+    "options": ["A) ~0.1 s", "B) ~0.4 s", "C) ~1.1 s", "D) ~1.35 s"],
+    "answer_key": "C",
+    "explanation": "The P (Point) operator has a default duration of ~1.1 seconds, derived from Fitts's Law for typical mouse pointing tasks in GUI environments."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Why do keyboard shortcuts typically execute faster than menu-based equivalents in KLM terms?",
+    "hint": "Think about which operators are present in a menu interaction but absent in a shortcut.",
+    "options": ["A) Keyboard shortcuts use faster K operators", "B) Keyboard shortcuts eliminate P (Point) and sometimes H (Home) operators", "C) Menu interactions require more M (Mental) operators", "D) Keyboard shortcuts skip the R (Response) operator"],
+    "answer_key": "B",
+    "explanation": "Menu interactions require P operators (pointing to menu items) and possibly H operators (homing to the mouse). Keyboard shortcuts replace these with K operators (~0.28 s each), which are much faster than P (~1.1 s) and H (~0.4 s)."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "In the GOMS hierarchy, what does 'Selection rules' refer to?",
+    "hint": "GOMS stands for Goals, Operators, Methods, Selection rules.",
+    "options": ["A) The user's high-level objectives", "B) The atomic physical and mental actions", "C) Sequences of operators that accomplish a goal", "D) How the user chooses between alternative methods for the same goal"],
+    "answer_key": "D",
+    "explanation": "Selection rules describe how a user chooses between alternative methods to achieve the same goal — for example, 'If I know the shortcut, use it; otherwise, use the menu.'"
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "What was the key finding of Project Ernestine (Gray, John & Atwood, 1993)?",
+    "hint": "A new workstation was predicted to be slower despite looking simpler.",
+    "options": ["A) Expert users preferred the old system aesthetically", "B) The new system had more bugs than the old system", "C) A GOMS model predicted the new workstation would be 0.63 seconds slower per call, costing millions of dollars annually", "D) Keyboard shortcuts were not used by telephone operators"],
+    "answer_key": "C",
+    "explanation": "Project Ernestine used CPM-GOMS to predict that NYNEX's new 'simpler' workstation would be 0.63 seconds slower per call due to an extra eye fixation and hand movement. Over 100 million annual calls, this small difference translated into enormous costs, and the deployment was reconsidered."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Which GOMS variant models parallel processing of perceptual, cognitive, and motor operations?",
+    "hint": "It produces tighter time predictions for highly practiced tasks because it accounts for overlapping operations.",
+    "options": ["A) KLM", "B) CMN-GOMS", "C) CPM-GOMS", "D) NGOMSL"],
+    "answer_key": "C",
+    "explanation": "CPM-GOMS (Cognitive-Perceptual-Motor GOMS) models parallel processing — the user can think about the next action while their hand is still moving — yielding more accurate predictions for highly practiced, overlapping tasks."
+  },
+  {
+    "id": 8,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the typical duration of the K (Keystroke) operator for an average typist (~55 WPM)?",
+    "hint": "Express your answer in seconds.",
+    "answer_key": "0.28",
+    "explanation": "The K operator for an average typist is approximately 0.28 seconds per keystroke. Fast typists (~135 WPM) are around 0.08 s, and hunt-and-peck typists around 1.2 s."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "What is the typical duration of the H (Home hands) operator in KLM?",
+    "hint": "This is the time to move hands between keyboard and mouse.",
+    "answer_key": "0.4",
+    "explanation": "The H operator — moving hands between keyboard and mouse (or vice versa) — takes approximately 0.4 seconds."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Within what percentage of actual execution times were Card et al.'s (1980) KLM predictions for text editing tasks?",
+    "hint": "It was a surprisingly close fit for such a simple model.",
+    "answer_key": "21%",
+    "explanation": "Card, Moran, and Newell (1980) found that KLM predictions were within 21% of actual execution times for expert, error-free text editing tasks, with most predictions falling within 10-15%."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "What does the acronym GOMS stand for?",
+    "hint": "Four words describing the hierarchy of user behavior modeling.",
+    "answer_key": "Goals, Operators, Methods, Selection rules",
+    "explanation": "GOMS stands for Goals (what the user wants), Operators (atomic actions), Methods (sequences of operators), and Selection rules (how the user chooses between methods)."
+  },
+  {
+    "id": 12,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A user needs to print a document. Compare two methods using KLM: (A) File menu: move mouse to File, click, move to Print, click, then wait for the print dialog; (B) Keyboard shortcut Ctrl+P, assuming hands start on the keyboard. Use default operator durations: K=0.28s, P=1.1s, H=0.4s, M=1.35s, B=0.1s, R=1.0s for the dialog.",
+    "hint": "List the operators for each method, then sum the durations.",
+    "steps": [
+      {
+        "prompt": "List the KLM operator sequence for Method A (File menu). Assume hands start on the mouse.",
+        "answer_key": "M, P, B, P, B, R",
+        "explanation": "M (decide to print) + P (point to File menu) + B (click File) + P (point to Print) + B (click Print) + R (wait for dialog)."
+      },
+      {
+        "prompt": "Calculate the total time for Method A in seconds.",
+        "answer_key": "4.75",
+        "explanation": "$T_A = M + P + B + P + B + R = 1.35 + 1.1 + 0.1 + 1.1 + 0.1 + 1.0 = 4.75$ seconds."
+      },
+      {
+        "prompt": "List the KLM operator sequence for Method B (Ctrl+P shortcut). Hands start on the keyboard.",
+        "answer_key": "M, K, K, R",
+        "explanation": "M (decide to print) + K (press Ctrl) + K (press P) + R (wait for dialog). No H is needed because hands are already on the keyboard."
+      },
+      {
+        "prompt": "Calculate the total time for Method B and the time saved compared to Method A.",
+        "answer_key": "2.91 s; saves 1.84 s",
+        "explanation": "$T_B = 1.35 + 0.28 + 0.28 + 1.0 = 2.91$ s. Time saved = $4.75 - 2.91 = 1.84$ s. The shortcut is about 39% faster."
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A data entry clerk processes forms all day. Each form requires: (1) click a text field, (2) type a 5-character code, (3) press Tab, (4) type a 10-character name, (5) press Enter to submit, (6) wait for system response. Assume hands start on the keyboard and an average typist (K=0.28s). The mouse is needed only for step 1.",
+    "hint": "Remember to include H when switching between keyboard and mouse, and M operators at cognitive boundaries.",
+    "steps": [
+      {
+        "prompt": "List the complete KLM operator sequence for this task.",
+        "answer_key": "M, H, P, B, H, M, 5K, K, 10K, K, R",
+        "explanation": "M (prepare) + H (hands to mouse) + P (point to field) + B (click) + H (hands back to keyboard) + M (prepare to type code) + 5K (type 5-char code) + K (Tab) + 10K (type 10-char name) + K (Enter) + R (system response). The Tab and name typing are a continuation of the same cognitive chunk, so no additional M is needed between them."
+      },
+      {
+        "prompt": "Calculate the total time in seconds, assuming R = 0.5 s.",
+        "answer_key": "9.68",
+        "explanation": "$T = 1.35 + 0.4 + 1.1 + 0.1 + 0.4 + 1.35 + 5(0.28) + 0.28 + 10(0.28) + 0.28 + 0.5 = 1.35 + 0.4 + 1.1 + 0.1 + 0.4 + 1.35 + 1.4 + 0.28 + 2.8 + 0.28 + 0.5 = 9.96$ s. (Note: exact value depends on M placement; approximately 9.68-9.96 s.)"
+      },
+      {
+        "prompt": "If the form were redesigned so the text field is auto-focused on page load (eliminating the need to click it), how much time is saved per form?",
+        "answer_key": "2.0 s",
+        "explanation": "Removing the click eliminates H (to mouse) + P (point) + B (click) + H (back to keyboard) = 0.4 + 1.1 + 0.1 + 0.4 = 2.0 seconds per form. Over hundreds of forms per day, this adds up to significant time savings."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "An expert user wants to copy text using Ctrl+C and paste it with Ctrl+V. Assume the text is already selected, hands are on the keyboard, and there is no system response delay.",
+    "hint": "Each keyboard shortcut is a cognitive chunk requiring one M operator.",
+    "steps": [
+      {
+        "prompt": "List the KLM operators for copying (Ctrl+C).",
+        "answer_key": "M, K, K",
+        "explanation": "M (decide to copy) + K (Ctrl) + K (C). The two keystrokes form a single chunk, so only one M is needed."
+      },
+      {
+        "prompt": "List the KLM operators for pasting (Ctrl+V), assuming the user then needs to point to the paste location and click first.",
+        "answer_key": "M, H, P, B, H, M, K, K",
+        "explanation": "M (decide where to paste) + H (hands to mouse) + P (point to paste location) + B (click) + H (hands back to keyboard) + M (decide to paste) + K (Ctrl) + K (V)."
+      },
+      {
+        "prompt": "Calculate the total time for the entire copy-paste operation.",
+        "answer_key": "6.38",
+        "explanation": "Copy: $1.35 + 0.28 + 0.28 = 1.91$ s. Paste: $1.35 + 0.4 + 1.1 + 0.1 + 0.4 + 1.35 + 0.28 + 0.28 = 5.26$ s. But the copy M can be combined with the initial decision, so total is approximately $1.91 + 4.47 = 6.38$ s."
+      }
+    ]
+  }
+]

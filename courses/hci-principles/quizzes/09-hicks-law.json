@@ -1,0 +1,209 @@
+[
+  {
+    "id": 1,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Hick's Law states that reaction time increases with the number of choices in what mathematical relationship?",
+    "hint": "Think about the shape of the curve — it grows, but not linearly.",
+    "options": ["A) Linear", "B) Exponential", "C) Logarithmic", "D) Quadratic"],
+    "answer_key": "C",
+    "explanation": "Hick's Law follows a logarithmic relationship: $RT = a + b \\cdot \\log_2(n)$. Each doubling of alternatives adds a constant increment of time, not a proportional one."
+  },
+  {
+    "id": 2,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "In the Hick-Hyman Law $RT = a + b \\cdot \\log_2(n)$, what does the constant $a$ represent?",
+    "hint": "Consider what happens when $n = 1$ (no choice to make).",
+    "options": ["A) The number of practice trials", "B) The base reaction time for stimulus perception and motor response", "C) The Weber fraction for the task", "D) The total number of alternatives"],
+    "answer_key": "B",
+    "explanation": "The constant $a$ is the irreducible base reaction time — the time to perceive the stimulus and execute a motor response even when there is no decision to make (only one option)."
+  },
+  {
+    "id": 3,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "A dropdown menu contains 16 equally likely options. How many bits of information does the user need to process to select one item?",
+    "hint": "Use $\\log_2(n)$ to compute the information content.",
+    "options": ["A) 2 bits", "B) 3 bits", "C) 4 bits", "D) 8 bits"],
+    "answer_key": "C",
+    "explanation": "$\\log_2(16) = 4$ bits. Each doubling of alternatives adds one bit: 2 items = 1 bit, 4 items = 2 bits, 8 items = 3 bits, 16 items = 4 bits."
+  },
+  {
+    "id": 4,
+    "type": "multiple_choice",
+    "difficulty": "easy",
+    "question": "Which of the following techniques sidesteps Hick's Law entirely when selecting from a large option set?",
+    "hint": "Think about transforming the task from visual scanning to recall.",
+    "options": ["A) Making all options the same color", "B) Sorting items alphabetically", "C) Providing a search/filter field", "D) Increasing font size"],
+    "answer_key": "C",
+    "explanation": "A search field transforms the task from choosing among visible options (governed by Hick's Law) to recalling and typing the desired option. The user does not scan or decide among presented alternatives."
+  },
+  {
+    "id": 5,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "Landauer and Nachbar (1985) found that broader, shallower menus outperformed narrower, deeper menus. Why does this happen despite the total information being the same?",
+    "hint": "Consider the overhead cost at each navigation level.",
+    "options": ["A) Broader menus are more colorful and attract attention", "B) Each additional level adds a fixed base RT cost $a$, increasing total time", "C) Narrower menus have smaller font sizes", "D) Users cannot learn deep menu structures"],
+    "answer_key": "B",
+    "explanation": "While total bits may be equal, each additional menu level adds a base reaction time $a$ (perception + motor execution). A 3-level menu pays $3a$ while a 2-level menu pays $2a$. The extra level's overhead outweighs any per-level decision time savings."
+  },
+  {
+    "id": 6,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "An expert user who has memorized the position of every item in a 30-item toolbar clicks on items almost as fast as in a 5-item toolbar. Which factor best explains this?",
+    "hint": "Consider what replaces serial visual search for practiced users.",
+    "options": ["A) The expert's eyes move faster", "B) Spatial memory allows direct targeting, bypassing the decision process", "C) The expert reads labels faster", "D) Practice reduces the number of options displayed"],
+    "answer_key": "B",
+    "explanation": "Hick's Law assumes the user must search and decide. Expert users with stable spatial layouts bypass the decision process entirely — they execute a ballistic movement to a known location, making RT nearly independent of menu length."
+  },
+  {
+    "id": 7,
+    "type": "multiple_choice",
+    "difficulty": "medium",
+    "question": "According to Hyman's (1953) extension of Hick's Law, what is the true predictor of reaction time when choice probabilities are unequal?",
+    "hint": "Think about information theory and how probability affects information content.",
+    "options": ["A) The total number of items $n$", "B) The probability of the most frequent item", "C) Shannon entropy $H = -\\sum p_i \\log_2 p_i$", "D) The standard deviation of the probabilities"],
+    "answer_key": "C",
+    "explanation": "Hyman showed that RT is linear in Shannon entropy $H$, not in $n$. When items have unequal probabilities, a few high-probability items carry less information per selection, reducing effective decision time below what $\\log_2(n)$ would predict."
+  },
+  {
+    "id": 8,
+    "type": "multiple_choice",
+    "difficulty": "hard",
+    "question": "Cockburn, Gutwin, and Greenberg (2007) found that adaptive menus that reorder items by frequency can hurt expert users. What is the most likely cause?",
+    "hint": "Experts rely on something that reordering destroys.",
+    "options": ["A) Experts prefer larger fonts", "B) Reordering breaks spatial consistency, forcing experts back into serial search", "C) Adaptive menus add too many items", "D) Experts do not use menus at all"],
+    "answer_key": "B",
+    "explanation": "Experts develop spatial memory for fixed menu layouts, allowing them to bypass Hick's Law. When an adaptive menu rearranges items, the expert can no longer rely on position — they must visually search and decide, re-introducing the full Hick's Law cost."
+  },
+  {
+    "id": 9,
+    "type": "short_answer",
+    "difficulty": "easy",
+    "question": "A dropdown has 32 equally likely items. How many bits of information does the selection carry? Express as a whole number.",
+    "hint": "Compute $\\log_2(32)$.",
+    "answer_key": "5",
+    "explanation": "$\\log_2(32) = 5$ bits, because $2^5 = 32$."
+  },
+  {
+    "id": 10,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "Using Hick's Law with $a = 200$ ms and $b = 150$ ms/bit, what is the predicted reaction time (in ms) for choosing among 8 equally likely alternatives?",
+    "hint": "First compute $\\log_2(8)$, then apply $RT = a + b \\cdot \\log_2(n)$.",
+    "answer_key": "650",
+    "explanation": "$\\log_2(8) = 3$ bits. $RT = 200 + 150 \\times 3 = 200 + 450 = 650$ ms."
+  },
+  {
+    "id": 11,
+    "type": "short_answer",
+    "difficulty": "medium",
+    "question": "A menu is organized into 4 categories of 8 items each. The user first picks a category, then picks an item. What is the total number of bits of information processed (assuming equal probabilities at each level)?",
+    "hint": "Add the bits from each decision: $\\log_2(4) + \\log_2(8)$.",
+    "answer_key": "5",
+    "explanation": "$\\log_2(4) + \\log_2(8) = 2 + 3 = 5$ bits. Note this equals $\\log_2(32) = 5$ bits — the same total information as a flat list of 32 items."
+  },
+  {
+    "id": 12,
+    "type": "short_answer",
+    "difficulty": "hard",
+    "question": "A 64-item menu is split into a 2-level hierarchy. If each level has $\\sqrt{64} = 8$ items, what is the total predicted RT using $a = 200$ ms and $b = 150$ ms/bit?",
+    "hint": "There are two decisions, each among 8 items. Each decision has its own base RT $a$.",
+    "answer_key": "1300",
+    "explanation": "Two decisions, each among 8 items: $RT = 2 \\times (200 + 150 \\times \\log_2(8)) = 2 \\times (200 + 450) = 2 \\times 650 = 1300$ ms."
+  },
+  {
+    "id": 13,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A settings panel currently shows all 16 options in a flat list. A redesign proposes grouping them into 4 categories of 4 options each. Compare the two designs using Hick's Law with $a = 200$ ms and $b = 150$ ms/bit, assuming equal probabilities and an unfamiliar user.",
+    "hint": "Calculate RT for each design, remembering that the hierarchical design has two sequential decisions.",
+    "steps": [
+      {
+        "prompt": "What is the predicted RT for the flat list of 16 options (in ms)?",
+        "answer_key": "800",
+        "explanation": "$RT = 200 + 150 \\times \\log_2(16) = 200 + 150 \\times 4 = 800$ ms."
+      },
+      {
+        "prompt": "What is the predicted total RT for the 2-level hierarchical design (choose 1 of 4 categories, then 1 of 4 items) in ms?",
+        "answer_key": "1000",
+        "explanation": "$RT = (200 + 150 \\times \\log_2(4)) + (200 + 150 \\times \\log_2(4)) = (200 + 300) + (200 + 300) = 1000$ ms."
+      },
+      {
+        "prompt": "Based on the pure Hick's Law calculation, which design is faster and by how much (in ms)?",
+        "answer_key": "Flat list is faster by 200 ms",
+        "explanation": "The flat list (800 ms) is 200 ms faster than the hierarchy (1000 ms). The hierarchical design pays an extra base cost $a$ for the second decision. However, in practice, the hierarchy often wins because users can skip irrelevant categories, reducing effective $n$ below the equal-probability assumption."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "An e-commerce site shows a category page with 64 products. Design A shows all 64 in a grid. Design B shows 8 subcategory filters; selecting one reveals 8 products. Design C adds a search bar. Analyze using $a = 250$ ms, $b = 150$ ms/bit.",
+    "hint": "Calculate RT for Designs A and B. For Design C, consider that search bypasses Hick's Law.",
+    "steps": [
+      {
+        "prompt": "What is the predicted RT for Design A (flat grid of 64 items) in ms?",
+        "answer_key": "1150",
+        "explanation": "$RT = 250 + 150 \\times \\log_2(64) = 250 + 150 \\times 6 = 250 + 900 = 1150$ ms."
+      },
+      {
+        "prompt": "What is the predicted total RT for Design B (2-level: 8 subcategories, then 8 items) in ms?",
+        "answer_key": "1400",
+        "explanation": "$RT = (250 + 150 \\times \\log_2(8)) + (250 + 150 \\times \\log_2(8)) = (250 + 450) + (250 + 450) = 700 + 700 = 1400$ ms."
+      },
+      {
+        "prompt": "Why might Design C (search bar) outperform both A and B even though Hick's Law cannot predict its RT?",
+        "answer_key": "Search transforms the task from visual scanning/deciding to recall and typing, bypassing Hick's Law entirely",
+        "explanation": "The search bar sidesteps Hick's Law because the user does not choose among presented alternatives. Instead, they recall what they want and type it. For users who know what they are looking for, this is faster than any visual scanning approach, regardless of $n$."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "type": "multi_step",
+    "difficulty": "medium",
+    "question": "A command palette (like VS Code's Ctrl+Shift+P) shows a searchable list of 200 commands. A user who knows the command name types 3 characters, narrowing the list to 4 visible matches. Analyze the decision cost at each stage using $a = 200$ ms, $b = 150$ ms/bit.",
+    "hint": "The typing phase bypasses Hick's Law. Only the final selection from filtered results uses it.",
+    "steps": [
+      {
+        "prompt": "Does Hick's Law apply to the typing phase (entering 3 characters into the search field)?",
+        "answer_key": "No",
+        "explanation": "Hick's Law governs choice among visible alternatives. Typing a known command name is a recall-and-motor task, not a decision among presented options."
+      },
+      {
+        "prompt": "What is the predicted RT for choosing among the 4 filtered results (in ms)?",
+        "answer_key": "500",
+        "explanation": "$RT = 200 + 150 \\times \\log_2(4) = 200 + 150 \\times 2 = 500$ ms. The search reduced the effective $n$ from 200 to 4, cutting the decision from $\\log_2(200) \\approx 7.6$ bits to just 2 bits."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "type": "multi_step",
+    "difficulty": "hard",
+    "question": "A toolbar redesign reduces visible actions from 20 to 5, placing the remaining 15 in an overflow menu. Analyze the tradeoffs for both novice and expert users, using $a = 200$ ms, $b = 150$ ms/bit.",
+    "hint": "Consider that experts may have memorized positions in the original 20-item toolbar.",
+    "steps": [
+      {
+        "prompt": "For a novice user performing a common action (in the visible 5), what is the predicted RT for the redesigned toolbar (in ms)?",
+        "answer_key": "548",
+        "explanation": "$RT = 200 + 150 \\times \\log_2(5) = 200 + 150 \\times 2.32 \\approx 548$ ms."
+      },
+      {
+        "prompt": "For the same novice user, what was the predicted RT with the original 20-item toolbar (in ms)?",
+        "answer_key": "849",
+        "explanation": "$RT = 200 + 150 \\times \\log_2(20) = 200 + 150 \\times 4.32 \\approx 849$ ms."
+      },
+      {
+        "prompt": "Why might an expert user actually be slower with the redesigned 5-item toolbar for an action now hidden in the overflow?",
+        "answer_key": "The expert had spatial memory for the action's position in the 20-item toolbar. Now they must open the overflow menu and search, paying both a Hick's Law cost and an extra click.",
+        "explanation": "Expert users bypass Hick's Law through spatial memory. Moving an action to an overflow menu forces even experts to: (1) click the overflow button, (2) search the overflow list, and (3) click the target — losing the spatial shortcut they had memorized."
+      }
+    ]
+  }
+]
