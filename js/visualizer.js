@@ -117,6 +117,10 @@ function disposeScene() {
 
 // === UTILITY: COMMON OBJECTS ===
 
+function isLightTheme() {
+  return document.documentElement.getAttribute('data-theme') === 'light';
+}
+
 const COLORS = {
   accent: 0xd4a04a,
   cyan: 0x4ecdc4,
@@ -129,15 +133,21 @@ const COLORS = {
 };
 
 function addGrid() {
-  const grid = new THREE.GridHelper(8, 8, COLORS.gridCenter, COLORS.grid);
-  grid.material.opacity = 0.5;
+  const light = isLightTheme();
+  const gridColor = light ? 0xd0c8b8 : COLORS.grid;
+  const centerColor = light ? 0xc0b8a8 : COLORS.gridCenter;
+  const grid = new THREE.GridHelper(6, 6, centerColor, gridColor);
+  grid.material.opacity = light ? 0.35 : 0.4;
   grid.material.transparent = true;
   scene.add(grid);
 }
 
 function addAxes(size = 3) {
+  const headLen = size * 0.12;
+  const headW = size * 0.06;
   const makeAxis = (dir, color) => {
-    const arrow = new THREE.ArrowHelper(dir, new THREE.Vector3(), size, color, 0.15, 0.08);
+    const arrow = new THREE.ArrowHelper(dir, new THREE.Vector3(), size, color, headLen, headW);
+    arrow.line.material.linewidth = 2;
     scene.add(arrow);
     return arrow;
   };
@@ -147,18 +157,18 @@ function addAxes(size = 3) {
 
   // Labels
   const labels = [
-    { text: 'X', pos: [size + 0.2, 0, 0], color: '#e85d5d' },
-    { text: 'Y', pos: [0, size + 0.2, 0], color: '#50c878' },
-    { text: 'Z', pos: [0, 0, size + 0.2], color: '#4488ff' },
+    { text: 'X', pos: [size + 0.3, 0, 0], color: '#e85d5d' },
+    { text: 'Y', pos: [0, size + 0.3, 0], color: '#50c878' },
+    { text: 'Z', pos: [0, 0, size + 0.3], color: '#4488ff' },
   ];
   labels.forEach(l => {
-    const sprite = makeTextSprite(l.text, l.color);
+    const sprite = makeTextSprite(l.text, l.color, 128);
     sprite.position.set(...l.pos);
     scene.add(sprite);
   });
 }
 
-function makeTextSprite(text, color = '#f0ece4', size = 64) {
+function makeTextSprite(text, color = '#f0ece4', size = 128) {
   const dpr = Math.min(window.devicePixelRatio, 2);
   const res = size * dpr;
   const canvas = document.createElement('canvas');
@@ -166,7 +176,7 @@ function makeTextSprite(text, color = '#f0ece4', size = 64) {
   canvas.height = res;
   const ctx = canvas.getContext('2d');
   ctx.scale(dpr, dpr);
-  ctx.font = `bold ${size * 0.6}px 'Inter', system-ui, sans-serif`;
+  ctx.font = `600 ${size * 0.5}px 'Inter', system-ui, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = color;
@@ -176,7 +186,7 @@ function makeTextSprite(text, color = '#f0ece4', size = 64) {
   tex.magFilter = THREE.LinearFilter;
   const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false });
   const sprite = new THREE.Sprite(mat);
-  sprite.scale.set(0.4, 0.4, 1);
+  sprite.scale.set(0.5, 0.5, 1);
   return sprite;
 }
 
@@ -184,7 +194,9 @@ function makeArrow(dir, origin, color, len) {
   const d = dir.clone().normalize();
   const l = len !== undefined ? len : dir.length();
   const o = origin || new THREE.Vector3();
-  return new THREE.ArrowHelper(d, o, l, color, 0.18, 0.1);
+  const headLen = Math.max(l * 0.12, 0.2);
+  const headW = headLen * 0.55;
+  return new THREE.ArrowHelper(d, o, l, color, headLen, headW);
 }
 
 function addSlider(label, min, max, value, step, onChange) {
