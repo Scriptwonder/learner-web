@@ -54,6 +54,19 @@ async function postRender(container) {
     });
   }
 
+  // Intercept internal lesson links (e.g. ../lessons/02-foo.md) and route
+  // them through the app's openLesson() instead of navigating to the raw file.
+  container.querySelectorAll('a[href]').forEach(a => {
+    const href = a.getAttribute('href');
+    const match = href && href.match(/(?:\.\.\/)?lessons\/([^/.]+)\.md$/);
+    if (match && typeof openLesson === 'function' && appState && appState.courseId) {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        openLesson(appState.courseId, match[1]);
+      });
+    }
+  });
+
   const mermaidEls = container.querySelectorAll('.mermaid');
   if (mermaidEls.length > 0) {
     try {
