@@ -136,6 +136,13 @@ async function buildQuizSession() {
 }
 
 async function loadQuestions(courseId, lessonId) {
+  // Support Learn Anything generated quizzes
+  if (courseId === '__learn-anything__' && window._laQuizOverride) {
+    const questions = window._laQuizOverride;
+    window._laQuizOverride = null;
+    return questions;
+  }
+
   try {
     const resp = await fetch('courses/' + courseId + '/quizzes/' + lessonId + '.json');
     if (!resp.ok) return [];
@@ -572,15 +579,21 @@ function showQuizComplete() {
     }
   });
 
+  const isLA = appState.courseId === '__learn-anything__';
   const btnBackToCourse = document.createElement('button');
   btnBackToCourse.className = 'btn-study';
-  btnBackToCourse.textContent = 'Back to Course';
+  btnBackToCourse.textContent = isLA ? 'Back to Document' : 'Back to Course';
   btnBackToCourse.addEventListener('click', () => {
     complete.remove();
     resetQuizUI();
-    resetState();
-    showScreen('courseBrowser');
-    loadCourseList();
+    if (isLA) {
+      resetState();
+      showScreen('learnAnything');
+    } else {
+      resetState();
+      showScreen('courseBrowser');
+      loadCourseList();
+    }
   });
 
   btnRow.appendChild(btnRetry);

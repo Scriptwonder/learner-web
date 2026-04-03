@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Learner — Math for Computer Graphics</title>
+  <title>Learner — Learn Anything Interactively</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23d4a04a'/><g transform='translate(6,6)' fill='none' stroke='%23080b14' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10 1L1 5.5l9 4.5 9-4.5L10 1z'/><path d='M1 14.5l9 4.5 9-4.5'/><path d='M1 10l9 4.5 9-4.5'/></g></svg>">
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
@@ -193,6 +193,104 @@
     </div>
   </div>
 
+  <div id="learn-anything-screen" class="screen" role="main" aria-label="Learn Anything">
+    <div class="la-layout">
+      <!-- Left: Document + Chat -->
+      <div class="la-left">
+        <div class="la-header">
+          <button class="btn-secondary btn-icon la-back-btn" id="la-back-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back
+          </button>
+          <div class="la-title-area">
+            <div class="la-title" id="la-doc-title">Learn Anything</div>
+            <div class="la-subtitle" id="la-doc-subtitle">Upload a document to start learning</div>
+          </div>
+          <button class="la-settings-btn" id="la-settings-btn" title="API Settings">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.32 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          </button>
+        </div>
+
+        <!-- API Key Settings (collapsible) -->
+        <div class="la-settings-panel" id="la-settings-panel" style="display:none;">
+          <div class="la-settings-inner">
+            <label class="la-label">OpenAI API Key</label>
+            <div class="la-key-row">
+              <input type="password" class="la-input" id="la-api-key" placeholder="sk-..." autocomplete="off">
+              <button class="la-btn-sm" id="la-save-key">Save</button>
+            </div>
+            <div class="la-key-hint">Your key is stored locally in your browser. Never sent anywhere except OpenAI.</div>
+            <label class="la-label" style="margin-top:12px;">Model</label>
+            <select class="la-select" id="la-model-select">
+              <option value="gpt-4o-mini">GPT-4o Mini (fast, cheap)</option>
+              <option value="gpt-4o">GPT-4o (best quality)</option>
+              <option value="gpt-4.1-mini">GPT-4.1 Mini</option>
+              <option value="gpt-4.1">GPT-4.1</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Upload Area (shown when no document loaded) -->
+        <div class="la-upload-area" id="la-upload-area">
+          <div class="la-upload-drop" id="la-drop-zone">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted);">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <div class="la-drop-text">Drop a PDF or text file here</div>
+            <div class="la-drop-or">or</div>
+            <button class="la-btn" id="la-btn-upload">Choose File</button>
+            <input type="file" id="la-file-input" accept=".pdf,.txt,.md,.html,.epub" style="display:none;">
+          </div>
+          <div class="la-paste-area">
+            <div class="la-paste-label">Paste text directly</div>
+            <textarea class="la-textarea" id="la-paste-text" placeholder="Paste an article, chapter, or any text you want to learn from..." rows="6"></textarea>
+            <button class="la-btn" id="la-btn-paste">Load Text</button>
+          </div>
+        </div>
+
+        <!-- Chat Area (shown after document is loaded) -->
+        <div class="la-chat-area" id="la-chat-area" style="display:none;">
+          <div class="la-chat-actions">
+            <button class="la-action-btn" id="la-btn-generate-lesson" title="Generate a structured lesson">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+              Generate Lesson
+            </button>
+            <button class="la-action-btn" id="la-btn-generate-quiz" title="Generate quiz questions">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              Generate Quiz
+            </button>
+            <button class="la-action-btn" id="la-btn-teach-me" title="Start interactive teaching session">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Teach Me
+            </button>
+            <button class="la-action-btn la-action-danger" id="la-btn-new-doc" title="Load a different document">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg>
+              New Document
+            </button>
+          </div>
+          <div class="la-messages" id="la-messages"></div>
+          <div class="la-input-area">
+            <textarea class="la-chat-input" id="la-chat-input" placeholder="Ask about the document..." rows="1"></textarea>
+            <button class="la-send-btn" id="la-send-btn" title="Send">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Generated Content -->
+      <div class="la-right" id="la-right">
+        <div class="la-content-placeholder" id="la-content-placeholder">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); opacity: 0.4;">
+            <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>
+          </svg>
+          <div>Generated lessons and content will appear here</div>
+        </div>
+        <div class="la-content" id="la-content" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
   <div id="shader-editor-screen" class="screen" role="main" aria-label="Shader Editor">
     <div class="shader-editor">
       <!-- Left: Code Editor -->
@@ -251,6 +349,11 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.min.mjs" type="module"></script>
+  <script type="module">
+    import * as pdfjsLib from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.min.mjs';
+    window.pdfjsLib = pdfjsLib;
+  </script>
   <script src="js/theme-toggle.js"></script>
   <script src="js/render-markdown.js"></script>
   <script src="js/app.js"></script>
@@ -261,6 +364,7 @@
   <script src="js/shader-renderer.js?v=2"></script>
   <script src="js/shader-challenges.js?v=2"></script>
   <script type="module" src="js/shader-editor.js?v=2"></script>
+  <script src="js/learn-anything.js"></script>
   <script type="module" src="js/visualizer.js"></script>
 </body>
 </html>
