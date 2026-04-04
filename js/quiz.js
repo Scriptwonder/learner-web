@@ -137,9 +137,16 @@ async function buildQuizSession() {
 
 async function loadQuestions(courseId, lessonId) {
   if (courseId === '__learn-anything__' && appState.laQuizOverride) {
-    const questions = appState.laQuizOverride;
+    const raw = appState.laQuizOverride;
     appState.laQuizOverride = null;
-    return questions;
+    return raw.map((q, i) => ({
+      ...q,
+      id: q.id || i + 1,
+      type: typeof q.type === 'string' ? q.type : 'short_answer',
+      difficulty: q.difficulty || 'medium',
+      hint: q.hint || null,
+      answer_key: q.answer_key || '',
+    }));
   }
 
   try {

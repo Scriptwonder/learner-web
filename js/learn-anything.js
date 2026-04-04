@@ -83,6 +83,7 @@ const LearnAnything = (function () {
   function goBack() {
     if (currentAbort) currentAbort.abort();
     showScreen('courseBrowser');
+    loadCourseList();
   }
 
   function show() {
@@ -414,11 +415,14 @@ const LearnAnything = (function () {
       if (err.name !== 'AbortError') {
         updateMessageFinal(bodyEl, 'Error: ' + err.message);
       }
+    } finally {
+      clearTimeout(streamUpdateTimer);
+      streamUpdateTimer = null;
+      isGenerating = false;
+      sendBtn.disabled = false;
+      currentAbort = null;
     }
 
-    isGenerating = false;
-    sendBtn.disabled = false;
-    currentAbort = null;
     return fullResponse;
   }
 
@@ -480,13 +484,18 @@ const LearnAnything = (function () {
 
         const questions = JSON.parse(jsonStr);
         if (Array.isArray(questions) && questions.length > 0) {
-          const normalized = questions.map((q, i) => ({
-            ...q,
-            id: q.id || i + 1,
-            difficulty: q.difficulty || 'medium',
-            hint: q.hint || null,
-            _source: 'learn-anything'
-          }));
+          const normalized = questions
+            .filter(q => q && typeof q.question === 'string')
+            .map((q, i) => ({
+              ...q,
+              id: q.id || i + 1,
+              type: (typeof q.type === 'string' ? q.type : 'short_answer'),
+              difficulty: q.difficulty || 'medium',
+              hint: q.hint || null,
+              answer_key: q.answer_key || '',
+              options: q.type === 'multiple_choice' && Array.isArray(q.options) ? q.options : undefined,
+              _source: 'learn-anything'
+            }));
 
           showContent(
             '<div class="la-quiz-ready">' +
@@ -497,7 +506,7 @@ const LearnAnything = (function () {
               '<div class="la-quiz-item">' +
               '<span class="la-qi-num">' + (i + 1) + '.</span> ' +
               '<span class="la-qi-diff badge-' + escapeHtml(q.difficulty) + '">' + escapeHtml(q.difficulty) + '</span> ' +
-              '<span class="la-qi-type">' + escapeHtml(q.type.replace('_', ' ')) + '</span>' +
+              '<span class="la-qi-type">' + escapeHtml((q.type || 'question').replace(/_/g, ' ')) + '</span>' +
               '</div>'
             ).join('') +
             '</div>' +
