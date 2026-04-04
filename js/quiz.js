@@ -136,10 +136,9 @@ async function buildQuizSession() {
 }
 
 async function loadQuestions(courseId, lessonId) {
-  // Support Learn Anything generated quizzes
-  if (courseId === '__learn-anything__' && window._laQuizOverride) {
-    const questions = window._laQuizOverride;
-    window._laQuizOverride = null;
+  if (courseId === '__learn-anything__' && appState.laQuizOverride) {
+    const questions = appState.laQuizOverride;
+    appState.laQuizOverride = null;
     return questions;
   }
 

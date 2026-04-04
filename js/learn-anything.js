@@ -3,7 +3,6 @@
 // Uses OpenAI API with user-provided key.
 
 const LearnAnything = (function () {
-  // --- DOM refs ---
   const backBtn = document.getElementById('la-back-btn');
   const settingsBtn = document.getElementById('la-settings-btn');
   const settingsPanel = document.getElementById('la-settings-panel');
@@ -29,28 +28,25 @@ const LearnAnything = (function () {
   const btnTeachMe = document.getElementById('la-btn-teach-me');
   const btnNewDoc = document.getElementById('la-btn-new-doc');
 
-  // --- State ---
   const STORAGE_KEY = 'learner:openai-key';
   const MODEL_KEY = 'learner:openai-model';
   const DOCS_KEY = 'learner:la-documents';
+  const MAX_CHAT_HISTORY = 50;
 
   let documentText = '';
   let documentName = '';
-  let chatHistory = []; // {role, content}
+  let chatHistory = [];
   let isGenerating = false;
   let currentAbort = null;
+  let streamUpdateTimer = null;
 
-  // --- Init ---
   function init() {
-    // Restore API key
     const savedKey = localStorage.getItem(STORAGE_KEY);
     if (savedKey) apiKeyInput.value = savedKey;
 
-    // Restore model
     const savedModel = localStorage.getItem(MODEL_KEY);
     if (savedModel) modelSelect.value = savedModel;
 
-    // Wire up events
     backBtn.addEventListener('click', goBack);
     settingsBtn.addEventListener('click', toggleSettings);
     saveKeyBtn.addEventListener('click', saveApiKey);
@@ -71,13 +67,11 @@ const LearnAnything = (function () {
       }
     });
 
-    // Auto-resize chat input
     chatInput.addEventListener('input', () => {
       chatInput.style.height = 'auto';
       chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
     });
 
-    // Drag and drop
     dropZone.addEventListener('dragover', (e) => {
       e.preventDefault();
       dropZone.classList.add('drag-over');
@@ -86,7 +80,6 @@ const LearnAnything = (function () {
     dropZone.addEventListener('drop', handleDrop);
   }
 
-  // --- Navigation ---
   function goBack() {
     if (currentAbort) currentAbort.abort();
     showScreen('courseBrowser');
@@ -99,7 +92,6 @@ const LearnAnything = (function () {
     }
   }
 
-  // --- Settings ---
   function toggleSettings() {
     settingsPanel.style.display = settingsPanel.style.display === 'none' ? 'block' : 'none';
   }
@@ -122,6 +114,7 @@ const LearnAnything = (function () {
   }
 
   // --- File handling ---
+
   function handleDrop(e) {
     e.preventDefault();
     dropZone.classList.remove('drag-over');
@@ -159,10 +152,8 @@ const LearnAnything = (function () {
   async function extractPdfText(file) {
     const arrayBuffer = await file.arrayBuffer();
 
-    // Use pdf.js from CDN
     const pdfjsLib = window.pdfjsLib;
     if (!pdfjsLib) {
-      // Fallback: try loading dynamically
       throw new Error('PDF.js not loaded. Please refresh and try again.');
     }
 
@@ -187,7 +178,6 @@ const LearnAnything = (function () {
     if (!text) return;
     documentText = text;
     documentName = 'Pasted Text';
-    // Try to extract a title from the first line
     const firstLine = text.split('\n')[0].replace(/^#+\s*/, '').trim();
     if (firstLine.length > 0 && firstLine.length < 100) {
       documentName = firstLine;
@@ -197,7 +187,6 @@ const LearnAnything = (function () {
 
   function onDocumentLoaded() {
     const wordCount = documentText.split(/\s+/).length;
-    const charCount = documentText.length;
 
     docTitle.textContent = documentName;
     docSubtitle.textContent = wordCount.toLocaleString() + ' words · ' +
@@ -206,7 +195,6 @@ const LearnAnything = (function () {
     uploadArea.style.display = 'none';
     chatArea.style.display = 'flex';
 
-    // Add system message
     chatHistory = [];
     addMessage('system', 'Document loaded: **' + escapeHtml(documentName) + '** (' +
       wordCount.toLocaleString() + ' words).\n\n' +
@@ -216,22 +204,22 @@ const LearnAnything = (function () {
       '- **Teach Me** — Start an interactive teaching session\n' +
       '- Or just **ask questions** about the content below');
 
-    // Save document reference
-    saveDocumentRef();
+    saveDocumentRef(wordCount);
   }
 
-  function saveDocumentRef() {
+  function saveDocumentRef(wordCount) {
     try {
       const docs = JSON.parse(localStorage.getItem(DOCS_KEY) || '[]');
       docs.unshift({
         name: documentName,
-        wordCount: documentText.split(/\s+/).length,
+        wordCount: wordCount,
         date: new Date().toISOString().slice(0, 10),
         preview: documentText.slice(0, 200)
       });
-      // Keep only last 20
       localStorage.setItem(DOCS_KEY, JSON.stringify(docs.slice(0, 20)));
-    } catch {}
+    } catch (err) {
+      console.warn('Failed to save document ref:', err);
+    }
   }
 
   function resetDocument() {
@@ -251,7 +239,8 @@ const LearnAnything = (function () {
   }
 
   // --- Chat ---
-  function addMessage(role, content, streaming) {
+
+  function addMessage(role, content) {
     const msgDiv = document.createElement('div');
     msgDiv.className = 'la-msg la-msg-' + role;
 
@@ -273,7 +262,14 @@ const LearnAnything = (function () {
     return body;
   }
 
-  function updateMessage(bodyEl, content) {
+  // Light update during streaming — plain text only, no expensive post-processing
+  function updateMessageStreaming(bodyEl, content) {
+    bodyEl.textContent = content;
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  // Full render with markdown + KaTeX — used once at end of streaming
+  function updateMessageFinal(bodyEl, content) {
     bodyEl.innerHTML = renderMarkdown(content);
     postRender(bodyEl);
     messagesEl.scrollTop = messagesEl.scrollHeight;
@@ -289,13 +285,22 @@ const LearnAnything = (function () {
 
     chatHistory.push({ role: 'user', content: text });
 
-    await callOpenAI(chatHistory, (partial) => {
-      // handled via streaming
-    });
+    await callOpenAI(chatHistory);
+  }
+
+  // --- Content panel helper ---
+
+  function showContent(html) {
+    contentPlaceholder.style.display = 'none';
+    contentEl.style.display = 'block';
+    contentEl.innerHTML = html;
+    postRender(contentEl);
+    contentEl.scrollTop = 0;
   }
 
   // --- OpenAI API ---
-  async function callOpenAI(messages, onUpdate) {
+
+  async function callOpenAI(messages) {
     const apiKey = getApiKey();
     if (!apiKey) {
       addMessage('system', 'Please set your OpenAI API key in settings (gear icon).');
@@ -314,13 +319,13 @@ const LearnAnything = (function () {
       ...messages.filter(m => m.role !== 'system')
     ];
 
-    // Trim document for context window (roughly 100k chars for gpt-4o)
+    // Trim document for context window
     const maxDocChars = 80000;
     const docForContext = documentText.length > maxDocChars
       ? documentText.slice(0, maxDocChars) + '\n\n[Document truncated at ' + maxDocChars + ' characters]'
       : documentText;
 
-    // Inject document as first user message if not already present
+    // Inject document context once at the start of the message list
     if (!apiMessages.some(m => m.content && m.content.includes('[DOCUMENT START]'))) {
       apiMessages.splice(1, 0, {
         role: 'user',
@@ -350,7 +355,7 @@ const LearnAnything = (function () {
       if (!resp.ok) {
         const errData = await resp.json().catch(() => ({}));
         const errMsg = errData.error?.message || ('API error: ' + resp.status);
-        updateMessage(bodyEl, 'Error: ' + errMsg);
+        updateMessageFinal(bodyEl, 'Error: ' + errMsg);
         isGenerating = false;
         sendBtn.disabled = false;
         return null;
@@ -359,6 +364,17 @@ const LearnAnything = (function () {
       const reader = resp.body.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
+
+      // Debounced UI updates during streaming
+      let pendingUpdate = false;
+      const scheduleStreamUpdate = () => {
+        if (pendingUpdate) return;
+        pendingUpdate = true;
+        streamUpdateTimer = setTimeout(() => {
+          pendingUpdate = false;
+          updateMessageStreaming(bodyEl, fullResponse);
+        }, 80);
+      };
 
       while (true) {
         const { done, value } = await reader.read();
@@ -379,18 +395,24 @@ const LearnAnything = (function () {
             const delta = parsed.choices?.[0]?.delta?.content;
             if (delta) {
               fullResponse += delta;
-              updateMessage(bodyEl, fullResponse);
+              scheduleStreamUpdate();
             }
           } catch {}
         }
       }
 
+      // Clear any pending timer and do final render with full markdown + KaTeX
+      clearTimeout(streamUpdateTimer);
+
       chatHistory.push({ role: 'assistant', content: fullResponse });
-      updateMessage(bodyEl, fullResponse);
+      if (chatHistory.length > MAX_CHAT_HISTORY) {
+        chatHistory = chatHistory.slice(-MAX_CHAT_HISTORY);
+      }
+      updateMessageFinal(bodyEl, fullResponse);
 
     } catch (err) {
       if (err.name !== 'AbortError') {
-        updateMessage(bodyEl, 'Error: ' + err.message);
+        updateMessageFinal(bodyEl, 'Error: ' + err.message);
       }
     }
 
@@ -417,6 +439,7 @@ const LearnAnything = (function () {
   }
 
   // --- Generate Lesson ---
+
   async function generateLesson() {
     if (isGenerating || !documentText) return;
 
@@ -432,18 +455,13 @@ const LearnAnything = (function () {
     addMessage('user', 'Generate a structured lesson from this document');
 
     const response = await callOpenAI(chatHistory);
-
     if (response) {
-      // Also show in the right panel
-      contentPlaceholder.style.display = 'none';
-      contentEl.style.display = 'block';
-      contentEl.innerHTML = renderMarkdown(response);
-      postRender(contentEl);
-      contentEl.scrollTop = 0;
+      showContent(renderMarkdown(response));
     }
   }
 
   // --- Generate Quiz ---
+
   async function generateQuiz() {
     if (isGenerating || !documentText) return;
 
@@ -456,14 +474,12 @@ const LearnAnything = (function () {
 
     if (response) {
       try {
-        // Try to extract JSON from response (might have markdown wrapping)
         let jsonStr = response.trim();
         const jsonMatch = jsonStr.match(/\[[\s\S]*\]/);
         if (jsonMatch) jsonStr = jsonMatch[0];
 
         const questions = JSON.parse(jsonStr);
         if (Array.isArray(questions) && questions.length > 0) {
-          // Normalize questions
           const normalized = questions.map((q, i) => ({
             ...q,
             id: q.id || i + 1,
@@ -472,13 +488,7 @@ const LearnAnything = (function () {
             _source: 'learn-anything'
           }));
 
-          // Store for quiz engine
-          window._laQuizQuestions = normalized;
-
-          // Show in right panel
-          contentPlaceholder.style.display = 'none';
-          contentEl.style.display = 'block';
-          contentEl.innerHTML =
+          showContent(
             '<div class="la-quiz-ready">' +
             '<h2>Quiz Ready!</h2>' +
             '<p>' + normalized.length + ' questions generated from your document.</p>' +
@@ -486,43 +496,34 @@ const LearnAnything = (function () {
             normalized.map((q, i) =>
               '<div class="la-quiz-item">' +
               '<span class="la-qi-num">' + (i + 1) + '.</span> ' +
-              '<span class="la-qi-diff badge-' + q.difficulty + '">' + q.difficulty + '</span> ' +
-              '<span class="la-qi-type">' + q.type.replace('_', ' ') + '</span>' +
+              '<span class="la-qi-diff badge-' + escapeHtml(q.difficulty) + '">' + escapeHtml(q.difficulty) + '</span> ' +
+              '<span class="la-qi-type">' + escapeHtml(q.type.replace('_', ' ')) + '</span>' +
               '</div>'
             ).join('') +
             '</div>' +
             '<button class="la-btn la-btn-start-quiz" id="la-btn-start-quiz">Start Quiz</button>' +
-            '</div>';
+            '</div>'
+          );
 
-          postRender(contentEl);
-
-          document.getElementById('la-btn-start-quiz').addEventListener('click', () => {
-            launchQuiz(normalized);
-          });
+          document.getElementById('la-btn-start-quiz').onclick = () => launchQuiz(normalized);
         }
       } catch (e) {
-        // JSON parse failed - just show in right panel as text
-        contentPlaceholder.style.display = 'none';
-        contentEl.style.display = 'block';
-        contentEl.innerHTML = renderMarkdown(response);
-        postRender(contentEl);
+        showContent(renderMarkdown(response));
       }
     }
   }
 
   function launchQuiz(questions) {
-    // Set up app state for quiz engine
     appState.courseId = '__learn-anything__';
     appState.lessonId = '__generated__';
     appState.currentContent = documentText;
-
-    // Override loadQuestions temporarily to return our generated questions
-    window._laQuizOverride = questions;
+    appState.laQuizOverride = questions;
 
     showQuizSetup(questions);
   }
 
   // --- Teach Me (Socratic Mode) ---
+
   async function startTeaching() {
     if (isGenerating || !documentText) return;
 
@@ -538,14 +539,6 @@ const LearnAnything = (function () {
     await callOpenAI(chatHistory);
   }
 
-  // --- Utility ---
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
-
-  // --- Public API ---
   init();
 
   return { show };
