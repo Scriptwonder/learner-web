@@ -71,7 +71,14 @@ function renderLearnAnythingCard() {
   const card = document.createElement('div');
   card.className = 'course-card la-card';
 
-  const docs = JSON.parse(localStorage.getItem('learner:la-documents') || '[]');
+  let docs = [];
+  try {
+    const storedDocs = localStorage.getItem('learner:la-documents');
+    docs = storedDocs ? JSON.parse(storedDocs) : [];
+    if (!Array.isArray(docs)) docs = [];
+  } catch (_) {
+    docs = [];
+  }
   const docCount = docs.length;
   const hasKey = !!localStorage.getItem('learner:openai-key');
 

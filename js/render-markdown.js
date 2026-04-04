@@ -24,7 +24,11 @@ function renderMarkdown(markdown) {
 
   marked.setOptions({ renderer, breaks: false, gfm: true });
   try {
-    return marked.parse(markdown);
+    let html = marked.parse(markdown);
+    // Sanitize: strip <script> tags and on* event handlers to prevent XSS
+    html = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+    html = html.replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+    return html;
   } catch (e) {
     console.warn('Markdown parse error:', e);
     return `<pre>${markdown}</pre>`;
