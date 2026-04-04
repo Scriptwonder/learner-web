@@ -24,6 +24,11 @@ const COURSE_ICONS = {
 // Store manifests keyed by course id
 const courseManifests = {};
 
+const LEARN_ANYTHING_ICON = {
+  gradient: ['#10b981', '#059669'],
+  svg: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#080b14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>'
+};
+
 // Load course list on page load
 loadCourseList();
 
@@ -45,6 +50,10 @@ async function loadCourseList() {
     }
 
     courseList.innerHTML = '';
+
+    // Learn Anything card at the top
+    renderLearnAnythingCard();
+
     manifests.forEach(manifest => {
       manifest.lessonCount = manifest.modules.reduce((sum, m) => sum + m.lessons.length, 0);
       courseManifests[manifest.id] = manifest;
@@ -56,6 +65,32 @@ async function loadCourseList() {
   } catch (err) {
     courseList.innerHTML = '<div class="empty-state">Failed to load courses: ' + err.message + '</div>';
   }
+}
+
+function renderLearnAnythingCard() {
+  const card = document.createElement('div');
+  card.className = 'course-card la-card';
+
+  const docs = JSON.parse(localStorage.getItem('learner:la-documents') || '[]');
+  const docCount = docs.length;
+  const hasKey = !!localStorage.getItem('learner:openai-key');
+
+  card.innerHTML =
+    '<div class="course-card-header">' +
+      '<div class="course-card-icon" style="background: linear-gradient(135deg, ' + LEARN_ANYTHING_ICON.gradient[0] + ', ' + LEARN_ANYTHING_ICON.gradient[1] + '); box-shadow: 0 2px 8px ' + LEARN_ANYTHING_ICON.gradient[0] + '33;">' + LEARN_ANYTHING_ICON.svg + '</div>' +
+      '<div class="course-card-header-text">' +
+        '<div class="course-card-title">Learn Anything</div>' +
+        '<div class="course-card-meta">' + (hasKey ? 'OpenAI connected' : 'bring your own API key') + '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="course-card-desc">Upload any PDF, article, or text — get AI-generated lessons, quizzes, and interactive teaching sessions powered by your OpenAI API key.</div>' +
+    (docCount > 0 ? '<div class="course-progress"><div class="course-progress-text">' + docCount + ' document' + (docCount !== 1 ? 's' : '') + ' studied</div></div>' : '');
+
+  card.addEventListener('click', () => {
+    if (typeof LearnAnything !== 'undefined') LearnAnything.show();
+  });
+
+  courseList.appendChild(card);
 }
 
 function renderCourseCard(course) {
